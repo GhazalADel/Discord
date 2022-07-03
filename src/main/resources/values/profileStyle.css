@@ -31,3 +31,6 @@
 .logOut:hover{
     -fx-background-color: #a12d2f;
 }
+.edit:hover{
+    -fx-background-color: #686d73;
+}
