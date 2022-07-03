@@ -3,6 +3,6 @@ module com.example.discordfull {
     requires javafx.fxml;
 
 
-    opens com.example.discordfull to javafx.fxml;
-    exports com.example.discordfull;
+    opens controllers to javafx.fxml;
+    exports controllers;
 }

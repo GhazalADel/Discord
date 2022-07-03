@@ -1,4 +1,4 @@
-package com.example.discordfull;
+package controllers;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

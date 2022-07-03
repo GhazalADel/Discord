@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ScrollPane layoutX="29.0" layoutY="39.0" prefHeight="463.0" prefWidth="195.0">
+         <content>
+            <AnchorPane prefHeight="437.0" prefWidth="181.0">
+               <children>
+                  <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #ff113d;" />
+                  <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #33ffd1;" />
+                  <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #9a4d5b;"/>
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
+                  <HBox layoutX="1.0" layoutY="333.0" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #fa12b2;" />
+                  <HBox layoutX="-9.0" layoutY="217.0" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #44fa12;" />
+                  <HBox layoutY="103.0" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #22fa12;" />
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

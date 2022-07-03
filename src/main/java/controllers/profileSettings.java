@@ -1,4 +1,4 @@
-package com.example.discordfull;
+package controllers;
 
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
