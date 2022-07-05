@@ -1,0 +1,39 @@
+.vBox-color{
+    -fx-background-color: #2f3136;
+}
+.primary-color{
+    -fx-background-color: #36393f;
+}
+.default-color{
+    -fx-background-color: #747c8c;
+}
+.buttons-color{
+    -fx-background-color: #5865f2;
+}
+.circle-color{
+    -fx-background-color: #3ba55d;
+}
+.profile-color{
+    -fx-background-color: #202225;
+}
+.edit-button-color{
+    -fx-background-color: #4f545c;
+}
+.selected:hover{
+    -fx-background-color: #42464d;
+}
+.log-out-button{
+    -fx-background-color: #d93b3f;
+}
+.change:hover{
+    -fx-background-color: #4752c4;
+}
+.logOut:hover{
+    -fx-background-color: #a12d2f;
+}
+.edit:hover{
+    -fx-background-color: #686d73;
+}
+.text2:hover{
+    -fx-underline: true;
+}

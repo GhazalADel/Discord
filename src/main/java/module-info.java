@@ -1,8 +1,9 @@
-module com.example.discordfull {
+module Discord1 {
+    requires javafx.graphics;
     requires javafx.controls;
     requires javafx.fxml;
 
 
-    opens controllers to javafx.fxml;
-    exports controllers;
+    opens discord.discord1 to javafx.fxml;
+    exports discord.discord1;
 }

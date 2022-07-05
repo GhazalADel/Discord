@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="525.0" prefWidth="900.0" style="-fx-background-color: #202225;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="discord.discord1.MainPage">
+   <children>
+      <BorderPane layoutX="76.0" layoutY="33.0" prefHeight="492.0" prefWidth="824.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px;" />
+   </children>
+</Pane>
