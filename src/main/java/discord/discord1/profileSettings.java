@@ -14,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -115,6 +116,8 @@ public class profileSettings implements Initializable {
 
     @FXML
     private TextField usernameTextField;
+    @FXML
+    private Circle statusCircle;
 
 
 
@@ -180,6 +183,28 @@ public class profileSettings implements Initializable {
         username= (String) uiResponse2.getData("name");
         usernameText.setText(username);
         userText.setText(username);
+        UIRequest uiRequest3=new UIRequest(UIRequestCode.GET_STATUS);
+        UIResponse uiResponse3;
+        try {
+            uiResponse3=Client.process(uiRequest3);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        Status userStatus= (Status) uiResponse3.getData("status");
+        if(userStatus==Status.ONLINE){
+            statusCircle.setFill(Paint.valueOf("#3ba55d"));
+        }
+        else if(userStatus==Status.DO_NOT_DISTURB){
+            statusCircle.setFill(Paint.valueOf("#e03f41"));
+        }
+        else if(userStatus==Status.IDLE){
+            statusCircle.setFill(Paint.valueOf("#eb9e19"));
+        }
+        else if(userStatus==Status.INVISIBLE){
+            statusCircle.setFill(Paint.valueOf("##747f8d"));
+        }
     }
 
     @FXML
@@ -461,6 +486,18 @@ public class profileSettings implements Initializable {
             }
         }
 
+    }
+
+    @FXML
+    void escProfileClick(MouseEvent event) {
+        Stage stage= (Stage) logOutButton.getScene().getWindow();
+        Parent root= null;
+        try {
+            root = FXMLLoader.load(getClass().getResource("HomePage.fxml"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.setScene(new Scene(root));
     }
 
 

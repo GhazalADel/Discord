@@ -121,6 +121,15 @@ public class Client {
                 return uiResponse;
             }
         }
+        else if(uiRequest.getCode()==UIRequestCode.GET_STATUS){
+            Request request=new Request(RequestCode.GET_STATUS);
+            objectOutputStream.writeObject(request);
+            Response resultResponse = (Response) objectInputStream.readObject();
+            Status userStatus= (Status) resultResponse.getData("status");
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            uiResponse.addData("status",userStatus);
+            return uiResponse;
+        }
 
 
         return null;

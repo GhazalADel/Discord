@@ -137,7 +137,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Text>
-                        <Text fx:id="revealEmailText" fill="#127da9" layoutX="55.0" layoutY="89.0" onMouseClicked="#revealEmailClick" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text2" text="Reaveal" />
+                        <Text fx:id="revealEmailText" fill="#127da9" layoutX="285.0" layoutY="105.0" onMouseClicked="#revealEmailClick" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text2" text="Reaveal" />
                      </children>
                   </AnchorPane>
                </children>
@@ -179,15 +179,17 @@
             <Circle fill="#202225" layoutX="136.0" layoutY="147.0" radius="40.0" stroke="#202225" strokeType="INSIDE" />
             <Circle fill="#747c8c" layoutX="136.0" layoutY="147.0" radius="35.0" stroke="BLACK" strokeType="INSIDE" />
             <Circle fill="#202225" layoutX="162.0" layoutY="166.0" radius="12.0" stroke="#202225" strokeType="INSIDE" />
-            <Circle fill="#3ba55d" layoutX="162.0" layoutY="166.0" radius="8.0" stroke="#202225" strokeType="INSIDE" />
-            <ImageView fitHeight="56.0" fitWidth="59.0" layoutX="554.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true">
-            </ImageView>
+            <Circle fx:id="statusCircle" fill="#3ba55d" layoutX="162.0" layoutY="166.0" radius="8.0" stroke="#202225" strokeType="INSIDE" />
+            <ImageView fitHeight="39.0" fitWidth="46.0" layoutX="564.0" layoutY="13.0" onMouseClicked="#escProfileClick" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@escPicture.png" />
+               </image></ImageView>
             <Text fx:id="userText" fill="#f5f2f2" layoutX="184.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ghazal">
                <font>
                   <Font name="Calibri Bold" size="20.0" />
                </font>
             </Text>
-            <Pane fx:id="usernameDialog" layoutX="1.0" layoutY="197.0" prefHeight="183.0" prefWidth="373.0" style="-fx-background-color: #36393f; -fx-background-radius: 6px; -fx-border-color: #2f3136;">
+            <Pane fx:id="usernameDialog" layoutX="1.0" layoutY="197.0" prefHeight="183.0" prefWidth="373.0" style="-fx-background-color: #36393f; -fx-background-radius: 6px; -fx-border-color: #2f3136;" visible="false">
                <children>
                   <ImageView fx:id="changePasswordExit2" fitHeight="27.0" fitWidth="26.0" layoutX="335.0" layoutY="12.0" onMouseClicked="#changeUsernameEscClick" pickOnBounds="true" preserveRatio="true">
                      <image>

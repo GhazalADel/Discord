@@ -253,6 +253,20 @@ public class ClientHandler implements Runnable {
                 int userIndex=findUserIndex();
                 users.get(userIndex).setUsername(newUsername);
             }
+            else if(command.getCode()==RequestCode.GET_STATUS){
+                int userIndex=findUserIndex();
+                Response response=new Response(ResponseCode.REQUEST_OK);
+                Status userStatus=Status.ONLINE;//test
+                if(users.size()!=0){
+                    userStatus=users.get(userIndex).getUserStatus();
+                }
+                response.addData("status",userStatus);
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 
 
 
