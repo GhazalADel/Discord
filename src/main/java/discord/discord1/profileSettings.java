@@ -266,7 +266,7 @@ public class profileSettings implements Initializable {
             invalidPhoneNumberText.setVisible(true);
         }
         else{
-            phoneNumber=enteredPhoneNumber;
+            phoneNumber="098"+enteredPhoneNumber;
             UIRequest uiRequest=new UIRequest(UIRequestCode.CHANGE_PHONE_NUMBER);
             uiRequest.addData("phone",enteredPhoneNumber);
             Client.process(uiRequest);

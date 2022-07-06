@@ -205,7 +205,10 @@ public class ClientHandler implements Runnable {
                     }
                     userIndex++;
                 }
-                String phoneNumber=users.get(userIndex).getTel();
+                String phoneNumber="";
+                if(users.size()!=0){
+                    phoneNumber=users.get(userIndex).getTel();
+                }
                 Response response=new Response(ResponseCode.SUCCESSFUL);
                 response.addData("phone",phoneNumber);
                 try {

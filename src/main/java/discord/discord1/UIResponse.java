@@ -9,6 +9,7 @@ public class UIResponse {
 
     public UIResponse (UIResponseCode code) {
         this.code = code;
+        data=new HashMap<>();
     }
 
     public UIResponseCode getCode() {
