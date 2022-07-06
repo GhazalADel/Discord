@@ -145,7 +145,9 @@ public class profileSettings implements Initializable {
         for (int i = 0; i <index ; i++) {
             showHide+="*";
         }
-        showHide+=email.substring(index+1);
+        if(!showHide.equals("")){
+            showHide+=email.substring(index);
+        }
         emailText.setText(showHide);
 
     }
@@ -267,6 +269,7 @@ public class profileSettings implements Initializable {
     void phoneNumberEditClick(MouseEvent event) {
       phoneNumberDialog.setVisible(true);
       invalidPhoneNumberText.setVisible(false);
+      revealPhoneNumber.setVisible(false);
     }
 
     @FXML
@@ -318,12 +321,16 @@ public class profileSettings implements Initializable {
     @FXML
     void phoneNumberCancle(MouseEvent event) {
         phoneNumberDialog.setVisible(false);
+        if(!phoneNumber.equals("")){
+            revealPhoneNumber.setVisible(true);
+        }
     }
 
     @FXML
     void editEmailClick(MouseEvent event) {
       emailDialog.setVisible(true);
       invalidEmailText.setVisible(false);
+      revealEmailText.setVisible(false);
     }
     @FXML
     void revealEmailClick(MouseEvent event) {
@@ -337,7 +344,9 @@ public class profileSettings implements Initializable {
            for (int i = 0; i <index ; i++) {
                showHide+="*";
            }
-           showHide+=email.substring(index+1);
+           if(!showHide.equals("")){
+               showHide+=email.substring(index);
+           }
            emailText.setText(showHide);
            revealEmailText.setText("Reveal");
        }
@@ -345,6 +354,7 @@ public class profileSettings implements Initializable {
     @FXML
     void exitEmailDialogCLick(MouseEvent event) {
       emailDialog.setVisible(false);
+      revealEmailText.setVisible(true);
     }
 
     @FXML
@@ -367,9 +377,10 @@ public class profileSettings implements Initializable {
             for (int i = 0; i <index ; i++) {
                 showHide+="*";
             }
-            showHide+=email.substring(index+1);
+            showHide+=email.substring(index);
             emailText.setText(showHide);
             emailDialog.setVisible(false);
+            revealEmailText.setVisible(true);
         }
     }
 
