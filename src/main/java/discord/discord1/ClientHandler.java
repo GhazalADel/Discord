@@ -31,6 +31,7 @@ public class ClientHandler implements Runnable {
     private int counter = 0;
     private int imageCount=0;
 
+
     //constructor
     public ClientHandler(Socket socket) {
         this.socket=socket;
@@ -45,6 +46,7 @@ public class ClientHandler implements Runnable {
             throw new RuntimeException(e);
         }
         clientHandlers.add(this);
+
     }
     public ClientHandler(User user){
         this.user = user;
@@ -264,6 +266,17 @@ public class ClientHandler implements Runnable {
                 try {
                     objectOutputStream.writeObject(response);
                 } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            else if(command.getCode()==RequestCode.SEND_PICTURE){
+                byte[] content = (byte[]) command.getData("file");
+                String path = (String) command.getData(".");
+                File f = new File("./Images/"+user.getUsername()+ path);
+                try {
+                    Files.write(f.toPath(), content);
+                }
+                catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -1307,17 +1320,7 @@ public class ClientHandler implements Runnable {
 //
 //            }
 //            //select a picture for profile
-//            else if(command.getCode()==RequestCode.SEND_PICTURE){
-//                byte[] content = (byte[]) command.getData("file");
-//                String path = (String) command.getData(".");
-//                File f = new File("./Images/" + (++imageCount) + "image_"+user.getUsername()+ path);
-//                try {
-//                    Files.write(f.toPath(), content);
-//                }
-//                catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
+//
 //            //see pinned messages in a channel in server
 //            else if(command.getCode()==RequestCode.SEE_PINNED_MESSAGE){
 //                int serverIndex= (int) command.getData("serverIndex");

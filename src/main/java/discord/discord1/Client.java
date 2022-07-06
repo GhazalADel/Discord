@@ -130,6 +130,15 @@ public class Client {
             uiResponse.addData("status",userStatus);
             return uiResponse;
         }
+        else if(uiRequest.getCode()==UIRequestCode.SELECT_PROFILE){
+             Request request = new Request(RequestCode.SEND_PICTURE);
+        String path = String.valueOf(uiRequest.getData("path"));
+        byte[] content = (byte[]) uiRequest.getData("content");
+        request.addData("file", content);
+        request.addData(".", path.substring(path.indexOf(".")));
+        objectOutputStream.writeObject(request);
+
+        }
 
 
         return null;

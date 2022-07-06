@@ -19,10 +19,16 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -123,10 +129,7 @@ public class profileSettings implements Initializable {
     @FXML
     private Circle profileCircle;
 
-
-
-
-
+    FileChooser fileChooser=new FileChooser();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -210,7 +213,6 @@ public class profileSettings implements Initializable {
         else if(userStatus==Status.INVISIBLE){
             statusCircle.setFill(Paint.valueOf("##747f8d"));
         }
-        username="ghazal";
 
         if(getClass().getResourceAsStream(username+".jpg")!=null || getClass().getResourceAsStream(username+".png")!=null ){
            if(getClass().getResourceAsStream(username+".jpg")!=null){
@@ -226,6 +228,8 @@ public class profileSettings implements Initializable {
             Image image=new Image(getClass().getResourceAsStream("diimg.jpg"));
             profileCircle.setFill(new ImagePattern(image));
         }
+
+        fileChooser.setInitialDirectory(new File("C:\\Users"));
     }
 
     @FXML
@@ -520,6 +524,29 @@ public class profileSettings implements Initializable {
         }
         stage.setScene(new Scene(root));
     }
+    @FXML
+    void changeAvatarClick(MouseEvent event) throws IOException, ClassNotFoundException {
+        //Window stage=logOutButton.getScene().getWindow();
+        fileChooser.setTitle("Select Picture");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("png","*.png"),
+                new FileChooser.ExtensionFilter("jpg","*.jpg"));
+        File selectedImage=fileChooser.showSaveDialog(new Stage());
+        Path path=selectedImage.toPath();
+        String pathStr=String.valueOf(path);
+        File f = new File(pathStr);
+        byte[] content = Files.readAllBytes(f.toPath());
+        pathStr=pathStr.substring(pathStr.indexOf("."));
+        File f2 = new File("./src/main/resources/discord/discord1/"+username+ pathStr);
+        try {
+            Files.write(f2.toPath(), content);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Image image=new Image(String.valueOf(path));
+        profileCircle.setFill(new ImagePattern(image));
+    }
+
 
 
 

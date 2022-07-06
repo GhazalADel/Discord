@@ -12,5 +12,6 @@ public enum UIRequestCode {
     CHANGE_EMAIL,
     GET_USERNAME,
     CHANGE_USERNAME,
-    GET_STATUS
+    GET_STATUS,
+    SELECT_PROFILE
 }

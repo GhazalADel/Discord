@@ -63,7 +63,7 @@
             <AnchorPane layoutX="67.0" layoutY="70.0" prefHeight="325.0" prefWidth="420.0" style="-fx-background-radius: 8px;" styleClass="profile-color" stylesheets="@profileStyle.css">
                <children>
                   <HBox layoutY="-13.0" prefHeight="75.0" prefWidth="475.0" style="-fx-background-radius: 8px 8px 0px 0px;" styleClass="default-color" stylesheets="@profileStyle.css" />
-                  <Button layoutX="334.0" layoutY="79.0" mnemonicParsing="false" stylesheets="@profileStyle.css" text="Change Avatar" textFill="#e4dede">
+                  <Button layoutX="334.0" layoutY="79.0" mnemonicParsing="false" onMouseClicked="#changeAvatarClick" stylesheets="@profileStyle.css" text="Change Avatar" textFill="#e4dede">
                      <styleClass>
                         <String fx:value="buttons-color" />
                         <String fx:value="change" />
