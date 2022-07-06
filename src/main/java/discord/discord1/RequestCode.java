@@ -89,5 +89,8 @@ public enum RequestCode implements Serializable {
 
     SAVE_FILE,
 
-    SEE_SAVED_FILES
+    SEE_SAVED_FILES,
+    GET_PHONE_NUMBER,
+    REMOVE_PHONE_NUMBER,
+    CHANGE_PHONE_NUMBER
 }

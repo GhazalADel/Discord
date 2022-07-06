@@ -1,4 +1,4 @@
-module Discord1 {
+module DiscordFull {
     requires javafx.graphics;
     requires javafx.controls;
     requires javafx.fxml;

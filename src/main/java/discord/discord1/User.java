@@ -235,7 +235,12 @@ public class User implements Serializable {
     public void setSelectedUserStatus(Status selectedUserStatus) {
         this.selectedUserStatus = selectedUserStatus;
     }
-//
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
+    //
 //    /**
 //     * This method is used to set user's current chat.
 //     *@param currentChat

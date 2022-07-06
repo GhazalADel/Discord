@@ -197,6 +197,45 @@ public class ClientHandler implements Runnable {
                 }
                 users.get(userIndex).setPassword(newPassword);
             }
+            else if(command.getCode()==RequestCode.GET_PHONE_NUMBER){
+                int userIndex=0;
+                for (User uu:users){
+                    if(uu.getUsername().equalsIgnoreCase(user.getUsername())){
+                        break;
+                    }
+                    userIndex++;
+                }
+                String phoneNumber=users.get(userIndex).getTel();
+                Response response=new Response(ResponseCode.SUCCESSFUL);
+                response.addData("phone",phoneNumber);
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            else if(command.getCode()==RequestCode.REMOVE_PHONE_NUMBER){
+                int userIndex=0;
+                for (User uu:users){
+                    if(uu.getUsername().equalsIgnoreCase(user.getUsername())){
+                        break;
+                    }
+                    userIndex++;
+                }
+                users.get(userIndex).setTel("");
+            }
+            else if(command.getCode()==RequestCode.CHANGE_PHONE_NUMBER){
+                int userIndex=0;
+                for (User uu:users){
+                    if(uu.getUsername().equalsIgnoreCase(user.getUsername())){
+                        break;
+                    }
+                    userIndex++;
+                }
+                String phone= (String) command.getData("phone");
+                users.get(userIndex).setTel(phone);
+            }
 
 
 

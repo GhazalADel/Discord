@@ -58,6 +58,31 @@ public class profileSettings implements Initializable {
     @FXML
     private Text confirmNewPasswordText;
 
+    @FXML
+    private Button phoneNumberEdit;
+
+    @FXML
+    private Text phoneNumberText;
+
+    @FXML
+    private Text revealPhoneNumber;
+
+    @FXML
+    private Text removePhoneNumberText;
+
+    private String phoneNumber;
+
+    @FXML
+    private Pane phoneNumberDialog;
+
+    @FXML
+    private Text invalidPhoneNumberText;
+
+    @FXML
+    private TextField phoneNumberTextField;
+
+
+
 
     @FXML
     void changePassword(MouseEvent event) {
@@ -155,8 +180,30 @@ public class profileSettings implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         changePasswordDialog.setVisible(false);
-
-
+        phoneNumberDialog.setVisible(false);
+        UIRequest uiRequest=new UIRequest(UIRequestCode.GET_PHONE_NUMBER);
+        UIResponse uiResponse;
+        try {
+           uiResponse=Client.process(uiRequest);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+       phoneNumber= (String) uiResponse.getData("phone");
+        if(phoneNumber.equals("")){
+            phoneNumberEdit.setText("Add");
+            removePhoneNumberText.setVisible(false);
+            phoneNumberText.setText("You haven't added a phone number yet.");
+            revealPhoneNumber.setVisible(false);
+        }
+        else{
+            phoneNumberEdit.setText("Edit");
+            removePhoneNumberText.setVisible(true);
+            phoneNumberText.setText("*********"+phoneNumber.substring(9));
+            revealPhoneNumber.setVisible(true);
+            revealPhoneNumber.setText("Reveal");
+        }
 
     }
     @FXML
@@ -178,5 +225,64 @@ public class profileSettings implements Initializable {
         }
         stage.setScene(new Scene(root));
     }
+
+    @FXML
+    void phoneNumberEditClick(MouseEvent event) {
+      phoneNumberDialog.setVisible(true);
+      invalidPhoneNumberText.setVisible(false);
+    }
+
+    @FXML
+    void revealPhoneNumerClick(MouseEvent event) {
+        if(revealPhoneNumber.getText().equals("Reveal")){
+            phoneNumberText.setText(phoneNumber);
+            revealPhoneNumber.setText("Hide");
+        }
+        else{
+            phoneNumberText.setText("*********"+phoneNumber.substring(9));
+            revealPhoneNumber.setText("Reveal");
+        }
+    }
+
+    @FXML
+    void removePhoneNumberClick(MouseEvent event) throws IOException, ClassNotFoundException {
+        phoneNumberEdit.setText("Add");
+        removePhoneNumberText.setVisible(false);
+        phoneNumberText.setText("You haven't added a phone number yet.");
+        revealPhoneNumber.setVisible(false);
+        UIRequest uiRequest=new UIRequest(UIRequestCode.REMOVE_PHONE_NUMBER);
+        Client.process(uiRequest);
+    }
+    @FXML
+    void phoneNumberDone(MouseEvent event) throws IOException, ClassNotFoundException {
+        String enteredPhoneNumber=phoneNumberTextField.getText();
+        if(enteredPhoneNumber.equals("")){
+            invalidPhoneNumberText.setVisible(true);
+        }
+        else if(enteredPhoneNumber.length()!=10){
+            invalidPhoneNumberText.setVisible(true);
+        }
+        else if(!enteredPhoneNumber.startsWith("9")){
+            invalidPhoneNumberText.setVisible(true);
+        }
+        else{
+            phoneNumber=enteredPhoneNumber;
+            UIRequest uiRequest=new UIRequest(UIRequestCode.CHANGE_PHONE_NUMBER);
+            uiRequest.addData("phone",enteredPhoneNumber);
+            Client.process(uiRequest);
+            phoneNumberDialog.setVisible(false);
+            phoneNumberEdit.setText("Edit");
+            removePhoneNumberText.setVisible(true);
+            phoneNumberText.setText("*********"+phoneNumber.substring(9));
+            revealPhoneNumber.setVisible(true);
+            revealPhoneNumber.setText("Reveal");
+        }
+    }
+    @FXML
+    void phoneNumberCancle(MouseEvent event) {
+        phoneNumberDialog.setVisible(false);
+    }
+
+
 
 }

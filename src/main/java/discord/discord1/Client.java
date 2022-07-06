@@ -59,6 +59,26 @@ public class Client {
             Request request = new Request(RequestCode.LOG_OUT);
             objectOutputStream.writeObject(request);
         }
+        else if(uiRequest.getCode()==UIRequestCode.GET_PHONE_NUMBER){
+            Request request=new Request(RequestCode.GET_PHONE_NUMBER);
+            objectOutputStream.writeObject(request);
+            Response resultResponse = (Response) objectInputStream.readObject();
+            String phoneNumber= (String) resultResponse.getData("phone");
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            uiResponse.addData("phone",phoneNumber);
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.REMOVE_PHONE_NUMBER){
+            Request request=new Request(RequestCode.REMOVE_PHONE_NUMBER);
+            objectOutputStream.writeObject(request);
+        }
+        else if(uiRequest.getCode()==UIRequestCode.CHANGE_PHONE_NUMBER){
+            String enteredPhoneNumber= (String) uiRequest.getData("phone");
+            Request request=new Request(RequestCode.CHANGE_PHONE_NUMBER);
+            request.addData("phone",enteredPhoneNumber);
+            objectOutputStream.writeObject(request);
+        }
+
         return null;
     }
 
@@ -170,14 +190,16 @@ public class Client {
             uiResponse = new UIResponse(UIResponseCode.INVALID_EMAIL);
             return uiResponse;
         }
-        if (tel.length() == 11) {
-            if (!tel.startsWith("09")) {
+        if(!tel.equals("")) {
+            if (tel.length() == 11) {
+                if (!tel.startsWith("09")) {
+                    uiResponse = new UIResponse(UIResponseCode.INVALID_TEL);
+                    return uiResponse;
+                }
+            } else {
                 uiResponse = new UIResponse(UIResponseCode.INVALID_TEL);
                 return uiResponse;
             }
-        } else {
-            uiResponse = new UIResponse(UIResponseCode.INVALID_TEL);
-            return uiResponse;
         }
         if (uiResponse == null) {
             User user = new User(username, password, email, tel);
@@ -271,6 +293,8 @@ public class Client {
         }
         return isValid;
     }
+
+
 
 
 }
