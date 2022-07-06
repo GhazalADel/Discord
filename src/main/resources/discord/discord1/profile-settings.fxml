@@ -177,7 +177,7 @@
                </styleClass>
             </Button>
             <Circle fill="#202225" layoutX="136.0" layoutY="147.0" radius="40.0" stroke="#202225" strokeType="INSIDE" />
-            <Circle fill="#747c8c" layoutX="136.0" layoutY="147.0" radius="35.0" stroke="BLACK" strokeType="INSIDE" />
+            <Circle fx:id="profileCircle" fill="#747c8c" layoutX="136.0" layoutY="147.0" radius="35.0" stroke="BLACK" strokeType="INSIDE" />
             <Circle fill="#202225" layoutX="162.0" layoutY="166.0" radius="12.0" stroke="#202225" strokeType="INSIDE" />
             <Circle fx:id="statusCircle" fill="#3ba55d" layoutX="162.0" layoutY="166.0" radius="8.0" stroke="#202225" strokeType="INSIDE" />
             <ImageView fitHeight="39.0" fitWidth="46.0" layoutX="564.0" layoutY="13.0" onMouseClicked="#escProfileClick" pickOnBounds="true" preserveRatio="true">

@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
@@ -119,6 +120,10 @@ public class profileSettings implements Initializable {
     @FXML
     private Circle statusCircle;
 
+    @FXML
+    private Circle profileCircle;
+
+
 
 
 
@@ -204,6 +209,22 @@ public class profileSettings implements Initializable {
         }
         else if(userStatus==Status.INVISIBLE){
             statusCircle.setFill(Paint.valueOf("##747f8d"));
+        }
+        username="ghazal";
+
+        if(getClass().getResourceAsStream(username+".jpg")!=null || getClass().getResourceAsStream(username+".png")!=null ){
+           if(getClass().getResourceAsStream(username+".jpg")!=null){
+               Image image=new Image(getClass().getResourceAsStream(username+".jpg"));
+               profileCircle.setFill(new ImagePattern(image));
+           }
+           else{
+               Image image=new Image(getClass().getResourceAsStream(username+".png"));
+               profileCircle.setFill(new ImagePattern(image));
+           }
+        }
+        else{
+            Image image=new Image(getClass().getResourceAsStream("diimg.jpg"));
+            profileCircle.setFill(new ImagePattern(image));
         }
     }
 
