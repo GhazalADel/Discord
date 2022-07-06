@@ -100,6 +100,24 @@ public class profileSettings implements Initializable {
 
     private String email;
 
+    @FXML
+    private Text userText;
+
+    @FXML
+    private Text usernameText;
+    private String username;
+
+    @FXML
+    private Pane usernameDialog;
+
+    @FXML
+    private Text usernameInvalidText;
+
+    @FXML
+    private TextField usernameTextField;
+
+
+
 
 
     @Override
@@ -107,6 +125,7 @@ public class profileSettings implements Initializable {
         changePasswordDialog.setVisible(false);
         phoneNumberDialog.setVisible(false);
         emailDialog.setVisible(false);
+        usernameDialog.setVisible(false);
         UIRequest uiRequest=new UIRequest(UIRequestCode.GET_PHONE_NUMBER);
         UIResponse uiResponse;
         try {
@@ -149,7 +168,18 @@ public class profileSettings implements Initializable {
             showHide+=email.substring(index);
         }
         emailText.setText(showHide);
-
+        UIRequest uiRequest2=new UIRequest(UIRequestCode.GET_USERNAME);
+        UIResponse uiResponse2;
+        try {
+            uiResponse2=Client.process(uiRequest2);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        username= (String) uiResponse2.getData("name");
+        usernameText.setText(username);
+        userText.setText(username);
     }
 
     @FXML
@@ -383,6 +413,56 @@ public class profileSettings implements Initializable {
             revealEmailText.setVisible(true);
         }
     }
+
+    @FXML
+    void editUsernameClick(MouseEvent event) {
+        usernameDialog.setVisible(true);
+        usernameInvalidText.setVisible(false);
+    }
+
+    @FXML
+    void changeUsernameEscClick(MouseEvent event) {
+        usernameDialog.setVisible(false);
+    }
+    @FXML
+    void usernameDoneClick(MouseEvent event) throws IOException, ClassNotFoundException {
+        if(usernameTextField.getText().equals("") || usernameTextField.getText().length()<6){
+            usernameInvalidText.setText("Entered username has invalid format.");
+            usernameInvalidText.setVisible(true);
+        }
+        else{
+            String input=usernameTextField.getText();
+            boolean numberAndLetter = true;
+            for (int i = 0; i < input.length(); i++) {
+                if ((int) (input.charAt(i)) < 48 || ((int) (input.charAt(i)) >= 58 && (int) (input.charAt(i)) <= 64) || ((int) (input.charAt(i)) >= 91 && (int) (input.charAt(i)) <= 96) || (int) (input.charAt(i)) > 123) {
+                    numberAndLetter = false;
+                    break;
+                }
+            }
+            if (!numberAndLetter) {
+                usernameInvalidText.setText("Entered username has invalid format.");
+                usernameInvalidText.setVisible(true);
+            }
+            else{
+                UIRequest uiRequest=new UIRequest(UIRequestCode.CHANGE_USERNAME);
+                uiRequest.addData("name",input);
+                UIResponse uiResponse=Client.process(uiRequest);
+                if(uiResponse.getCode()==UIResponseCode.DUPLICATE_USERNAME){
+                    usernameInvalidText.setText("Entered username is Duplicated.");
+                    usernameInvalidText.setVisible(true);
+                }
+                else{
+                    usernameInvalidText.setText("");
+                    usernameDialog.setVisible(false);
+                    username=input;
+                    usernameText.setText(username);
+                    userText.setText(username);
+                }
+            }
+        }
+
+    }
+
 
 
 

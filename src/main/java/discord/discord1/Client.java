@@ -93,6 +93,34 @@ public class Client {
             request.addData("email",enteredEmail);
             objectOutputStream.writeObject(request);
         }
+        else if(uiRequest.getCode()==UIRequestCode.GET_USERNAME){
+            Request request=new Request(RequestCode.GET_USERNAME);
+            objectOutputStream.writeObject(request);
+            Response resultResponse = (Response) objectInputStream.readObject();
+            String username= (String) resultResponse.getData("name");
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            uiResponse.addData("name",username);
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.CHANGE_USERNAME){
+            String enteredUsername= (String) uiRequest.getData("name");
+            Request request = new Request(RequestCode.CHECK_USERNAME_DUPLICATION);
+            request.addData("username", enteredUsername);
+            objectOutputStream.writeObject(request);
+            Response resultResponse = (Response) objectInputStream.readObject();
+            Boolean isDuplicate = (Boolean) resultResponse.getData("IsDuplicated");
+            if (isDuplicate) {
+                uiResponse = new UIResponse(UIResponseCode.DUPLICATE_USERNAME);
+                return uiResponse;
+            }
+            else{
+                Request request1=new Request(RequestCode.CHANGE_USERNAME);
+                request1.addData("name",enteredUsername);
+                objectOutputStream.writeObject(request1);
+                uiResponse=new UIResponse(UIResponseCode.OK);
+                return uiResponse;
+            }
+        }
 
 
         return null;
@@ -158,7 +186,8 @@ public class Client {
                     return uiResponse;
                 }
             }
-        } else {
+        }
+        else {
             uiResponse = new UIResponse(UIResponseCode.SIX_LETTER);
             return uiResponse;
         }

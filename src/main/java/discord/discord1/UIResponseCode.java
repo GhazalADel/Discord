@@ -15,4 +15,5 @@ public enum UIResponseCode {
     INVALID_TEL,
     NO_USER,
     INVALID_PASSWORD
+
 }

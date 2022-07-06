@@ -158,13 +158,7 @@ public class ClientHandler implements Runnable {
             }
             //log out
             else if(command.getCode()==RequestCode.LOG_OUT){
-                int userIndex=0;
-                for (User uu:users){
-                    if(uu.getUsername().equalsIgnoreCase(user.getUsername())){
-                        break;
-                    }
-                    userIndex++;
-                }
+                int userIndex=findUserIndex();
                 users.get(userIndex).setUserStatus(Status.OFFLINE);
                 user=null;
                 writeUsersFile();
@@ -188,23 +182,11 @@ public class ClientHandler implements Runnable {
             else if(command.getCode()==RequestCode.CHANGE_PASSWORD){
                 String newPassword= (String) command.getData("password");
                 user.setPassword(newPassword);
-                int userIndex=0;
-                for (User uu:users){
-                    if(uu.getUsername().equalsIgnoreCase(user.getUsername())){
-                        break;
-                    }
-                    userIndex++;
-                }
+                int userIndex=findUserIndex();
                 users.get(userIndex).setPassword(newPassword);
             }
             else if(command.getCode()==RequestCode.GET_PHONE_NUMBER){
-                int userIndex=0;
-                for (User uu:users){
-                    if(uu.getUsername().equalsIgnoreCase(user.getUsername())){
-                        break;
-                    }
-                    userIndex++;
-                }
+                int userIndex=findUserIndex();
                 String phoneNumber="";
                 if(users.size()!=0){
                     phoneNumber=users.get(userIndex).getTel();
@@ -219,34 +201,16 @@ public class ClientHandler implements Runnable {
             }
 
             else if(command.getCode()==RequestCode.REMOVE_PHONE_NUMBER){
-                int userIndex=0;
-                for (User uu:users){
-                    if(uu.getUsername().equalsIgnoreCase(user.getUsername())){
-                        break;
-                    }
-                    userIndex++;
-                }
+                int userIndex=findUserIndex();
                 users.get(userIndex).setTel("");
             }
             else if(command.getCode()==RequestCode.CHANGE_PHONE_NUMBER){
-                int userIndex=0;
-                for (User uu:users){
-                    if(uu.getUsername().equalsIgnoreCase(user.getUsername())){
-                        break;
-                    }
-                    userIndex++;
-                }
+                int userIndex=findUserIndex();
                 String phone= (String) command.getData("phone");
                 users.get(userIndex).setTel(phone);
             }
             else if(command.getCode()==RequestCode.GET_EMAIL){
-                int userIndex=0;
-                for (User uu:users){
-                    if(uu.getUsername().equalsIgnoreCase(user.getUsername())){
-                        break;
-                    }
-                    userIndex++;
-                }
+                int userIndex=findUserIndex();
                 String email="";
                 if(users.size()!=0){
                     email=users.get(userIndex).getEmail();
@@ -269,6 +233,25 @@ public class ClientHandler implements Runnable {
                     userIndex++;
                 }
                 users.get(userIndex).setEmail(email);
+            }
+            else if(command.getCode()==RequestCode.GET_USERNAME){
+                int userIndex=findUserIndex();
+                String username="";
+                if(users.size()!=0){
+                    username=users.get(userIndex).getUsername();
+                }
+                Response response=new Response(ResponseCode.REQUEST_OK);
+                response.addData("name",username);
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            else if(command.getCode()==RequestCode.CHANGE_USERNAME){
+                String newUsername= (String) command.getData("name");
+                int userIndex=findUserIndex();
+                users.get(userIndex).setUsername(newUsername);
             }
 
 
@@ -1980,6 +1963,17 @@ public class ClientHandler implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        public int findUserIndex(){
+            int userIndex=0;
+            for (User uu:users){
+                if(uu.getUsername().equalsIgnoreCase(user.getUsername())){
+                    break;
+                }
+                userIndex++;
+            }
+            return userIndex;
         }
 //    public void doThis(Response response, Request command)  {
 //        if(command.getCode() == RequestCode.SEND_MESSAGE) {
