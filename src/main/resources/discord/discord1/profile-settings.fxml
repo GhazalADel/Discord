@@ -98,13 +98,13 @@
                               <Font name="Calibri" size="14.0" />
                            </font>
                         </Label>
-                        <Text fill="#f2eded" layoutX="14.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="***********@gmail.com">
+                        <Text fx:id="emailText" fill="#f2eded" layoutX="14.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="***********@gmail.com">
                            <font>
                               <Font name="Calibri" size="15.0" />
                            </font>
                         </Text>
-                        <Text fill="#127da9" layoutX="176.0" layoutY="114.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text2" text="Reaveal" />
-                        <Button layoutX="331.0" layoutY="86.0" mnemonicParsing="false" prefWidth="50.0" stylesheets="@profileStyle.css" text="Edit" textFill="#fcf3f3">
+                        <Text fx:id="revealEmailText" fill="#127da9" layoutX="176.0" layoutY="114.0" onMouseClicked="#revealEmailClick" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text2" text="Reaveal" />
+                        <Button layoutX="331.0" layoutY="86.0" mnemonicParsing="false" onMouseClicked="#editEmailClick" prefWidth="50.0" stylesheets="@profileStyle.css" text="Edit" textFill="#fcf3f3">
                            <font>
                               <Font name="Calibri Bold" size="14.0" />
                            </font>
@@ -118,7 +118,7 @@
                               <Font name="Calibri" size="14.0" />
                            </font>
                         </Label>
-                        <Text fx:id="phoneNumberText" fill="#ffeaea" layoutX="13.0" layoutY="170.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0989105275675">
+                        <Text fx:id="phoneNumberText" fill="#ffeaea" layoutX="13.0" layoutY="170.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*********5675">
                            <font>
                               <Font name="Calibri" size="13.0" />
                            </font>
@@ -182,7 +182,7 @@
             <Circle fill="#3ba55d" layoutX="162.0" layoutY="166.0" radius="8.0" stroke="#202225" strokeType="INSIDE" />
             <ImageView fitHeight="56.0" fitWidth="59.0" layoutX="554.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true">
             </ImageView>
-            <Text fill="#f5f2f2" layoutX="184.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ghazal#7751">
+            <Text fill="#f5f2f2" layoutX="184.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ghazal">
                <font>
                   <Font name="Calibri Bold" size="20.0" />
                </font>
@@ -321,6 +321,35 @@
                         <Image url="@escPicture.png" />
                      </image>
                   </ImageView>
+               </children>
+            </Pane>
+            <Pane fx:id="emailDialog" layoutX="1.0" layoutY="189.0" prefHeight="183.0" prefWidth="373.0" style="-fx-background-color: #36393f; -fx-background-radius: 6px; -fx-border-color: #2f3136;">
+               <children>
+                  <Label layoutX="94.0" layoutY="23.0" text="Enter your Email" textFill="#eee9e9">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <ImageView fitHeight="27.0" fitWidth="26.0" layoutX="337.0" layoutY="8.0" onMouseClicked="#exitEmailDialogCLick" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@escPicture.png" />
+                     </image>
+                  </ImageView>
+                  <Text fx:id="invalidEmailText" fill="#d57a7c" layoutX="81.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Invalid Email Address">
+                     <font>
+                        <Font name="System Bold" size="21.0" />
+                     </font>
+                  </Text>
+                  <TextField fx:id="emailTextField" layoutX="50.0" layoutY="121.0" prefHeight="33.0" prefWidth="226.0" style="-fx-background-color: #202225; -fx-border-color: #202225; -fx-text-fill: #ffffff;" />
+                  <Button layoutX="292.0" layoutY="120.0" mnemonicParsing="false" onMouseClicked="#emailDone" prefHeight="33.0" prefWidth="60.0" stylesheets="@profileStyle.css" text="Done" textFill="#e4dede">
+                     <styleClass>
+                        <String fx:value="buttons-color" />
+                        <String fx:value="change" />
+                     </styleClass>
+                     <font>
+                        <Font name="Calibri Bold" size="14.0" />
+                     </font>
+                  </Button>
                </children>
             </Pane>
 

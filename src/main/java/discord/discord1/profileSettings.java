@@ -22,6 +22,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class profileSettings implements Initializable {
     @FXML
@@ -81,8 +83,72 @@ public class profileSettings implements Initializable {
     @FXML
     private TextField phoneNumberTextField;
 
+    @FXML
+    private Text emailText;
+
+    @FXML
+    private Text revealEmailText;
+
+    @FXML
+    private Pane emailDialog;
+
+    @FXML
+    private TextField emailTextField;
+
+    @FXML
+    private Text invalidEmailText;
+
+    private String email;
 
 
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        changePasswordDialog.setVisible(false);
+        phoneNumberDialog.setVisible(false);
+        emailDialog.setVisible(false);
+        UIRequest uiRequest=new UIRequest(UIRequestCode.GET_PHONE_NUMBER);
+        UIResponse uiResponse;
+        try {
+            uiResponse=Client.process(uiRequest);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        phoneNumber= (String) uiResponse.getData("phone");
+        if(phoneNumber.equals("")){
+            phoneNumberEdit.setText("Add");
+            removePhoneNumberText.setVisible(false);
+            phoneNumberText.setText("You haven't added a phone number yet.");
+            revealPhoneNumber.setVisible(false);
+        }
+        else{
+            phoneNumberEdit.setText("Edit");
+            removePhoneNumberText.setVisible(true);
+            phoneNumberText.setText("*********"+phoneNumber.substring(9));
+            revealPhoneNumber.setVisible(true);
+            revealPhoneNumber.setText("Reveal");
+        }
+        UIRequest uiRequest1=new UIRequest(UIRequestCode.GET_EMAIL);
+        UIResponse uiResponse1;
+        try {
+            uiResponse1=Client.process(uiRequest1);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        email= (String) uiResponse1.getData("email");
+        String showHide="";
+        int index=email.indexOf('@');
+        for (int i = 0; i <index ; i++) {
+            showHide+="*";
+        }
+        showHide+=email.substring(index+1);
+        emailText.setText(showHide);
+
+    }
 
     @FXML
     void changePassword(MouseEvent event) {
@@ -177,35 +243,6 @@ public class profileSettings implements Initializable {
 
 
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        changePasswordDialog.setVisible(false);
-        phoneNumberDialog.setVisible(false);
-        UIRequest uiRequest=new UIRequest(UIRequestCode.GET_PHONE_NUMBER);
-        UIResponse uiResponse;
-        try {
-           uiResponse=Client.process(uiRequest);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-       phoneNumber= (String) uiResponse.getData("phone");
-        if(phoneNumber.equals("")){
-            phoneNumberEdit.setText("Add");
-            removePhoneNumberText.setVisible(false);
-            phoneNumberText.setText("You haven't added a phone number yet.");
-            revealPhoneNumber.setVisible(false);
-        }
-        else{
-            phoneNumberEdit.setText("Edit");
-            removePhoneNumberText.setVisible(true);
-            phoneNumberText.setText("*********"+phoneNumber.substring(9));
-            revealPhoneNumber.setVisible(true);
-            revealPhoneNumber.setText("Reveal");
-        }
-
-    }
     @FXML
     void logout(MouseEvent event){
         UIRequest uiRequest=new UIRequest(UIRequestCode.LOG_OUT);
@@ -282,6 +319,61 @@ public class profileSettings implements Initializable {
     void phoneNumberCancle(MouseEvent event) {
         phoneNumberDialog.setVisible(false);
     }
+
+    @FXML
+    void editEmailClick(MouseEvent event) {
+      emailDialog.setVisible(true);
+      invalidEmailText.setVisible(false);
+    }
+    @FXML
+    void revealEmailClick(MouseEvent event) {
+       if(revealEmailText.getText().equals("Reveal")){
+           emailText.setText(email);
+           revealEmailText.setText("Hide");
+       }
+       else{
+           String showHide="";
+           int index=email.indexOf('@');
+           for (int i = 0; i <index ; i++) {
+               showHide+="*";
+           }
+           showHide+=email.substring(index+1);
+           emailText.setText(showHide);
+           revealEmailText.setText("Reveal");
+       }
+    }
+    @FXML
+    void exitEmailDialogCLick(MouseEvent event) {
+      emailDialog.setVisible(false);
+    }
+
+    @FXML
+    void emailDone(MouseEvent event) throws IOException, ClassNotFoundException {
+        String enteredEmail=emailTextField.getText();
+        String emailRegex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(enteredEmail);
+        boolean emailIsValid = matcher.matches();
+        if (!emailIsValid) {
+           invalidEmailText.setVisible(true);
+        }
+        else{
+            email=enteredEmail;
+            UIRequest uiRequest=new UIRequest(UIRequestCode.CHANGE_EMAIL);
+            uiRequest.addData("email",enteredEmail);
+            Client.process(uiRequest);
+            String showHide="";
+            int index=email.indexOf('@');
+            for (int i = 0; i <index ; i++) {
+                showHide+="*";
+            }
+            showHide+=email.substring(index+1);
+            emailText.setText(showHide);
+            emailDialog.setVisible(false);
+        }
+    }
+
+
 
 
 

@@ -240,6 +240,13 @@ public class User implements Serializable {
         this.tel = tel;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
     //
 //    /**
 //     * This method is used to set user's current chat.

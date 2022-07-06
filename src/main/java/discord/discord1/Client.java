@@ -78,6 +78,22 @@ public class Client {
             request.addData("phone",enteredPhoneNumber);
             objectOutputStream.writeObject(request);
         }
+        else if(uiRequest.getCode()==UIRequestCode.GET_EMAIL){
+            Request request=new Request(RequestCode.GET_EMAIL);
+            objectOutputStream.writeObject(request);
+            Response resultResponse = (Response) objectInputStream.readObject();
+            String email= (String) resultResponse.getData("email");
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            uiResponse.addData("email",email);
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.CHANGE_EMAIL){
+            String enteredEmail= (String) uiRequest.getData("email");
+            Request request=new Request(RequestCode.CHANGE_EMAIL);
+            request.addData("email",enteredEmail);
+            objectOutputStream.writeObject(request);
+        }
+
 
         return null;
     }

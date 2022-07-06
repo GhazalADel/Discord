@@ -239,6 +239,37 @@ public class ClientHandler implements Runnable {
                 String phone= (String) command.getData("phone");
                 users.get(userIndex).setTel(phone);
             }
+            else if(command.getCode()==RequestCode.GET_EMAIL){
+                int userIndex=0;
+                for (User uu:users){
+                    if(uu.getUsername().equalsIgnoreCase(user.getUsername())){
+                        break;
+                    }
+                    userIndex++;
+                }
+                String email="";
+                if(users.size()!=0){
+                    email=users.get(userIndex).getEmail();
+                }
+                Response response=new Response(ResponseCode.SUCCESSFUL);
+                response.addData("email",email);
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            else if(command.getCode()==RequestCode.CHANGE_EMAIL){
+                String email= (String) command.getData("email");
+                int userIndex=0;
+                for (User uu:users){
+                    if(uu.getUsername().equalsIgnoreCase(user.getUsername())){
+                        break;
+                    }
+                    userIndex++;
+                }
+                users.get(userIndex).setEmail(email);
+            }
 
 
 
