@@ -27,6 +27,10 @@ public class ServerPage implements Initializable {
     @FXML
     private Text usernameText;
 
+    @FXML
+    private Circle discordCircle;
+
+
     private String username;
     @FXML
     void settingClick(MouseEvent event) {
@@ -89,6 +93,9 @@ public class ServerPage implements Initializable {
             profileCircle.setFill(new ImagePattern(image));
         }
         usernameText.setText(username);
+        Image image=new Image(getClass().getResourceAsStream("diimg.jpg"));
+        discordCircle.setFill(new ImagePattern(image));
+
 
 
 

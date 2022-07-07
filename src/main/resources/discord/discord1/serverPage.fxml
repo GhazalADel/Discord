@@ -21,7 +21,7 @@
    <children>
       <AnchorPane layoutY="-21.0" prefHeight="579.0" prefWidth="96.0" style="-fx-background-color: #202225;">
          <children>
-            <Circle fill="#c4c8cd" layoutX="46.0" layoutY="67.0" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
+            <Circle fx:id="discordCircle" fill="#c4c8cd" layoutX="46.0" layoutY="67.0" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
             <Circle fill="#36393f" layoutX="46.0" layoutY="138.0" radius="30.0" stroke="#36393f" strokeType="INSIDE" />
             <Label layoutX="25.0" layoutY="93.0" prefHeight="85.0" prefWidth="54.0" text="+" textFill="#3ba55d">
                <font>
