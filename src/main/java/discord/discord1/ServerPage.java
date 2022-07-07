@@ -10,6 +10,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -22,6 +23,9 @@ public class ServerPage implements Initializable {
 
     @FXML
     private Circle profileCircle;
+
+    @FXML
+    private Text usernameText;
 
     private String username;
     @FXML
@@ -84,6 +88,8 @@ public class ServerPage implements Initializable {
             Image image=new Image(getClass().getResourceAsStream("diimg.jpg"));
             profileCircle.setFill(new ImagePattern(image));
         }
+        usernameText.setText(username);
+
 
 
 
