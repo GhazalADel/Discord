@@ -2,3 +2,7 @@
 .statusText:hover{
     -fx-background-color: #4752c4;
 }
+.discord:hover{
+    -fx-background-radius: 15px, 15px, 15px, 15px;
+    -fx-background-color: #4752c4;
+}

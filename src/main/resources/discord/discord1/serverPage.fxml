@@ -2,6 +2,8 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -17,7 +19,27 @@
 
 <AnchorPane prefHeight="550.0" prefWidth="900.0" style="-fx-background-color: #202225;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="discord.discord1.ServerPage">
    <children>
-      <AnchorPane layoutY="-21.0" prefHeight="579.0" prefWidth="96.0" style="-fx-background-color: #202225;" />
+      <AnchorPane layoutY="-21.0" prefHeight="579.0" prefWidth="96.0" style="-fx-background-color: #202225;">
+         <children>
+            <Circle fill="#c4c8cd" layoutX="46.0" layoutY="67.0" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
+            <Circle fill="#36393f" layoutX="46.0" layoutY="138.0" radius="30.0" stroke="#36393f" strokeType="INSIDE" />
+            <Label layoutX="25.0" layoutY="93.0" prefHeight="85.0" prefWidth="54.0" text="+" textFill="#3ba55d">
+               <font>
+                  <Font size="58.0" />
+               </font>
+            </Label>
+            <HBox layoutX="16.0" layoutY="179.0" prefHeight="4.0" prefWidth="60.0" style="-fx-background-color: #36393f;" />
+            <ScrollPane layoutX="10.0" layoutY="196.0" prefHeight="364.0" prefWidth="76.0" style="-fx-background-color: #202225;">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="351.0" prefWidth="82.0" style="-fx-background-color: #202225;">
+                     <children>
+                        <VBox prefHeight="351.0" prefWidth="64.0" style="-fx-background-color: #202225;" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </ScrollPane>
+         </children>
+      </AnchorPane>
       <GridPane layoutX="98.0" layoutY="71.0" prefHeight="485.0" prefWidth="848.0" style="-fx-background-color: #2f3136;">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="185.33331298828125" minWidth="10.0" prefWidth="185.33331298828125" />
@@ -51,9 +73,12 @@
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
+                     <padding>
+                        <Insets left="9.0" top="11.0" />
+                     </padding>
                   </Label>
                   <VBox maxHeight="101.0" maxWidth="186.0" prefHeight="0.0" prefWidth="186.0" style="-fx-background-color: #2f3136;" />
-                  <VBox layoutX="5.0" layoutY="250.0" prefHeight="180.0" prefWidth="174.0" style="-fx-background-color: #18191c; -fx-background-radius: 6px;">
+                  <VBox layoutX="5.0" layoutY="250.0" prefHeight="180.0" prefWidth="174.0" style="-fx-background-color: #18191c; -fx-background-radius: 6px;" visible="false">
                      <children>
                         <HBox prefHeight="35.0" prefWidth="131.0" style="-fx-background-color: #18191c;">
                            <VBox.margin>
@@ -146,10 +171,59 @@
                         </HBox>
                      </children>
                   </VBox>
+                  <ScrollPane layoutX="12.0" layoutY="44.0" prefHeight="365.0" prefWidth="175.0" style="-fx-background-color: #2f3136;">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="365.0" prefWidth="175.0" style="-fx-background-color: #2f3136;">
+                           <children>
+                              <VBox prefHeight="352.0" prefWidth="160.0" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </ScrollPane>
                </children>
             </AnchorPane>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #36393f;" GridPane.columnIndex="1" />
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #2f3136;" GridPane.columnIndex="2" />
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #36393f;" GridPane.columnIndex="1">
+               <children>
+                  <ScrollPane layoutY="4.0" prefHeight="410.0" prefWidth="512.0" style="-fx-background-color: #36393f;">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="411.0" prefWidth="512.0" style="-fx-background-color: #36393f;">
+                           <children>
+                              <VBox prefHeight="397.0" prefWidth="500.0" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </ScrollPane>
+                  <HBox layoutX="12.0" layoutY="423.0" prefHeight="52.0" prefWidth="493.0" style="-fx-background-color: #40444b; -fx-background-radius: 10px;">
+                     <children>
+                        <ImageView fitHeight="37.0" fitWidth="49.0" pickOnBounds="true" preserveRatio="true">
+                           <HBox.margin>
+                              <Insets left="10.0" top="8.0" />
+                           </HBox.margin>
+                           <image>
+                              <Image url="@file.png" />
+                           </image>
+                        </ImageView>
+                        <TextField prefHeight="34.0" prefWidth="424.0" style="-fx-background-color: #40444b; -fx-text-fill: #ffffff;">
+                           <HBox.margin>
+                              <Insets top="10.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextField>
+                     </children>
+                  </HBox>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #2f3136;" GridPane.columnIndex="2">
+               <children>
+                  <ScrollPane layoutX="-3.0" prefHeight="484.0" prefWidth="148.0" style="-fx-background-color: #2f3136;">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="144.0" style="-fx-background-color: #2f3136;" />
+                    </content>
+                  </ScrollPane>
+               </children>
+            </AnchorPane>
          </children>
       </GridPane>
       <AnchorPane layoutX="98.0" layoutY="11.0" prefHeight="55.0" prefWidth="853.0" style="-fx-background-color: #2f3136; -fx-background-radius: 15 0 0 0;">
@@ -168,11 +242,6 @@
                   <Font name="System Bold" size="16.0" />
                </font>
             </Text>
-            <ImageView fitHeight="30.0" fitWidth="35.0" layoutX="149.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@downRow.png" />
-               </image>
-            </ImageView>
          </children>
       </AnchorPane>
    </children>

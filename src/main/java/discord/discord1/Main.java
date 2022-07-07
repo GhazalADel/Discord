@@ -11,7 +11,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
 
-public class Main extends Application {
+public class
+Main extends Application {
 
     private static Stage stg;
 
