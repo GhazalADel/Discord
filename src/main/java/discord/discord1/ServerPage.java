@@ -5,7 +5,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -20,6 +22,8 @@ public class ServerPage implements Initializable {
 
     @FXML
     private Circle profileCircle;
+
+    private String username;
     @FXML
     void settingClick(MouseEvent event) {
         Stage stage= (Stage) statusCircle.getScene().getWindow();
@@ -56,6 +60,32 @@ public class ServerPage implements Initializable {
         else if(userStatus==Status.INVISIBLE){
             statusCircle.setFill(Paint.valueOf("##747f8d"));
         }
+        UIRequest uiRequest2=new UIRequest(UIRequestCode.GET_USERNAME);
+        UIResponse uiResponse2;
+        try {
+            uiResponse2=Client.process(uiRequest2);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        username= (String) uiResponse2.getData("name");
+        if(getClass().getResourceAsStream(username+".jpg")!=null || getClass().getResourceAsStream(username+".png")!=null ){
+            if(getClass().getResourceAsStream(username+".jpg")!=null){
+                Image image=new Image(getClass().getResourceAsStream(username+".jpg"));
+                profileCircle.setFill(new ImagePattern(image));
+            }
+            else{
+                Image image=new Image(getClass().getResourceAsStream(username+".png"));
+                profileCircle.setFill(new ImagePattern(image));
+            }
+        }
+        else{
+            Image image=new Image(getClass().getResourceAsStream("diimg.jpg"));
+            profileCircle.setFill(new ImagePattern(image));
+        }
+
+
 
 
     }
