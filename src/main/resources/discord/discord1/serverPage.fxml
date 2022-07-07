@@ -56,13 +56,13 @@
                      <children>
                         <Circle fill="#c4c8cd" layoutX="26.0" layoutY="24.0" radius="18.0" stroke="BLACK" strokeType="INSIDE" />
                         <Circle fill="#292b2f" layoutX="40.0" layoutY="33.0" radius="10.0" stroke="#292b2f" strokeType="INSIDE" />
-                        <Circle fill="#3ba55d" layoutX="40.0" layoutY="33.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Circle fx:id="statusCircle" fill="#3ba55d" layoutX="40.0" layoutY="33.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
                         <Text fill="#e8e1e1" layoutX="51.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ghazal">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Text>
-                        <ImageView fitHeight="37.0" fitWidth="33.0" layoutX="146.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="37.0" fitWidth="33.0" layoutX="146.0" layoutY="9.0" onMouseClicked="#settingClick" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@setting.png" />
                            </image>
