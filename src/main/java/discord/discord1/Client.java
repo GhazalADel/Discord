@@ -137,7 +137,13 @@ public class Client {
         request.addData("file", content);
         request.addData(".", path.substring(path.indexOf(".")));
         objectOutputStream.writeObject(request);
-
+        }
+        else if(uiRequest.getCode()==UIRequestCode.GET_SERVER_USERS){
+            String username= (String) uiRequest.getData("username");
+            String members=membersList(username);
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            uiResponse.addData("members",members);
+            return uiResponse;
         }
 
 
@@ -355,6 +361,22 @@ public class Client {
             isValid = false;
         }
         return isValid;
+    }
+    /**
+     //     * This method used to show server's member (username and status)
+     //     *
+     //     * *@param index index of DiscordServer
+     //     * *@throws IOException
+     //     * *@throws ClassNotFoundException
+     //     * *@return Nothing
+     //     */
+    public static String membersList(String username) throws IOException, ClassNotFoundException {
+        Request request = new Request(RequestCode.SEE_MEMBERS_LIST);
+        request.addData("username", username);
+        objectOutputStream.writeObject(request);
+        Response response = (Response) objectInputStream.readObject();
+        String members = (String) response.getData("members");
+        return members;
     }
 
 
@@ -1469,26 +1491,7 @@ public class Client {
 //        }
 //    }
 //
-//    /**
-//     * This method used to show server's member (username and status)
-//     *
-//     * *@param index index of DiscordServer
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     * *@return Nothing
-//     */
 //
-//    public void membersList(int index) throws IOException, ClassNotFoundException {
-//        Request request = new Request(RequestCode.SEE_MEMBERS_LIST);
-//        request.addData("index", index);
-//        objectOutputStream.writeObject(request);
-//        Response response = (Response) objectInputStream.readObject();
-//        String members = (String) response.getData("members");
-//        String[] membersArr = members.split("@@@");
-//        for (int i = 0; i < membersArr.length; i++) {
-//            System.out.println((i + 1) + "." + membersArr[i]);
-//        }
-//    }
 //
 //    /**
 //     * This method used to change role's permissions(add or remove some permissions) by admin

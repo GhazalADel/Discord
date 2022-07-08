@@ -280,6 +280,43 @@ public class ClientHandler implements Runnable {
                     throw new RuntimeException(e);
                 }
             }
+            //see users list in a server
+            else if(command.getCode()==RequestCode.SEE_MEMBERS_LIST){
+                String username= (String) command.getData("username");
+                int userIndex=findUserIndex();
+                int index=0;
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                String members="";
+                HashSet<String> temp=new HashSet<>();
+                members+=users.get(userIndex).getServers().get(index).getServerAdmin().getUsername()+" "+users.get(userIndex).getServers().get(index).getServerAdmin().getUserStatus();
+                members+="@@@";
+                for (int i = 0; i < users.get(userIndex).getServers().get(index).getServerRoles().size(); i++) {
+                    for (int j = 0; j < users.get(userIndex).getServers().get(index).getServerRoles().get(i).getUsers().size(); j++) {
+                        int sizeBefore= temp.size();
+                        temp.add(users.get(userIndex).getServers().get(index).getServerRoles().get(i).getUsers().get(j).getUsername());
+                        int sizeAfter=temp.size();
+                        if(sizeBefore!=sizeAfter){
+                            members+=users.get(userIndex).getServers().get(index).getServerRoles().get(i).getUsers().get(j).getUsername();
+                            members+=" ";
+                            members+=users.get(userIndex).getServers().get(index).getServerRoles().get(i).getUsers().get(j).getUserStatus();
+                            members+="@@@";
+                        }
+                    }
+                }
+                members=members.substring(0,members.length()-3);
+                Response response=new Response(ResponseCode.SUCCESSFUL);
+                response.addData("members",members);
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 
 
 
@@ -971,35 +1008,7 @@ public class ClientHandler implements Runnable {
 //                }
 //
 //            }
-//            //see users list in a server
-//            else if(command.getCode()==RequestCode.SEE_MEMBERS_LIST){
-//                int index= (int) command.getData("index");
-//                String members="";
-//                HashSet<String> temp=new HashSet<>();
-//                members+=user.getServers().get(index).getServerAdmin().getUsername()+" "+user.getServers().get(index).getServerAdmin().getUserStatus();
-//                members+="@@@";
-//                for (int i = 0; i < user.getServers().get(index).getServerRoles().size(); i++) {
-//                    for (int j = 0; j < user.getServers().get(index).getServerRoles().get(i).getUsers().size(); j++) {
-//                        int sizeBefore= temp.size();
-//                        temp.add(user.getServers().get(index).getServerRoles().get(i).getUsers().get(j).getUsername());
-//                        int sizeAfter=temp.size();
-//                        if(sizeBefore!=sizeAfter){
-//                            members+=user.getServers().get(index).getServerRoles().get(i).getUsers().get(j).getUsername();
-//                            members+=" ";
-//                            members+=user.getServers().get(index).getServerRoles().get(i).getUsers().get(j).getUserStatus();
-//                            members+="@@@";
-//                        }
-//                    }
-//                }
-//                members=members.substring(0,members.length()-3);
-//                Response response=new Response(ResponseCode.SUCCESSFUL);
-//                response.addData("members",members);
-//                try {
-//                    objectOutputStream.writeObject(response);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
+//
 //            //create a new channel in server
 //            else if(command.getCode()==RequestCode.CREATE_CHANNEL){
 //                String channelName= (String) command.getData("channel");

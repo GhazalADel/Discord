@@ -16,7 +16,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <AnchorPane prefHeight="550.0" prefWidth="900.0" style="-fx-background-color: #202225;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="discord.discord1.ServerPage">
    <children>
       <AnchorPane layoutY="-21.0" prefHeight="579.0" prefWidth="96.0" style="-fx-background-color: #202225;">
@@ -199,7 +198,10 @@
                <children>
                   <ScrollPane hbarPolicy="NEVER" layoutX="-3.0" prefHeight="484.0" prefWidth="148.0" style="-fx-background-color: #2f3136;">
                     <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="144.0" style="-fx-background-color: #2f3136;" />
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="148.0" style="-fx-background-color: #2f3136;">
+                           <children>
+                              <VBox fx:id="usersVBox" prefWidth="148.0" />
+                           </children></AnchorPane>
                     </content>
                   </ScrollPane>
                </children>

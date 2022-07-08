@@ -13,11 +13,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class ServerPage implements Initializable {
@@ -33,7 +36,8 @@ public class ServerPage implements Initializable {
     @FXML
     private Circle discordCircle;
     @FXML
-    private VBox v;
+    private VBox usersVBox;
+
 
 
 
@@ -102,55 +106,95 @@ public class ServerPage implements Initializable {
         usernameText.setText(username);
         Image image=new Image(getClass().getResourceAsStream("diimg.jpg"));
         discordCircle.setFill(new ImagePattern(image));
-//        HBox h1=new HBox();
-//        h1.setBackground(new Background(new BackgroundFill(Color.RED,
-//                CornerRadii.EMPTY,
-//                Insets.EMPTY)));
-//        h1.setPrefHeight(100);
-//        Circle c=new Circle();
-//        c.setRadius(10);
-//        c.setFill(Color.valueOf("#ffaa12"));
-//        h1.getChildren().add(c);
-//        HBox h2=new HBox();
-//        h2.setBackground(new Background(new BackgroundFill(Color.BLUE,
-//                CornerRadii.EMPTY,
-//                Insets.EMPTY)));
-//        h2.setPrefHeight(100);
-//        Circle c2=new Circle();
-//        c2.setRadius(10);
-//        c2.setFill(Color.valueOf("#ffaa12"));
-//        h2.getChildren().add(c2);
-//        HBox h3=new HBox();
-//        h3.setBackground(new Background(new BackgroundFill(Color.PINK,
-//                CornerRadii.EMPTY,
-//                Insets.EMPTY)));
-//        h3.setPrefHeight(100);
-//        HBox h4=new HBox();
-//        h4.setBackground(new Background(new BackgroundFill(Color.GREEN,
-//                CornerRadii.EMPTY,
-//                Insets.EMPTY)));
-//        h4.setPrefHeight(100);
-//        HBox h5=new HBox();
-//        h5.setBackground(new Background(new BackgroundFill(Color.YELLOW,
-//                CornerRadii.EMPTY,
-//                Insets.EMPTY)));
-//        h5.setPrefHeight(100);
-//        HBox h6=new HBox();
-//        h6.setBackground(new Background(new BackgroundFill(Color.ORANGE,
-//                CornerRadii.EMPTY,
-//                Insets.EMPTY)));
-//
-//        h6.setPrefHeight(100);
-//        v.getChildren().add(h1);
-//        v.getChildren().add(h2);
-//        v.getChildren().add(h3);
-//        v.getChildren().add(h4);
-//        v.getChildren().add(h5);
-//        v.getChildren().add(h6);
-//        h1.setSpacing(30);
-//        h2.setSpacing(30);
-//        h1.setPadding(new Insets(50,0,0,0));
-//        h2.setPadding(new Insets(50,0,0,0));
+
+
+        UIRequest uiRequest1=new UIRequest(UIRequestCode.GET_SERVER_USERS);
+        uiRequest1.addData("username",username);
+        UIResponse uiResponse1;
+        try {
+            uiResponse1=Client.process(uiRequest1);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        String members= (String) uiResponse1.getData("members");
+        String[] membersArr=members.split("@@@");
+        ArrayList<HBox> membersHboxArr=new ArrayList<>();
+        for (int i = 0; i < membersArr.length; i++) {
+            String tmp=membersArr[i];
+            String[] tmpArr=tmp.split(" ");
+            String username2=tmpArr[0];
+            String status=tmpArr[1];
+            HBox h=new HBox();
+            h.setPrefHeight(40);
+            h.setPrefWidth(148);
+            h.setBackground(new Background(new BackgroundFill(Paint.valueOf("#2f3136"),
+                    CornerRadii.EMPTY,
+                    Insets.EMPTY)));
+            AnchorPane ap=new AnchorPane();
+            ap.setPrefHeight(40);
+            ap.setPrefWidth(148);
+            Circle pro=new Circle();
+            pro.setRadius(15);
+            pro.setCenterX(20);
+            pro.setCenterY(20);
+            if(getClass().getResourceAsStream(username2+".jpg")!=null || getClass().getResourceAsStream(username2+".png")!=null ){
+                if(getClass().getResourceAsStream(username2+".jpg")!=null){
+                    Image image1=new Image(getClass().getResourceAsStream(username2+".jpg"));
+                    pro.setFill(new ImagePattern(image1));
+                }
+                else{
+                    Image image1=new Image(getClass().getResourceAsStream(username2+".png"));
+                    pro.setFill(new ImagePattern(image1));
+                }
+            }
+            else{
+                Image image1=new Image(getClass().getResourceAsStream("diimg.jpg"));
+                pro.setFill(new ImagePattern(image1));
+            }
+            Circle back=new Circle();
+            back.setRadius(8);
+            back.setFill(Color.valueOf("#2f3136"));
+            back.setCenterX(30);
+            back.setCenterY(28);
+            Circle statusCircle2=new Circle();
+            statusCircle2.setRadius(5);
+            statusCircle2.setCenterX(30);
+            statusCircle2.setCenterY(28);
+            if(status.equalsIgnoreCase("ONLINE")){
+                statusCircle2.setFill(Paint.valueOf("#3ba55d"));
+            }
+            else if(status.equalsIgnoreCase("DO_NOT_DISTURB")){
+                statusCircle2.setFill(Paint.valueOf("#e03f41"));
+            }
+            else if(status.equalsIgnoreCase("IDLE")){
+                statusCircle2.setFill(Paint.valueOf("#eb9e19"));
+            }
+            else if(status.equalsIgnoreCase("INVISIBLE")){
+                statusCircle2.setFill(Paint.valueOf("##747f8d"));
+            }
+            else{
+                statusCircle2.setVisible(false);
+            }
+            Text usernameText2=new Text();
+            Font font = Font.font("System", FontWeight.BOLD, 12);
+            usernameText2.setFont(font);
+            usernameText2.setX(40);
+            usernameText2.setY(23);
+            usernameText2.setText(username2);
+            usernameText2.setFill(Color.WHITE);
+            ap.getChildren().add(pro);
+            ap.getChildren().add(back);
+            ap.getChildren().add(statusCircle2);
+            ap.getChildren().add(usernameText2);
+            h.getChildren().add(ap);
+            membersHboxArr.add(h);
+        }
+        for (int i = 0; i <membersHboxArr.size() ; i++) {
+            usersVBox.getChildren().add(membersHboxArr.get(i));
+        }
+
 
 
 

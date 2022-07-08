@@ -66,15 +66,14 @@ public class User implements Serializable {
 //    public ArrayList<Notification> getNotifications() {
 //        return notifications;
 //    }
-//    /**
-//     * This method is used to access user's servers.
-//     *@param -
-//     *@return  ArrayList<DiscordServer>  This returns servers
-//     */
-//
-//    public ArrayList<DiscordServer> getServers() {
-//        return servers;
-//    }
+    /**
+     * This method is used to access user's servers.
+     *@param -
+     *@return  ArrayList<DiscordServer>  This returns servers
+     */
+    public ArrayList<DiscordServer> getServers() {
+        return servers;
+    }
     /**
      * This method is used to access user's username.
      *@param -
@@ -194,16 +193,16 @@ public class User implements Serializable {
 //    public Channel getCurrentChannel() {
 //        return currentChannel;
 //    }
-//    /**
-//     * This method is used to access current discord server
-//     *@param -
-//     *@return Channel This returns currentChannel
-//     */
-//
-//    public DiscordServer getCurrentServer() {
-//        return currentServer;
-//    }
-//
+    /**
+     * This method is used to access current discord server
+     *@param -
+     *@return Channel This returns currentChannel
+     */
+
+    public DiscordServer getCurrentServer() {
+        return currentServer;
+    }
+
 //
 //    //setter methods
 //
