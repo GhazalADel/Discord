@@ -53,6 +53,9 @@ public class ServerPage implements Initializable {
     private String serverName;
 
     private String username;
+
+    private Object selectedChannel;
+   private ArrayList<HBox> channelsHBox=new ArrayList<>();
     @FXML
     void settingClick(MouseEvent event) {
         Stage stage= (Stage) statusCircle.getScene().getWindow();
@@ -200,6 +203,10 @@ public class ServerPage implements Initializable {
             ap.getChildren().add(statusCircle2);
             ap.getChildren().add(usernameText2);
             h.getChildren().add(ap);
+            h.setOnMouseClicked((MouseEvent e)->{
+                selectedChannel=e.getSource();
+                findChannel();
+            });
             membersHboxArr.add(h);
         }
         for (int i = 0; i <membersHboxArr.size() ; i++) {
@@ -216,7 +223,6 @@ public class ServerPage implements Initializable {
             throw new RuntimeException(e);
         }
         String channels= (String) uiResponse3.getData("channels");
-        ArrayList<HBox> channelsHBox=new ArrayList<>();
         if(!channels.equals("")){
             String[] channelsArr=channels.split("@@@");
             for (int i = 0; i <channelsArr.length ; i++) {
@@ -320,5 +326,16 @@ public class ServerPage implements Initializable {
         else{
             changeStatusVBox.setVisible(true);
         }
+    }
+    public void findChannel(){
+        int channelIndex=-1;
+        for (int i = 0; i <channelsHBox.size() ; i++) {
+            if(selectedChannel.equals(channelsHBox.get(i))){
+               channelIndex=i;
+               break;
+            }
+        }
+
+
     }
 }
