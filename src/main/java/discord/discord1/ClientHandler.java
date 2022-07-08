@@ -254,6 +254,7 @@ public class ClientHandler implements Runnable {
                 String newUsername= (String) command.getData("name");
                 int userIndex=findUserIndex();
                 users.get(userIndex).setUsername(newUsername);
+                user.setUsername(newUsername);
             }
             else if(command.getCode()==RequestCode.GET_STATUS){
                 int userIndex=findUserIndex();
@@ -315,6 +316,28 @@ public class ClientHandler implements Runnable {
                     objectOutputStream.writeObject(response);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
+                }
+            }
+            //change user's status
+            else if(command.getCode()==RequestCode.CHANGE_STATUS){
+                int statusNum= (int) command.getData("status");
+                int userIndex=findUserIndex();
+                switch (statusNum){
+                    case 1:
+                        users.get(userIndex).setSelectedUserStatus(Status.ONLINE);
+                        users.get(userIndex).setUserStatus(users.get(userIndex).getSelectedUserStatus());
+                        break;
+                    case 2:
+                        users.get(userIndex).setSelectedUserStatus(Status.IDLE);
+                        users.get(userIndex).setUserStatus(users.get(userIndex).getSelectedUserStatus());
+                        break;
+                    case 3:
+                        users.get(userIndex).setSelectedUserStatus(Status.DO_NOT_DISTURB);
+                        users.get(userIndex).setUserStatus(users.get(userIndex).getSelectedUserStatus());
+                        break;
+                    default:
+                        users.get(userIndex).setSelectedUserStatus(Status.INVISIBLE);
+                        users.get(userIndex).setUserStatus(users.get(userIndex).getSelectedUserStatus());
                 }
             }
 
@@ -452,27 +475,7 @@ public class ClientHandler implements Runnable {
 //                    throw new RuntimeException(e);
 //                }
 //            }
-//            //change user's status
-//            else if(command.getCode()==RequestCode.CHANGE_STATUS){
-//                int statusNum= (int) command.getData("status");
-//                switch (statusNum){
-//                    case 1:
-//                        user.setSelectedUserStatus(Status.ONLINE);
-//                        user.setUserStatus(user.getSelectedUserStatus());
-//                        break;
-//                    case 2:
-//                        user.setSelectedUserStatus(Status.IDLE);
-//                        user.setUserStatus(user.getSelectedUserStatus());
-//                        break;
-//                    case 3:
-//                        user.setSelectedUserStatus(Status.DO_NOT_DISTURB);
-//                        user.setUserStatus(user.getSelectedUserStatus());
-//                        break;
-//                    default:
-//                        user.setSelectedUserStatus(Status.INVISIBLE);
-//                        user.setUserStatus(user.getSelectedUserStatus());
-//                }
-//            }
+//
 //            //block a friend
 //            else if(command.getCode()==RequestCode.BLOCK_FRIEND){
 //                int blockIndex= (int) command.getData("index");

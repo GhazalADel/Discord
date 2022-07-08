@@ -145,6 +145,10 @@ public class Client {
             uiResponse.addData("members",members);
             return uiResponse;
         }
+        else if(uiRequest.getCode()==UIRequestCode.CHANGE_STATUS){
+            int num= (int) uiRequest.getData("num");
+            changeStatus(num);
+        }
 
 
         return null;
@@ -378,6 +382,18 @@ public class Client {
         String members = (String) response.getData("members");
         return members;
     }
+    /**
+     //     * This method used to change user's status
+     //     *
+     //     * *@param -
+     //     * *@return Nothing
+     //     */
+    public static void changeStatus(int num) throws IOException {
+           Request request = new Request(RequestCode.CHANGE_STATUS);
+           request.addData("status", num);
+           objectOutputStream.writeObject(request);
+    }
+
 
 
 
@@ -677,38 +693,6 @@ public class Client {
 //        }
 //    }
 //
-//    /**
-//     * This method used to change user's status
-//     *
-//     * *@param -
-//     * *@return Nothing
-//     */
-//    public void changeStatus() {
-//        while (true) {
-//            System.out.println("Select status:");
-//            System.out.println("1.Online\n2.Idle\n3.Do not disturb\n4.Invisible");
-//            System.out.println("enter 0 to back to menu.");
-//            String statusSelected = scan.nextLine();
-//            try {
-//                int statusNum = Integer.parseInt(statusSelected);
-//                if (statusNum == 0) {
-//                    break;
-//                }
-//                if (statusNum < 0 || statusNum > 4) {
-//                    System.out.println("Invalid input..try again");
-//                    continue;
-//                }
-//                Request request = new Request(RequestCode.CHANGE_STATUS);
-//                request.addData("status", statusNum);
-//                objectOutputStream.writeObject(request);
-//                System.out.println("status changed successfully");
-//                break;
-//            } catch (Exception e) {
-//                System.out.println("Invalid Input...try again");
-//                continue;
-//            }
-//        }
-//    }
 //
 //
 //    /**

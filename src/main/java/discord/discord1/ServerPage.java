@@ -38,6 +38,9 @@ public class ServerPage implements Initializable {
     @FXML
     private VBox usersVBox;
 
+    @FXML
+    private VBox changeStatusVBox;
+
 
 
 
@@ -172,10 +175,11 @@ public class ServerPage implements Initializable {
                 statusCircle2.setFill(Paint.valueOf("#eb9e19"));
             }
             else if(status.equalsIgnoreCase("INVISIBLE")){
-                statusCircle2.setFill(Paint.valueOf("##747f8d"));
+                statusCircle2.setFill(Paint.valueOf("#747f8d"));
             }
             else{
                 statusCircle2.setVisible(false);
+                back.setVisible(false);
             }
             Text usernameText2=new Text();
             Font font = Font.font("System", FontWeight.BOLD, 12);
@@ -194,12 +198,7 @@ public class ServerPage implements Initializable {
         for (int i = 0; i <membersHboxArr.size() ; i++) {
             usersVBox.getChildren().add(membersHboxArr.get(i));
         }
-
-
-
-
-
-
+        changeStatusVBox.setVisible(false);
 
     }
     @FXML
@@ -212,5 +211,49 @@ public class ServerPage implements Initializable {
             throw new RuntimeException(e);
         }
         stage.setScene(new Scene(root));
+    }
+    @FXML
+    void changeStatusDisturbClick(MouseEvent event) throws IOException, ClassNotFoundException {
+        UIRequest uiRequest=new UIRequest(UIRequestCode.CHANGE_STATUS);
+        uiRequest.addData("num",3);
+        Client.process(uiRequest);
+        statusCircle.setFill(Paint.valueOf("#e03f41"));
+        changeStatusVBox.setVisible(false);
+    }
+
+    @FXML
+    void changeStatusIdleClick(MouseEvent event) throws IOException, ClassNotFoundException {
+        UIRequest uiRequest=new UIRequest(UIRequestCode.CHANGE_STATUS);
+        uiRequest.addData("num",2);
+        Client.process(uiRequest);
+        statusCircle.setFill(Paint.valueOf("#eb9e19"));
+        changeStatusVBox.setVisible(false);
+    }
+
+    @FXML
+    void changeStatusInvisibleClick(MouseEvent event) throws IOException, ClassNotFoundException {
+        UIRequest uiRequest=new UIRequest(UIRequestCode.CHANGE_STATUS);
+        uiRequest.addData("num",4);
+        Client.process(uiRequest);
+        statusCircle.setFill(Paint.valueOf("#747f8d"));
+        changeStatusVBox.setVisible(false);
+    }
+
+    @FXML
+    void changeStatusOnlineClick(MouseEvent event) throws IOException, ClassNotFoundException {
+        UIRequest uiRequest=new UIRequest(UIRequestCode.CHANGE_STATUS);
+        uiRequest.addData("num",1);
+        Client.process(uiRequest);
+        statusCircle.setFill(Paint.valueOf("#3ba55d"));
+        changeStatusVBox.setVisible(false);
+    }
+    @FXML
+    void profileClick(MouseEvent event) {
+        if(changeStatusVBox.isVisible()){
+            changeStatusVBox.setVisible(false);
+        }
+        else{
+            changeStatusVBox.setVisible(true);
+        }
     }
 }
