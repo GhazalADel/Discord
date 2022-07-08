@@ -149,6 +149,12 @@ public class Client {
             int num= (int) uiRequest.getData("num");
             changeStatus(num);
         }
+        else if(uiRequest.getCode()==UIRequestCode.SEE_CHANNELS){
+            String channels=seeChannels();
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            uiResponse.addData("channels",channels);
+            return uiResponse;
+        }
 
 
         return null;
@@ -392,6 +398,20 @@ public class Client {
            Request request = new Request(RequestCode.CHANGE_STATUS);
            request.addData("status", num);
            objectOutputStream.writeObject(request);
+    }
+    /**
+     //     * This method used to show list of channels in a server
+     //     * *@param index  index of DiscordServer
+     //     * *@return Nothing
+     //     * *@throws IOException
+     //     * *@throws ClassNotFoundException
+     //     */
+    public static String seeChannels() throws IOException, ClassNotFoundException {
+        Request request = new Request(RequestCode.SEE_CHANNELS);
+        objectOutputStream.writeObject(request);
+        Response response = (Response) objectInputStream.readObject();
+        String channels = (String) response.getData("channels");
+        return channels;
     }
 
 
@@ -1783,29 +1803,7 @@ public class Client {
 //        }
 //    }
 //
-//    /**
-//     * This method used to show list of channels in a server
-//     * *@param index  index of DiscordServer
-//     * *@return Nothing
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     */
 //
-//    public void seeChannels(int index) throws IOException, ClassNotFoundException {
-//        Request request = new Request(RequestCode.SEE_CHANNELS);
-//        request.addData("index", index);
-//        objectOutputStream.writeObject(request);
-//        Response response = (Response) objectInputStream.readObject();
-//        String channels = (String) response.getData("channels");
-//        if (channels.equals("")) {
-//            System.out.println("There is no channel!");
-//        } else {
-//            String[] channelsArr = channels.split("@@@");
-//            for (int i = 0; i < channelsArr.length; i++) {
-//                System.out.println((i + 1) + ". " + channelsArr[i]);
-//            }
-//        }
-//    }
 //
 //    /**
 //     * This method used to select a picture as profile

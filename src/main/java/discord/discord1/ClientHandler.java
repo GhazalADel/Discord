@@ -340,6 +340,32 @@ public class ClientHandler implements Runnable {
                         users.get(userIndex).setUserStatus(users.get(userIndex).getSelectedUserStatus());
                 }
             }
+            //see list of channels in a server
+            else if(command.getCode()==RequestCode.SEE_CHANNELS){
+                int userIndex=findUserIndex();
+                int index=0;
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                String channels="";
+                if(users.get(userIndex).getServers().get(index).getChannels().size()!=0) {
+                    for (Channel c : users.get(userIndex).getServers().get(index).getChannels()) {
+                        channels += c.getChannelName();
+                        channels += "@@@";
+                    }
+                    channels = channels.substring(0, channels.length() - 3);
+                }
+                Response response=new Response(ResponseCode.SHOW_CHANNELS);
+                response.addData("channels",channels);
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 
 
 
@@ -1311,26 +1337,7 @@ public class ClientHandler implements Runnable {
 //                    throw new RuntimeException(e);
 //                }
 //            }
-//            //see list of channels in a server
-//            else if(command.getCode()==RequestCode.SEE_CHANNELS){
-//                int index= (int) command.getData("index");
-//                String channels="";
-//                if(user.getServers().get(index).getChannels().size()!=0) {
-//                    for (Channel c : user.getServers().get(index).getChannels()) {
-//                        channels += c.getChannelName();
-//                        channels += "@@@";
-//                    }
-//                    channels = channels.substring(0, channels.length() - 3);
-//                }
-//                Response response=new Response(ResponseCode.SHOW_CHANNELS);
-//                response.addData("channels",channels);
-//                try {
-//                    objectOutputStream.writeObject(response);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
 //
-//            }
 //            //select a picture for profile
 //
 //            //see pinned messages in a channel in server

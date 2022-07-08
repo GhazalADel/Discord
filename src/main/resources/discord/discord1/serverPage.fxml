@@ -176,9 +176,13 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <ScrollPane hbarPolicy="NEVER" layoutX="-1.0" layoutY="44.0" prefHeight="197.0" prefWidth="188.0" style="-fx-background-color: #2f3136;">
+                  <ScrollPane hbarPolicy="NEVER" layoutX="1.0" layoutY="44.0" prefHeight="197.0" prefWidth="186.0" style="-fx-background-color: #2f3136;">
                      <content>
-                        <VBox fx:id="v" prefWidth="175.0" />
+                        <AnchorPane prefHeight="197.0" prefWidth="186.0" style="-fx-background-color: #2f3136;">
+                           <children>
+                              <VBox fx:id="channelVBox" prefWidth="186.0" style="-fx-background-color: #2f3136;" />
+                           </children>
+                        </AnchorPane>
                      </content>
                   </ScrollPane>
                </children>

@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -40,6 +41,8 @@ public class ServerPage implements Initializable {
 
     @FXML
     private VBox changeStatusVBox;
+    @FXML
+    private VBox channelVBox;
 
 
 
@@ -199,6 +202,52 @@ public class ServerPage implements Initializable {
             usersVBox.getChildren().add(membersHboxArr.get(i));
         }
         changeStatusVBox.setVisible(false);
+        UIRequest uiRequest3=new UIRequest(UIRequestCode.SEE_CHANNELS);
+        UIResponse uiResponse3;
+        try {
+            uiResponse3=Client.process(uiRequest3);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        String channels= (String) uiResponse3.getData("channels");
+        ArrayList<HBox> channelsHBox=new ArrayList<>();
+        if(!channels.equals("")){
+            String[] channelsArr=channels.split("@@@");
+            for (int i = 0; i <channelsArr.length ; i++) {
+                String channelName=channelsArr[i];
+                HBox h=new HBox();
+                h.setPrefHeight(30);
+                h.setPrefWidth(186);
+                h.setBackground(new Background(new BackgroundFill(Paint.valueOf("#2f3136"),
+                        CornerRadii.EMPTY,
+                        Insets.EMPTY)));
+                AnchorPane ap=new AnchorPane();
+                ap.setPrefHeight(30);
+                ap.setPrefWidth(186);
+                ImageView imageView=new ImageView();
+                imageView.setFitWidth(30);
+                imageView.setFitHeight(20);
+                Image channelImage=new Image(getClass().getResourceAsStream("channel.png"));
+                imageView.setImage(channelImage);
+                Text channelText=new Text();
+                Font font = Font.font("System", FontWeight.BOLD, 14);
+                channelText.setFont(font);
+                channelText.setX(30);
+                channelText.setY(12);
+                channelText.setText(channelName);
+                channelText.setFill(Paint.valueOf("#96989d"));
+                ap.getChildren().add(imageView);
+                ap.getChildren().add(channelText);
+                h.getChildren().add(ap);
+                channelsHBox.add(h);
+            }
+            for (int i = 0; i <channelsHBox.size() ; i++) {
+                channelVBox.getChildren().add(channelsHBox.get(i));
+            }
+
+        }
 
     }
     @FXML
