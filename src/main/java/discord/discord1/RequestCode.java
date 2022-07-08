@@ -97,5 +97,6 @@ public enum RequestCode implements Serializable {
     CHANGE_EMAIL,
     GET_USERNAME,
     CHANGE_USERNAME,
-    GET_STATUS
+    GET_STATUS,
+    GET_SERVER_NAME
 }

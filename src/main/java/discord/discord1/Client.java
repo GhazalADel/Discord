@@ -155,6 +155,15 @@ public class Client {
             uiResponse.addData("channels",channels);
             return uiResponse;
         }
+        else if(uiRequest.getCode()==UIRequestCode.GET_SERVER_NAME){
+            Request request=new Request(RequestCode.GET_SERVER_NAME);
+            objectOutputStream.writeObject(request);
+            Response resultResponse = (Response) objectInputStream.readObject();
+            String name= (String) resultResponse.getData("name");
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            uiResponse.addData("name",name);
+            return uiResponse;
+        }
 
 
         return null;

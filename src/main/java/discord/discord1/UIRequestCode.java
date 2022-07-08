@@ -16,5 +16,6 @@ public enum UIRequestCode {
     SELECT_PROFILE,
     GET_SERVER_USERS,
     CHANGE_STATUS,
-    SEE_CHANNELS
+    SEE_CHANNELS,
+    GET_SERVER_NAME
 }

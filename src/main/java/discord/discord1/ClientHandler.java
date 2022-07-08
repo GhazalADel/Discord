@@ -366,6 +366,24 @@ public class ClientHandler implements Runnable {
                     throw new RuntimeException(e);
                 }
             }
+            else if(command.getCode()==RequestCode.GET_SERVER_NAME){
+                int userIndex=findUserIndex();
+                int index=0;
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                Response response=new Response(ResponseCode.REQUEST_OK);
+                String name=users.get(userIndex).getServers().get(index).getName();
+                response.addData("name",name);
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 
 
 

@@ -44,9 +44,13 @@ public class ServerPage implements Initializable {
     @FXML
     private VBox channelVBox;
 
+    @FXML
+    private Text serverNameText;
 
+    @FXML
+    private HBox sendMessageHBox;
 
-
+    private String serverName;
 
     private String username;
     @FXML
@@ -246,8 +250,20 @@ public class ServerPage implements Initializable {
             for (int i = 0; i <channelsHBox.size() ; i++) {
                 channelVBox.getChildren().add(channelsHBox.get(i));
             }
-
         }
+        UIRequest uiRequest4=new UIRequest(UIRequestCode.GET_SERVER_NAME);
+        UIResponse uiResponse4;
+        try {
+            uiResponse4=Client.process(uiRequest4);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        serverName= (String) uiResponse4.getData("name");
+        serverNameText.setText(serverName);
+
+        sendMessageHBox.setVisible(false);
 
     }
     @FXML

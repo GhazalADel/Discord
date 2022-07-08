@@ -198,7 +198,7 @@
                         </AnchorPane>
                     </content>
                   </ScrollPane>
-                  <HBox layoutX="12.0" layoutY="423.0" prefHeight="52.0" prefWidth="493.0" style="-fx-background-color: #40444b; -fx-background-radius: 10px;">
+                  <HBox fx:id="sendMessageHBox" layoutX="12.0" layoutY="423.0" prefHeight="52.0" prefWidth="493.0" style="-fx-background-color: #40444b; -fx-background-radius: 10px;">
                      <children>
                         <ImageView fitHeight="37.0" fitWidth="49.0" pickOnBounds="true" preserveRatio="true">
                            <HBox.margin>
@@ -245,7 +245,7 @@
                   </ImageView>
                </children>
             </AnchorPane>
-            <Text fill="#f2e4e4" layoutX="11.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Game's Server">
+            <Text fx:id="serverNameText" fill="#f2e4e4" layoutX="11.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Game's Server">
                <font>
                   <Font name="System Bold" size="16.0" />
                </font>
