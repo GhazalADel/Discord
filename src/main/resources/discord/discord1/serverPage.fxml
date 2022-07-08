@@ -21,23 +21,7 @@
    <children>
       <AnchorPane layoutY="-21.0" prefHeight="579.0" prefWidth="96.0" style="-fx-background-color: #202225;">
          <children>
-            <Circle fx:id="discordCircle" fill="#c4c8cd" layoutX="46.0" layoutY="67.0" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
-            <Circle fill="#36393f" layoutX="46.0" layoutY="138.0" radius="30.0" stroke="#36393f" strokeType="INSIDE" />
-            <Label layoutX="25.0" layoutY="93.0" prefHeight="85.0" prefWidth="54.0" text="+" textFill="#3ba55d">
-               <font>
-                  <Font size="58.0" />
-               </font>
-            </Label>
-            <HBox layoutX="16.0" layoutY="179.0" prefHeight="4.0" prefWidth="60.0" style="-fx-background-color: #36393f;" />
-            <ScrollPane layoutX="10.0" layoutY="196.0" prefHeight="364.0" prefWidth="76.0" style="-fx-background-color: #202225;">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="351.0" prefWidth="82.0" style="-fx-background-color: #202225;">
-                     <children>
-                        <VBox prefHeight="351.0" prefWidth="64.0" style="-fx-background-color: #202225;" />
-                     </children>
-                  </AnchorPane>
-              </content>
-            </ScrollPane>
+            <Circle fx:id="discordCircle" fill="#c4c8cd" layoutX="46.0" layoutY="67.0" onMouseClicked="#discordCircleClick" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
          </children>
       </AnchorPane>
       <GridPane layoutX="98.0" layoutY="71.0" prefHeight="485.0" prefWidth="848.0" style="-fx-background-color: #2f3136;">
@@ -171,20 +155,16 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <ScrollPane layoutX="12.0" layoutY="44.0" prefHeight="365.0" prefWidth="175.0" style="-fx-background-color: #2f3136;">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="365.0" prefWidth="175.0" style="-fx-background-color: #2f3136;">
-                           <children>
-                              <VBox prefHeight="352.0" prefWidth="160.0" />
-                           </children>
-                        </AnchorPane>
-                    </content>
+                  <ScrollPane hbarPolicy="NEVER" layoutX="12.0" layoutY="44.0" prefHeight="365.0" prefWidth="175.0" style="-fx-background-color: #2f3136;">
+                     <content>
+                        <VBox fx:id="v" prefWidth="175.0" />
+                     </content>
                   </ScrollPane>
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #36393f;" GridPane.columnIndex="1">
                <children>
-                  <ScrollPane layoutY="4.0" prefHeight="410.0" prefWidth="512.0" style="-fx-background-color: #36393f;">
+                  <ScrollPane hbarPolicy="NEVER" layoutY="4.0" prefHeight="410.0" prefWidth="512.0" style="-fx-background-color: #36393f;">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="411.0" prefWidth="512.0" style="-fx-background-color: #36393f;">
                            <children>
@@ -217,7 +197,7 @@
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #2f3136;" GridPane.columnIndex="2">
                <children>
-                  <ScrollPane layoutX="-3.0" prefHeight="484.0" prefWidth="148.0" style="-fx-background-color: #2f3136;">
+                  <ScrollPane hbarPolicy="NEVER" layoutX="-3.0" prefHeight="484.0" prefWidth="148.0" style="-fx-background-color: #2f3136;">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="144.0" style="-fx-background-color: #2f3136;" />
                     </content>

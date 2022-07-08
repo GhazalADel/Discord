@@ -28,13 +28,13 @@ public class User implements Serializable {
 //
     private Status userStatus;
     private Status selectedUserStatus;
-//    private ArrayList<DiscordServer> servers;
+    private ArrayList<DiscordServer> servers;
 //    private ArrayList<Notification> notifications;
 //    private ArrayList<PrivateChat> chats;
 //    private PrivateChat currentChat;
 //
-//    private DiscordServer currentServer;
-//    private Channel currentChannel;
+    private DiscordServer currentServer;
+    private Channel currentChannel;
 //
 //    private ArrayList<File> files;
 //    private ArrayList<File> requestFiles;
