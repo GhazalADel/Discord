@@ -200,6 +200,7 @@ public class ServerPage implements Initializable {
 
 
 
+
     }
     @FXML
     void discordCircleClick(MouseEvent event) {

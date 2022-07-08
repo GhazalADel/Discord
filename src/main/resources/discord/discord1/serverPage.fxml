@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
@@ -20,7 +21,10 @@
    <children>
       <AnchorPane layoutY="-21.0" prefHeight="579.0" prefWidth="96.0" style="-fx-background-color: #202225;">
          <children>
-            <Circle fx:id="discordCircle" fill="#c4c8cd" layoutX="46.0" layoutY="67.0" onMouseClicked="#discordCircleClick" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
+            <Circle fx:id="discordCircle" fill="#c4c8cd" layoutX="46.0" layoutY="67.0" onMouseClicked="#discordCircleClick" radius="30.0" stroke="BLACK" strokeType="INSIDE">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></Circle>
          </children>
       </AnchorPane>
       <GridPane layoutX="98.0" layoutY="71.0" prefHeight="485.0" prefWidth="848.0" style="-fx-background-color: #2f3136;">
@@ -37,7 +41,10 @@
                <children>
                   <AnchorPane layoutX="1.0" layoutY="437.0" prefHeight="47.0" prefWidth="186.0" style="-fx-background-color: #292b2f;">
                      <children>
-                        <Circle fx:id="profileCircle" fill="#c4c8cd" layoutX="26.0" layoutY="24.0" radius="18.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Circle fx:id="profileCircle" fill="#c4c8cd" layoutX="26.0" layoutY="24.0" radius="18.0" stroke="BLACK" strokeType="INSIDE">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></Circle>
                         <Circle fill="#292b2f" layoutX="40.0" layoutY="33.0" radius="10.0" stroke="#292b2f" strokeType="INSIDE" />
                         <Circle fx:id="statusCircle" fill="#3ba55d" layoutX="40.0" layoutY="33.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
                         <Text fx:id="usernameText" fill="#e8e1e1" layoutX="51.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ghazal">
@@ -49,6 +56,9 @@
                            <image>
                               <Image url="@setting.png" />
                            </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </ImageView>
                      </children>
                   </AnchorPane>
