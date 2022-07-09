@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
@@ -11,6 +13,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
@@ -189,7 +192,7 @@
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #36393f;" GridPane.columnIndex="1">
                <children>
-                  <ScrollPane hbarPolicy="NEVER" layoutY="4.0" prefHeight="410.0" prefWidth="512.0" style="-fx-background-color: #36393f;">
+                  <ScrollPane fx:id="chatBox" hbarPolicy="NEVER" layoutY="4.0" prefHeight="410.0" prefWidth="512.0" style="-fx-background-color: #36393f;" visible="false">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="411.0" prefWidth="512.0" style="-fx-background-color: #36393f;">
                            <children>
@@ -218,6 +221,35 @@
                         </TextField>
                      </children>
                   </HBox>
+                  <Pane fx:id="dialogPane" layoutX="97.0" layoutY="100.0" prefHeight="203.0" prefWidth="310.0" style="-fx-background-color: #2f3136; -fx-background-radius: 6px;">
+                     <children>
+                        <Text fx:id="dialogText" fill="#f5f0f0" layoutX="64.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Channel Name">
+                           <font>
+                              <Font name="System Bold" size="26.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="dialogTextField" layoutX="34.0" layoutY="93.0" prefHeight="39.0" prefWidth="251.0" style="-fx-background-color: #2f3136; -fx-border-color: #ffffff; -fx-background-radius: 6px; -fx-text-fill: #ffffff;" />
+                        <ImageView fitHeight="42.0" fitWidth="33.0" layoutX="269.0" layoutY="6.0" onMouseClicked="#exitImageClick" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@escPicture.png" />
+                           </image>
+                        </ImageView>
+                        <Button fx:id="dialogButton" layoutX="100.0" layoutY="154.0" mnemonicParsing="false" onMouseClicked="#dialogButtonClick" stylesheets="@profileStyle.css" text="Create Channel" textFill="#f8f8f8">
+                           <styleClass>
+                              <String fx:value="buttons-color" />
+                              <String fx:value="change" />
+                           </styleClass>
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Button>
+                        <Text fx:id="errorDialogText" fill="#d57a7c" layoutX="99.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Duplicated Name">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </Pane>
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #2f3136;" GridPane.columnIndex="2">

@@ -439,6 +439,69 @@ public class ClientHandler implements Runnable {
                     throw new RuntimeException(e);
                 }
             }
+            //create a new channel in server
+            else if(command.getCode()==RequestCode.CREATE_CHANNEL){
+                String channelName= (String) command.getData("channel");
+                int userIndex=findUserIndex();
+                int index=0;
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                boolean isDuplicate=false;
+                for (Channel c:users.get(userIndex).getServers().get(index).getChannels()){
+                    if(c.getName().equalsIgnoreCase(channelName)){
+                        isDuplicate=true;
+                        break;
+                    }
+                }
+                if(!isDuplicate){
+                    Channel channel=new Channel(channelName);
+                    users.get(userIndex).getServers().get(index).getChannels().add(channel);
+                }
+                Response response=new Response(ResponseCode.SUCCESSFUL);
+                response.addData("Duplicate",isDuplicate);
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            //remove a channel form server
+            else if(command.getCode()==RequestCode.REMOVE_CHANNEL){
+                String channelName= (String) command.getData("channel");
+                int userIndex=findUserIndex();
+                int index=0;
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                boolean isExist=false;
+                for (Channel c:users.get(userIndex).getServers().get(index).getChannels()){
+                    if(c.getName().equalsIgnoreCase(channelName)){
+                        isExist=true;
+                        break;
+                    }
+                }
+                if(isExist){
+                    for (int i = 0; i < user.getServers().get(index).getChannels().size(); i++) {
+                        if(users.get(userIndex).getServers().get(index).getChannels().get(i).getName().equalsIgnoreCase(channelName)){
+                            users.get(userIndex).getServers().get(index).getChannels().remove(i);
+                        }
+                    }
+                }
+                Response response=new Response(ResponseCode.SUCCESSFUL);
+                response.addData("exist",isExist);
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 
 
 
@@ -1097,56 +1160,8 @@ public class ClientHandler implements Runnable {
 //
 //            }
 //
-//            //create a new channel in server
-//            else if(command.getCode()==RequestCode.CREATE_CHANNEL){
-//                String channelName= (String) command.getData("channel");
-//                int index= (int) command.getData("index");
-//                boolean isDuplicate=false;
-//                for (Channel c:user.getServers().get(index).getChannels()){
-//                    if(c.getName().equalsIgnoreCase(channelName)){
-//                        isDuplicate=true;
-//                        break;
-//                    }
-//                }
-//                if(!isDuplicate){
-//                    Channel channel=new Channel(channelName);
-//                    user.getServers().get(index).getChannels().add(channel);
-//                }
-//                Response response=new Response(ResponseCode.SUCCESSFUL);
-//                response.addData("Duplicate",isDuplicate);
-//                try {
-//                    objectOutputStream.writeObject(response);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
 //
-//            }
-//            //remove a channel form server
-//            else if(command.getCode()==RequestCode.REMOVE_CHANNEL){
-//                String channelName= (String) command.getData("channel");
-//                int index= (int) command.getData("index");
-//                boolean isExist=false;
-//                for (Channel c:user.getServers().get(index).getChannels()){
-//                    if(c.getName().equalsIgnoreCase(channelName)){
-//                        isExist=true;
-//                        break;
-//                    }
-//                }
-//                if(isExist){
-//                    for (int i = 0; i < user.getServers().get(index).getChannels().size(); i++) {
-//                        if(user.getServers().get(index).getChannels().get(i).getName().equalsIgnoreCase(channelName)){
-//                            user.getServers().get(index).getChannels().remove(i);
-//                        }
-//                    }
-//                }
-//                Response response=new Response(ResponseCode.SUCCESSFUL);
-//                response.addData("exist",isExist);
-//                try {
-//                    objectOutputStream.writeObject(response);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
+//
 //            //remove a server from program
 //            else if(command.getCode()==RequestCode.REMOVE_SERVER){
 //                int index= (int) command.getData("index");

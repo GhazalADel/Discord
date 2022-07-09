@@ -7,10 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -70,6 +67,25 @@ public class ServerPage implements Initializable {
    private Object selectedPermission;
    private ArrayList<String> permssions;
     @FXML
+    private ScrollPane chatBox;
+
+    @FXML
+    private Pane dialogPane;
+
+    @FXML
+    private Text dialogText;
+
+    @FXML
+    private Button dialogButton;
+
+    @FXML
+    private TextField dialogTextField;
+
+    @FXML
+    private Text errorDialogText;
+
+
+    @FXML
     void settingClick(MouseEvent event) {
         Stage stage= (Stage) statusCircle.getScene().getWindow();
         Parent root= null;
@@ -83,6 +99,7 @@ public class ServerPage implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        dialogPane.setVisible(false);
         UIRequest uiRequest=new UIRequest(UIRequestCode.GET_STATUS);
         UIResponse uiResponse;
         try {
@@ -147,6 +164,9 @@ public class ServerPage implements Initializable {
         String members= (String) uiResponse1.getData("members");
         String[] membersArr=members.split("@@@");
         ArrayList<HBox> membersHboxArr=new ArrayList<>();
+
+
+
         for (int i = 0; i < membersArr.length; i++) {
             String tmp=membersArr[i];
             String[] tmpArr=tmp.split(" ");
@@ -216,10 +236,6 @@ public class ServerPage implements Initializable {
             ap.getChildren().add(statusCircle2);
             ap.getChildren().add(usernameText2);
             h.getChildren().add(ap);
-            h.setOnMouseClicked((MouseEvent e)->{
-                selectedChannel=e.getSource();
-                findChannel();
-            });
             membersHboxArr.add(h);
         }
         for (int i = 0; i <membersHboxArr.size() ; i++) {
@@ -264,6 +280,10 @@ public class ServerPage implements Initializable {
                 ap.getChildren().add(imageView);
                 ap.getChildren().add(channelText);
                 h.getChildren().add(ap);
+                h.setOnMouseClicked((MouseEvent e)->{
+                    selectedChannel=e.getSource();
+                    findChannel();
+                });
                 channelsHBox.add(h);
             }
             for (int i = 0; i <channelsHBox.size() ; i++) {
@@ -400,6 +420,7 @@ public class ServerPage implements Initializable {
             }
             settingsLabel.setContextMenu(contextMenu);
         }
+        chatBox.setVisible(false);
     }
     @FXML
     void discordCircleClick(MouseEvent event) {
@@ -466,8 +487,167 @@ public class ServerPage implements Initializable {
         }
     }
     public void findPermission(){
+        for (int i = 0; i < settingMenuItems.size(); i++) {
+            if(selectedPermission.equals(settingMenuItems.get(i))){
+                if(settingMenuItems.get(i).getText().equalsIgnoreCase("create channel")){
+                   chatBox.setVisible(false);
+                   createChannel();
+                }
+                else if(settingMenuItems.get(i).getText().equalsIgnoreCase("remove channel")){
+                    if(channelsHBox.size()!=0){
+                        chatBox.setVisible(false);
+                        removeChannel();
+                    }
+                }
+                else if(settingMenuItems.get(i).getText().equalsIgnoreCase("add a member")){
+                    chatBox.setVisible(false);
+                    addMember();
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            }
+
+
+        }
 
 
     }
+    public void createChannel(){
+        dialogPane.setVisible(true);
+        dialogText.setText("Channel Name");
+        dialogButton.setText("Create Channel");
+        errorDialogText.setText("");
+    }
+    public void removeChannel(){
+        dialogPane.setVisible(true);
+        dialogText.setText("Channel Name");
+        dialogButton.setText("Remove Channel");
+        errorDialogText.setText("");
+    }
+    public void addMember(){
+        dialogPane.setVisible(true);
+        dialogText.setText("Enter Username");
+        dialogButton.setText("Add to server");
+        errorDialogText.setText("");
+    }
+    @FXML
+    void exitImageClick(MouseEvent event) {
+        dialogPane.setVisible(false);
+    }
+    @FXML
+    void dialogButtonClick(MouseEvent event) throws IOException, ClassNotFoundException {
+        if(dialogButton.getText().equalsIgnoreCase("Create Channel")){
+            String enteredChannelName=dialogTextField.getText();
+            if(enteredChannelName.equals("")){
+                errorDialogText.setText("enter a name!");
+            }
+            else{
+                UIRequest uiRequest=new UIRequest(UIRequestCode.CREATE_CHANNEL);
+                uiRequest.addData("name",enteredChannelName);
+                UIResponse uiResponse=Client.process(uiRequest);
+                boolean isDuplicated= (boolean) uiResponse.getData("isDuplicated");
+                if(isDuplicated){
+                    errorDialogText.setText("Duplicated Name");
+                }
+                else{
+                    HBox h=new HBox();
+                    h.setPrefHeight(30);
+                    h.setPrefWidth(186);
+                    h.setBackground(new Background(new BackgroundFill(Paint.valueOf("#2f3136"),
+                            CornerRadii.EMPTY,
+                            Insets.EMPTY)));
+                    AnchorPane ap=new AnchorPane();
+                    ap.setPrefHeight(30);
+                    ap.setPrefWidth(186);
+                    ImageView imageView=new ImageView();
+                    imageView.setFitWidth(30);
+                    imageView.setFitHeight(20);
+                    Image channelImage=new Image(getClass().getResourceAsStream("channel.png"));
+                    imageView.setImage(channelImage);
+                    Text channelText=new Text();
+                    Font font = Font.font("System", FontWeight.BOLD, 14);
+                    channelText.setFont(font);
+                    channelText.setX(30);
+                    channelText.setY(12);
+                    channelText.setText(enteredChannelName);
+                    channelText.setFill(Paint.valueOf("#96989d"));
+                    ap.getChildren().add(imageView);
+                    ap.getChildren().add(channelText);
+                    h.getChildren().add(ap);
+                    h.setOnMouseClicked((MouseEvent e)->{
+                        selectedChannel=e.getSource();
+                        findChannel();
+                    });
+                    channelsHBox.add(h);
+                    channelVBox.getChildren().add(h);
+                    dialogPane.setVisible(false);
+                }
+            }
+        }
+        else if(dialogButton.getText().equalsIgnoreCase("Remove Channel")){
+            String enteredChannelName=dialogTextField.getText();
+            if(enteredChannelName.equals("")){
+                errorDialogText.setText("enter a name!");
+            }
+            else{
+                UIRequest uiRequest=new UIRequest(UIRequestCode.REMOVE_CHANNEL);
+                uiRequest.addData("name",enteredChannelName);
+                UIResponse uiResponse=Client.process(uiRequest);
+                boolean isExist= (boolean) uiResponse.getData("isExist");
+                if(!isExist){
+                    errorDialogText.setText("Invalid Name");
+                }
+                else{
+                    int channelIndexHBox=0;
+                    for (int i = 0; i < channelVBox.getChildren().size(); i++) {
+                        HBox a= (HBox) channelVBox.getChildren().get(i);
+                        AnchorPane b= (AnchorPane) a.getChildren().get(0);
+                        Text c= (Text) b.getChildren().get(1);
+                        if(c.getText().equals(enteredChannelName)) {
+                            break;
+                        }
+                        channelIndexHBox++;
+                    }
+                    channelVBox.getChildren().remove(channelIndexHBox);
+                    channelsHBox.remove(channelIndexHBox);
+                    dialogPane.setVisible(false);
+                }
+            }
+        }
+        else if(dialogButton.getText().equalsIgnoreCase("Add to server")){
 
-}
+        }
+        }
+
+    }
+
+

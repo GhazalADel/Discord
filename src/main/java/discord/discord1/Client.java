@@ -193,6 +193,20 @@ public class Client {
             uiResponse=new UIResponse(UIResponseCode.OK);
             uiResponse.addData("permissions",permissionsArr);
         }
+        else if(uiRequest.getCode()==UIRequestCode.CREATE_CHANNEL){
+            String name= (String) uiRequest.getData("name");
+            boolean isDuplicated=createChannel(name);
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            uiResponse.addData("isDuplicated",isDuplicated);
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.REMOVE_CHANNEL){
+            String name= (String) uiRequest.getData("name");
+            boolean isExist=removeChannel(name);
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            uiResponse.addData("isExist",isExist);
+            return uiResponse;
+        }
 
 
         return null;
@@ -451,6 +465,38 @@ public class Client {
         String channels = (String) response.getData("channels");
         return channels;
     }
+    /**
+     //     * This method used to create a new channel in server
+     //     * *@param index index of DiscordServer
+     //     * *@return Nothing
+     //     * *@throws IOException
+     //     * *@throws ClassNotFoundException
+     //     */
+    public static boolean createChannel(String channelName) throws IOException, ClassNotFoundException {
+        Request request = new Request(RequestCode.CREATE_CHANNEL);
+        request.addData("channel", channelName);
+        objectOutputStream.writeObject(request);
+        Response response = (Response) objectInputStream.readObject();
+        boolean isDuplicate = (boolean) response.getData("Duplicate");
+        return isDuplicate;
+    }
+
+    /**
+     //     * This method used to remove an existing channel in server
+     //     * @param index index of DiscordServer
+     //     * *@return Nothing
+     //     * *@throws IOException
+     //     * *@throws ClassNotFoundException
+     //     */
+    public static boolean removeChannel(String channelName) throws IOException, ClassNotFoundException {
+        Request request = new Request(RequestCode.REMOVE_CHANNEL);
+        request.addData("channel", channelName);
+        objectOutputStream.writeObject(request);
+        Response response = (Response) objectInputStream.readObject();
+        boolean isExist = (boolean) response.getData("exist");
+        return isExist;
+    }
+
 
 
 
@@ -1732,60 +1778,8 @@ public class Client {
 //    }
 //
 //
-//    /**
-//     * This method used to create a new channel in server
-//     * *@param index index of DiscordServer
-//     * *@return Nothing
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     */
-//    public void createChannel(int index) throws IOException, ClassNotFoundException {
-//        System.out.println("Enter channel name:");
-//        System.out.println("Enter 0 to back to menu");
-//        String channelName = scan.nextLine();
-//        if (channelName.equals("0"))
-//            return;
-//        Request request = new Request(RequestCode.CREATE_CHANNEL);
-//        request.addData("channel", channelName);
-//        request.addData("index", index);
-//        objectOutputStream.writeObject(request);
-//        Response response = (Response) objectInputStream.readObject();
-//        boolean isDuplicate = (boolean) response.getData("Duplicate");
-//        if (isDuplicate) {
-//            System.out.println("there is a channel with this name...");
-//        } else {
-//            System.out.println("channel created successfully");
-//        }
-//    }
 //
-//    /**
-//     * This method used to remove an existing channel in server
-//     * @param index index of DiscordServer
-//     * *@return Nothing
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     */
-//    public void removeChannel(int index) throws IOException, ClassNotFoundException {
-//        System.out.println("Enter channel name:");
-//        System.out.println("Enter 0 to back menu");
-//        String channelName = scan.nextLine();
-//        if (channelName.equals("0")) {
-//            return;
-//        }
-//        Request request = new Request(RequestCode.REMOVE_CHANNEL);
-//        request.addData("index", index);
-//        request.addData("channel", channelName);
-//        objectOutputStream.writeObject(request);
-//        Response response = (Response) objectInputStream.readObject();
-//        boolean isExist = (boolean) response.getData("exist");
-//        if (isExist) {
-//            System.out.println("channel removed successfully");
 //
-//        } else {
-//            System.out.println("There is no channel with this name");
-//
-//        }
-//    }
 //
 //
 //    /**
