@@ -331,7 +331,7 @@ public class ServerPage implements Initializable {
             adminSettingsMenu.getItems().add(menuItem2);
             settingMenuItems.add(menuItem2);
 
-            MenuItem menuItem3=new MenuItem("limit member message");
+            MenuItem menuItem3=new MenuItem("limit member");
             menuItem3.setOnAction((ActionEvent e)->{
                 selectedPermission=e.getSource();
                 findPermission();
@@ -507,6 +507,13 @@ public class ServerPage implements Initializable {
                     chatBox.setVisible(false);
                     changeServerName();
                 }
+                else if(settingMenuItems.get(i).getText().equalsIgnoreCase("limit member")){
+                    if(channelsHBox.size()!=0) {
+                        chatBox.setVisible(false);
+                        limitMember();
+                    }
+                }
+
 
 
 
@@ -569,6 +576,12 @@ public class ServerPage implements Initializable {
         dialogPane.setVisible(true);
         dialogText.setText("Enter new Name");
         dialogButton.setText("Change");
+        errorDialogText.setText("");
+    }
+    public void limitMember(){
+        dialogPane.setVisible(true);
+        dialogText.setText("Enter Channel's name");
+        dialogButton.setText("limit member");
         errorDialogText.setText("");
     }
     @FXML
@@ -695,8 +708,51 @@ public class ServerPage implements Initializable {
                     dialogPane.setVisible(false);
                 }
             }
+        }
+        else if(dialogButton.getText().equalsIgnoreCase("limit member")){
+            String enteredChannelName=dialogTextField.getText();
+            if(enteredChannelName.equals("")){
+                errorDialogText.setText("enter a name!");
+            }
+            else{
+                UIRequest uiRequest=new UIRequest(UIRequestCode.CHANNEL_EXIST);
+                uiRequest.addData("name",enteredChannelName);
+                UIResponse uiResponse=Client.process(uiRequest);
+                if(uiResponse.getCode()==UIResponseCode.NOT_EXIST){
+                    errorDialogText.setText("Invalid Channel Name");
+                }
+                else{
+                    dialogText.setText("enter username");
+                    dialogTextField.setText("");
+                    String enteredUsername=dialogTextField.getText();
+                    UIRequest uiRequest2=new UIRequest(UIRequestCode.LIMIT_MEMBER);
+                    uiRequest2.addData("username",enteredUsername);
+                    uiRequest2.addData("channel",enteredChannelName);
+                    UIResponse uiResponse2=Client.process(uiRequest2);
+                    if(uiResponse2.getCode()==UIResponseCode.NOT_EXIST){
+                        errorDialogText.setText("Invalid Username");
+                    }
+                    else if(uiResponse2.getCode()==UIResponseCode.NOT_IN_SERVER){
+                        errorDialogText.setText("This user is not in server!");
+                    }
+                    else if(uiResponse2.getCode()==UIResponseCode.LIMIT_BEFORE){
+                        errorDialogText.setText("This user limitted before!");
+                    }
+                    else if(uiResponse2.getCode()==UIResponseCode.BAN_BEFORE){
+                        errorDialogText.setText("This user banned before!");
+                    }
+                    else{
+                        dialogPane.setVisible(false);
+                    }
+
+                }
+
+            }
+
+
 
         }
+
     }
 
     }

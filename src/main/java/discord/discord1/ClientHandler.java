@@ -597,6 +597,115 @@ public class ClientHandler implements Runnable {
                     throw new RuntimeException(e);
                 }
             }
+            //check is a channel with entered name exist
+            else if(command.getCode()==RequestCode.IS_CHANNEL_EXIST){
+                int index=0;
+                int userIndex=findUserIndex();
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                String channelName= (String) command.getData("channel");
+                boolean exist=false;
+                for (Channel c:users.get(userIndex).getServers().get(index).getChannels()){
+                    if(c.getName().equalsIgnoreCase(channelName)){
+                        exist=true;
+                        break;
+                    }
+                }
+                Response response=new Response(ResponseCode.SUCCESSFUL);
+                response.addData("exist",exist);
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            //limit a member form a channel in server
+            else if(command.getCode()==RequestCode.LIMIT_MEMBER){
+                int index=0;
+                int userIndex=findUserIndex();
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                String username= (String) command.getData("username");
+                String channelName= (String) command.getData("channel");
+                User wanted=findUser(username);
+                Response response;
+                if(wanted==null){
+                    response=new Response(ResponseCode.NOT_EXIST);
+                }
+                else{
+                    boolean inServer=false;
+                    for (Role role:user.getServers().get(index).getServerRoles()){
+                        for (User user1:role.getUsers()){
+                            if(user1.getUsername().equalsIgnoreCase(username)){
+                                inServer=true;
+                                break;
+                            }
+                        }
+                    }
+                    if(!inServer){
+                        response=new Response(ResponseCode.NOT_IN_SERVER);
+                    }
+                    else{
+                        int channelIndex=-1;
+                        for (int i = 0; i < user.getServers().get(index).getChannels().size(); i++) {
+                            if(user.getServers().get(index).getChannels().get(i).getName().equalsIgnoreCase(channelName)){
+                                channelIndex=i;
+                                break;
+                            }
+                        }
+                        boolean limitBefore=false;
+                        for (User user1:user.getServers().get(index).getChannels().get(channelIndex).getLimitedMembers()){
+                            if(user1.getUsername().equalsIgnoreCase(username)){
+                                limitBefore=true;
+                                break;
+                            }
+                        }
+                        if(limitBefore){
+                            response=new Response(ResponseCode.LIMIT_BEFORE);
+                        }
+                        else{
+                            boolean bannedBefore=false;
+                            for (User uu : user.getServers().get(index).getBannedUsers()) {
+                                if (uu.getUsername().equalsIgnoreCase(username)) {
+                                    bannedBefore = true;
+                                    break;
+                                }
+                            }
+
+                            if(bannedBefore){
+                                response=new Response(ResponseCode.BANNED_BEFORE);
+                            }
+                            else{
+                                response=new Response(ResponseCode.LIMIT_MEMBER);
+                                User limit=findUser(username);
+                                int userIndex2=0;
+                                for (User uu:users){
+                                    if(uu.getUsername().equalsIgnoreCase(username)){
+                                        break;
+                                    }
+                                    userIndex2++;
+                                }
+                                user.getServers().get(index).getChannels().get(channelIndex).getLimitedMembers().add(users.get(userIndex2));
+                            }
+
+                        }
+                    }
+                }
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
 
 //            //add request friend
 //            else if(command.getCode()==RequestCode.ADD_REQUEST){
@@ -1075,101 +1184,8 @@ public class ClientHandler implements Runnable {
 //                    throw new RuntimeException(e);
 //                }
 //            }
-//            //check is a channel with entered name exist
-//            else if(command.getCode()==RequestCode.IS_CHANNEL_EXIST){
-//                int index= (int) command.getData("index");
-//                String channelName= (String) command.getData("channel");
-//                boolean exist=false;
-//                for (Channel c:user.getServers().get(index).getChannels()){
-//                    if(c.getName().equalsIgnoreCase(channelName)){
-//                        exist=true;
-//                        break;
-//                    }
-//                }
-//                Response response=new Response(ResponseCode.SUCCESSFUL);
-//                response.addData("exist",exist);
-//                try {
-//                    objectOutputStream.writeObject(response);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//            //limit a member form a channel in server
-//            else if(command.getCode()==RequestCode.LIMIT_MEMBER){
-//                int index= (int) command.getData("index");
-//                String username= (String) command.getData("username");
-//                String channelName= (String) command.getData("channel");
-//                User wanted=findUser(username);
-//                Response response;
-//                if(wanted==null){
-//                    response=new Response(ResponseCode.NOT_EXIST);
-//                }
-//                else{
-//                    boolean inServer=false;
-//                    for (Role role:user.getServers().get(index).getServerRoles()){
-//                        for (User user1:role.getUsers()){
-//                            if(user1.getUsername().equalsIgnoreCase(username)){
-//                                inServer=true;
-//                                break;
-//                            }
-//                        }
-//                    }
-//                    if(!inServer){
-//                        response=new Response(ResponseCode.NOT_IN_SERVER);
-//                    }
-//                    else{
-//                        int channelIndex=-1;
-//                        for (int i = 0; i < user.getServers().get(index).getChannels().size(); i++) {
-//                            if(user.getServers().get(index).getChannels().get(i).getName().equalsIgnoreCase(channelName)){
-//                                channelIndex=i;
-//                                break;
-//                            }
-//                        }
-//                        boolean limitBefore=false;
-//                        for (User user1:user.getServers().get(index).getChannels().get(channelIndex).getLimitedMembers()){
-//                            if(user1.getUsername().equalsIgnoreCase(username)){
-//                                limitBefore=true;
-//                                break;
-//                            }
-//                        }
-//                        if(limitBefore){
-//                            response=new Response(ResponseCode.LIMIT_BEFORE);
-//                        }
-//                        else{
-//                            boolean bannedBefore=false;
-//                            for (User uu : user.getServers().get(index).getBannedUsers()) {
-//                                if (uu.getUsername().equalsIgnoreCase(username)) {
-//                                    bannedBefore = true;
-//                                    break;
-//                                }
-//                            }
 //
-//                            if(bannedBefore){
-//                                response=new Response(ResponseCode.BANNED_BEFORE);
-//                            }
-//                            else{
-//                                response=new Response(ResponseCode.LIMIT_MEMBER);
-//                                User limit=findUser(username);
-//                                int userIndex=0;
-//                                for (User uu:users){
-//                                    if(uu.getUsername().equalsIgnoreCase(username)){
-//                                        break;
-//                                    }
-//                                    userIndex++;
-//                                }
-//                                user.getServers().get(index).getChannels().get(channelIndex).getLimitedMembers().add(users.get(userIndex));
-//                            }
 //
-//                        }
-//                    }
-//                }
-//                try {
-//                    objectOutputStream.writeObject(response);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//
-//            }
 //            //ban a member form server
 //            else if(command.getCode()==RequestCode.BAN_MEMBER){
 //                int index= (int) command.getData("index");

@@ -25,7 +25,7 @@ public class DiscordServer implements Serializable {
     //a static array of permission
     //it uses for print a specific role's permissions
     public static final Permission[] allPermissions= {Permission.CREATE_CHANNEL,Permission.REMOVE_CHANNEL,
-            Permission.REMOVE_MEMBER_FROM_SERVER,Permission.BAN_A_MEMBER,Permission.LIMIT_MEMBER_MESSAGE,Permission.CHANGE_SERVER_NAME,
+            Permission.REMOVE_MEMBER_FROM_SERVER,Permission.BAN_A_MEMBER,Permission.LIMIT_MEMBER,Permission.CHANGE_SERVER_NAME,
             Permission.SEE_CHAT_HISTORY,Permission.PIN_MESSAGE};
 
 

@@ -239,6 +239,23 @@ public class Client {
             }
             return uiResponse;
         }
+        else if(uiRequest.getCode()==UIRequestCode.CHANNEL_EXIST){
+            String channelName= (String) uiRequest.getData("name");
+            boolean exist=checkChannel(channelName);
+            if(exist){
+                uiResponse=new UIResponse(UIResponseCode.OK);
+            }
+            else{
+                uiResponse=new UIResponse(UIResponseCode.NOT_EXIST);
+            }
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.LIMIT_MEMBER){
+            String enteredChannelName= (String) uiRequest.getData("channel");
+            String enteredUsername= (String) uiRequest.getData("username");
+            uiResponse=limitMember(enteredUsername,enteredChannelName);
+            return uiResponse;
+        }
 
 
 
@@ -529,6 +546,50 @@ public class Client {
         boolean isExist = (boolean) response.getData("exist");
         return isExist;
     }
+    /**
+     //     * This method used to limit a member from specific channel
+     //     *
+     //     * *@param index index of DiscordServer
+     //     * *@return Nothing
+     //     * *@throws IOException
+     //     * *@throws ClassNotFoundException
+     //     */
+    public static boolean checkChannel(String channelName) throws IOException, ClassNotFoundException {
+        Request request1 = new Request(RequestCode.IS_CHANNEL_EXIST);
+        request1.addData("channel", channelName);
+        objectOutputStream.writeObject(request1);
+        Response response1 = (Response) objectInputStream.readObject();
+        boolean exist = (boolean) response1.getData("exist");
+        return exist;
+//
+    }
+    public static UIResponse limitMember(String username,String channelName) throws IOException, ClassNotFoundException {
+        Request request2 = new Request(RequestCode.LIMIT_MEMBER);
+        request2.addData("username", username);
+        request2.addData("channel", channelName);
+        objectOutputStream.writeObject(request2);
+        Response response2 = (Response) objectInputStream.readObject();
+        UIResponse uiResponse;
+        if (response2.getCode() == ResponseCode.NOT_EXIST) {
+            uiResponse=new UIResponse(UIResponseCode.NOT_EXIST);
+
+        }
+        else if (response2.getCode() == ResponseCode.NOT_IN_SERVER) {
+            uiResponse=new UIResponse(UIResponseCode.NOT_IN_SERVER);
+
+        } else if (response2.getCode() == ResponseCode.LIMIT_BEFORE) {
+            uiResponse=new UIResponse(UIResponseCode.LIMIT_BEFORE);
+
+        } else if (response2.getCode() == ResponseCode.BANNED_BEFORE) {
+           uiResponse=new UIResponse(UIResponseCode.BAN_BEFORE);
+
+        } else {
+            uiResponse=new UIResponse(UIResponseCode.OK);
+        }
+        return uiResponse;
+
+    }
+
 
 
 
@@ -1514,68 +1575,6 @@ public class Client {
 //    }
 //
 //
-//    /**
-//     * This method used to limit a member from specific channel
-//     *
-//     * *@param index index of DiscordServer
-//     * *@return Nothing
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     */
-//    public void limitMember(int index) throws IOException, ClassNotFoundException {
-//        Request request = new Request(RequestCode.CHECK_CHANNEL_COUNT);
-//        request.addData("index", index);
-//        objectOutputStream.writeObject(request);
-//        Response response = (Response) objectInputStream.readObject();
-//        boolean isZero = (boolean) response.getData("isZero");
-//        if (isZero) {
-//            System.out.println("there is no channel in server!");
-//            return;
-//        }
-//        System.out.println("Enter channel name:");
-//        System.out.println("Enter 0 to back menu");
-//        String channelName = scan.nextLine();
-//        if (channelName.equals("0")) {
-//            return;
-//        }
-//        Request request1 = new Request(RequestCode.IS_CHANNEL_EXIST);
-//        request1.addData("index", index);
-//        request1.addData("channel", channelName);
-//        objectOutputStream.writeObject(request1);
-//        Response response1 = (Response) objectInputStream.readObject();
-//        boolean exist = (boolean) response1.getData("exist");
-//        if (!exist) {
-//            System.out.println("there is no channel with this name!");
-//            return;
-//        }
-//        System.out.println("enter username:");
-//        System.out.println("enter 0 to back menu:");
-//        String username = scan.nextLine();
-//        if (username.equals("0")) {
-//            return;
-//        }
-//        Request request2 = new Request(RequestCode.LIMIT_MEMBER);
-//        request2.addData("index", index);
-//        request2.addData("username", username);
-//        request2.addData("channel", channelName);
-//        objectOutputStream.writeObject(request2);
-//        Response response2 = (Response) objectInputStream.readObject();
-//        if (response2.getCode() == ResponseCode.NOT_EXIST) {
-//            System.out.println("there is no " + username + " here!");
-//
-//        } else if (response2.getCode() == ResponseCode.NOT_IN_SERVER) {
-//            System.out.println(username + " is not in server");
-//
-//        } else if (response2.getCode() == ResponseCode.LIMIT_BEFORE) {
-//            System.out.println(username + " limited from this channel before");
-//
-//        } else if (response2.getCode() == ResponseCode.BANNED_BEFORE) {
-//            System.out.println(username + " banned from this channel before");
-//
-//        } else {
-//            System.out.println(username + " limited from channel successfully");
-//        }
-//    }
 //
 //    /**
 //     * This method used to ban a member from server

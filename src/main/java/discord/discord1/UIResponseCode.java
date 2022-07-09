@@ -24,6 +24,9 @@ public enum UIResponseCode {
     NOT_EXIST,
     IS_EXISTS,
     NOT_CHANGE,
-    DUPLICATED
+    DUPLICATED,
+    NOT_IN_SERVER,
+    LIMIT_BEFORE,
+    BAN_BEFORE
 
 }
