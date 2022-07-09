@@ -502,6 +502,65 @@ public class ClientHandler implements Runnable {
                     throw new RuntimeException(e);
                 }
             }
+            //add a member to server
+            else if(command.getCode()==RequestCode.ADD_MEMBER){
+                String username= (String) command.getData("username");
+                int index=0;
+                int userIndex=findUserIndex();
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                Response response=null;
+                User wanted=findUser(username);
+                if(wanted==null){
+                    response=new Response(ResponseCode.NOT_EXIST);
+                }
+                else{
+                    boolean inServer=false;
+                    if(username.equalsIgnoreCase(users.get(userIndex).getServers().get(index).getServerAdmin().getUsername())){
+                        inServer=true;
+                    }
+                    for (Role role:users.get(userIndex).getServers().get(index).getServerRoles()){
+                        for (User uu:role.getUsers()){
+                            if(uu.getUsername().equalsIgnoreCase(username)){
+                                inServer=true;
+                                break;
+                            }
+                        }
+                    }
+                    if(inServer){
+                        response=new Response(ResponseCode.IS_EXISTS);
+                    }
+                    else{
+
+                        int userIndex1=-1;
+                        for (int i = 0; i < users.size(); i++) {
+                            if(users.get(i).getUsername().equalsIgnoreCase(username)){
+                                userIndex1=i;
+                            }
+                        }
+                        users.get(userIndex1).getServers().add(user.getServers().get(index));
+//                        Notification notification=new Notification("welcome to "+ user.getServers().get(index).getName()+" server!", LocalDateTime.now());
+//                        users.get(userIndex).getNotifications().add(notification);
+                        for (Role role:user.getServers().get(index).getServerRoles()){
+                            if(role.getName().equals("normal")){
+                                role.getUsers().add(users.get(userIndex1));
+                            }
+                        }
+                        response=new Response(ResponseCode.SUCCESSFUL);
+                    }
+
+                }
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+//
 
 
 
@@ -1335,57 +1394,6 @@ public class ClientHandler implements Runnable {
 //            }
 //
 //
-//            //add a member to server
-//            else if(command.getCode()==RequestCode.ADD_MEMBER){
-//                String username= (String) command.getData("username");
-//                int index= (int) command.getData("index");
-//                Response response=null;
-//                User wanted=findUser(username);
-//                if(wanted==null){
-//                    response=new Response(ResponseCode.NOT_EXIST);
-//                }
-//                else{
-//                    boolean inServer=false;
-//                    if(username.equalsIgnoreCase(user.getServers().get(index).getServerAdmin().getUsername())){
-//                        inServer=true;
-//                    }
-//                    for (Role role:user.getServers().get(index).getServerRoles()){
-//                        for (User uu:role.getUsers()){
-//                            if(uu.getUsername().equalsIgnoreCase(username)){
-//                                inServer=true;
-//                                break;
-//                            }
-//                        }
-//                    }
-//                    if(inServer){
-//                        response=new Response(ResponseCode.IS_EXISTS);
-//                    }
-//                    else{
-//
-//                        int userIndex=-1;
-//                        for (int i = 0; i < users.size(); i++) {
-//                            if(users.get(i).getUsername().equalsIgnoreCase(username)){
-//                                userIndex=i;
-//                            }
-//                        }
-//                        users.get(userIndex).getServers().add(user.getServers().get(index));
-//                        Notification notification=new Notification("welcome to "+ user.getServers().get(index).getName()+" server!", LocalDateTime.now());
-//                        users.get(userIndex).getNotifications().add(notification);
-//                        for (Role role:user.getServers().get(index).getServerRoles()){
-//                            if(role.getName().equals("normal")){
-//                                role.getUsers().add(users.get(userIndex));
-//                            }
-//                        }
-//                        response=new Response(ResponseCode.SUCCESSFUL);
-//                    }
-//
-//                }
-//                try {
-//                    objectOutputStream.writeObject(response);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
 //
 //            //select a picture for profile
 //

@@ -644,9 +644,26 @@ public class ServerPage implements Initializable {
             }
         }
         else if(dialogButton.getText().equalsIgnoreCase("Add to server")){
-
+            String enteredUsername=dialogTextField.getText();
+            if(enteredUsername.equals("")){
+                errorDialogText.setText("enter a name!");
+            }
+            else{
+                UIRequest uiRequest=new UIRequest(UIRequestCode.ADD_MEMBER);
+                uiRequest.addData("name",enteredUsername);
+                UIResponse uiResponse=Client.process(uiRequest);
+                if(uiResponse.getCode()==UIResponseCode.NOT_EXIST){
+                    errorDialogText.setText("Invalid Username!");
+                }
+                else if(uiResponse.getCode()==UIResponseCode.IS_EXISTS){
+                    errorDialogText.setText(enteredUsername+" added before!");
+                }
+                else{
+                    dialogPane.setVisible(false);
+                }
+            }
         }
-        }
+    }
 
     }
 

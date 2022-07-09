@@ -207,6 +207,23 @@ public class Client {
             uiResponse.addData("isExist",isExist);
             return uiResponse;
         }
+        else if(uiRequest.getCode()==UIRequestCode.ADD_MEMBER){
+            String inputUsername= (String) uiRequest.getData("name");
+            Request request3 = new Request(RequestCode.ADD_MEMBER);
+            request3.addData("username", inputUsername);
+            objectOutputStream.writeObject(request3);
+            Response response3 = (Response) objectInputStream.readObject();
+            if (response3.getCode() == ResponseCode.NOT_EXIST) {
+                uiResponse=new UIResponse(UIResponseCode.NOT_EXIST);
+            }
+            else if (response3.getCode() == ResponseCode.IS_EXISTS) {
+                uiResponse=new UIResponse(UIResponseCode.IS_EXISTS);
+            }
+            else {
+                uiResponse=new UIResponse(UIResponseCode.OK);
+            }
+            return uiResponse;
+        }
 
 
         return null;

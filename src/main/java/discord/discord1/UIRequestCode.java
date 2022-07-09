@@ -23,5 +23,6 @@ public enum UIRequestCode {
     SEE_REQUESTS,
     SEND_REQUEST,
     CREATE_CHANNEL,
-    REMOVE_CHANNEL
+    REMOVE_CHANNEL,
+    ADD_MEMBER
 }

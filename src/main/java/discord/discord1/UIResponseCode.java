@@ -20,6 +20,8 @@ public enum UIResponseCode {
     BEFORE_REQUEST,
     FRIEND_NOT_FOUND,
     OWN_REQUEST,
-    REQUEST_AGAIN
+    REQUEST_AGAIN,
+    NOT_EXIST,
+    IS_EXISTS
 
 }
