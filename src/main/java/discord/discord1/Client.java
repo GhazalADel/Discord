@@ -224,6 +224,22 @@ public class Client {
             }
             return uiResponse;
         }
+        else if(uiRequest.getCode()==UIRequestCode.CHANGE_SERVER_NAME){
+            Request request4 = new Request(RequestCode.CHANGE_SERVER_NAME);
+            String newName= (String) uiRequest.getData("name");
+            request4.addData("name", newName);
+            objectOutputStream.writeObject(request4);
+            Response response4 = (Response) objectInputStream.readObject();
+            if (response4.getCode() == ResponseCode.NOT_CHANGE) {
+                uiResponse=new UIResponse(UIResponseCode.NOT_CHANGE);
+            } else if (response4.getCode() == ResponseCode.DUPLICATED) {
+                uiResponse=new UIResponse(UIResponseCode.DUPLICATED);
+            } else {
+               uiResponse=new UIResponse(UIResponseCode.OK);
+            }
+            return uiResponse;
+        }
+
 
 
         return null;

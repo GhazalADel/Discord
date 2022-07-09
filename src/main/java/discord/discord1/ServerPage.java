@@ -503,6 +503,12 @@ public class ServerPage implements Initializable {
                     chatBox.setVisible(false);
                     addMember();
                 }
+                else if(settingMenuItems.get(i).getText().equalsIgnoreCase("change server name")){
+                    chatBox.setVisible(false);
+                    changeServerName();
+                }
+
+
 
 
 
@@ -557,6 +563,12 @@ public class ServerPage implements Initializable {
         dialogPane.setVisible(true);
         dialogText.setText("Enter Username");
         dialogButton.setText("Add to server");
+        errorDialogText.setText("");
+    }
+    public void changeServerName(){
+        dialogPane.setVisible(true);
+        dialogText.setText("Enter new Name");
+        dialogButton.setText("Change");
         errorDialogText.setText("");
     }
     @FXML
@@ -662,6 +674,28 @@ public class ServerPage implements Initializable {
                     dialogPane.setVisible(false);
                 }
             }
+        }
+        else if(dialogButton.getText().equalsIgnoreCase("Change")){
+            String enteredName=dialogTextField.getText();
+            if(enteredName.equals("")){
+                errorDialogText.setText("enter a name!");
+            }
+            else{
+                UIRequest uiRequest=new UIRequest(UIRequestCode.CHANGE_SERVER_NAME);
+                uiRequest.addData("name",enteredName);
+                UIResponse uiResponse=Client.process(uiRequest);
+                if(uiResponse.getCode()==UIResponseCode.NOT_CHANGE){
+                    errorDialogText.setText("you didn't change server's name");
+                }
+                else if(uiResponse.getCode()==UIResponseCode.DUPLICATED){
+                    errorDialogText.setText("Duplicated name");
+                }
+                else{
+                    serverNameText.setText(enteredName);
+                    dialogPane.setVisible(false);
+                }
+            }
+
         }
     }
 

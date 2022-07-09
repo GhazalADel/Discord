@@ -20,7 +20,7 @@ public class ClientHandler implements Runnable {
 
     //fields
     public static ArrayList<ClientHandler> clientHandlers=new ArrayList<>();
-//    public static ArrayList<DiscordServer> discordServers=new ArrayList<>();
+    public static ArrayList<DiscordServer> discordServers=new ArrayList<>();
     public static ArrayList<User> users=new ArrayList<>();
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
@@ -560,9 +560,43 @@ public class ClientHandler implements Runnable {
                     throw new RuntimeException(e);
                 }
             }
-//
-
-
+            //change server's name
+            else if(command.getCode()==RequestCode.CHANGE_SERVER_NAME){
+                int index=0;
+                int userIndex=findUserIndex();
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                String name= (String) command.getData("name");
+                Response response;
+                if (name.equalsIgnoreCase(users.get(userIndex).getServers().get(index).getName())) {
+                    response=new Response(ResponseCode.NOT_CHANGE);
+                }
+                else {
+                    Boolean isDuplicate=false;
+                    for (DiscordServer discordServer:discordServers) {
+                        if(discordServer.getName().equalsIgnoreCase(name)){
+                            isDuplicate=true;
+                            break;
+                        }
+                    }
+                    if(isDuplicate){
+                        response=new Response(ResponseCode.DUPLICATED);
+                    }
+                    else {
+                        users.get(userIndex).getServers().get(index).setName(name);
+                        response=new Response(ResponseCode.NAME_CHANGED);
+                    }
+                }
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 
 //            //add request friend
 //            else if(command.getCode()==RequestCode.ADD_REQUEST){
@@ -830,36 +864,7 @@ public class ClientHandler implements Runnable {
 //                }
 //            }
 //
-//            //change server's name
-//            else if(command.getCode()==RequestCode.CHANGE_SERVER_NAME){
-//                int index= (int) command.getData("index");
-//                String name= (String) command.getData("name");
-//                Response response;
-//                if (name.equalsIgnoreCase(user.getServers().get(index).getName())) {
-//                    response=new Response(ResponseCode.NOT_CHANGE);
-//                }
-//                else {
-//                    Boolean isDuplicate=false;
-//                    for (DiscordServer discordServer:discordServers) {
-//                        if(discordServer.getName().equalsIgnoreCase(name)){
-//                            isDuplicate=true;
-//                            break;
-//                        }
-//                    }
-//                    if(isDuplicate){
-//                        response=new Response(ResponseCode.DUPLICATED);
-//                    }
-//                    else {
-//                        user.getServers().get(index).setName(name);
-//                        response=new Response(ResponseCode.NAME_CHANGED);
-//                    }
-//                }
-//                try {
-//                    objectOutputStream.writeObject(response);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
+//
 //            //check is entered server's name duplicated
 //            else if(command.getCode()==RequestCode.CHECK_SERVER_NAME_DUPLICATION){
 //                String serverName= (String) command.getData("serverName");

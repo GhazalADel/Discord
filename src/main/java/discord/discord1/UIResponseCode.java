@@ -22,6 +22,8 @@ public enum UIResponseCode {
     OWN_REQUEST,
     REQUEST_AGAIN,
     NOT_EXIST,
-    IS_EXISTS
+    IS_EXISTS,
+    NOT_CHANGE,
+    DUPLICATED
 
 }
