@@ -164,6 +164,35 @@ public class Client {
             uiResponse.addData("name",name);
             return uiResponse;
         }
+        else if(uiRequest.getCode()==UIRequestCode.IS_ADMIN){
+            Request request1 = new Request(RequestCode.IS_SERVER_ADMIN);
+            objectOutputStream.writeObject(request1);
+            Response response1 = (Response) objectInputStream.readObject();
+            boolean isAdmin = (boolean) response1.getData("isAdmin");
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            uiResponse.addData("isAdmin",isAdmin);
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.GET_PERMISSIONS){
+            Request request2 = new Request(RequestCode.GET_PERMISSIONS);
+            objectOutputStream.writeObject(request2);
+            Response response2 = (Response) objectInputStream.readObject();
+            ArrayList<Integer> permissions = (ArrayList<Integer>) response2.getData("permissions");
+            ArrayList<String> permissionsArr=new ArrayList<>();
+            if(permissions!=null) {
+                for (int i = 0; i < permissions.size(); i++) {
+                    String strPer = String.valueOf(DiscordServer.allPermissions[permissions.get(i) - 1]);
+                    String[] strPerArr = strPer.split("_");
+                    String tmp="";
+                    for (int j = 0; j < strPerArr.length; j++) {
+                        tmp+=(strPerArr[j].toLowerCase(Locale.ROOT) + " ");
+                    }
+                   permissionsArr.add(tmp);
+                }
+            }
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            uiResponse.addData("permissions",permissionsArr);
+        }
 
 
         return null;

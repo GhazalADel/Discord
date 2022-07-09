@@ -384,6 +384,61 @@ public class ClientHandler implements Runnable {
                     throw new RuntimeException(e);
                 }
             }
+            //show is user server's admin or not
+            else if(command.getCode()==RequestCode.IS_SERVER_ADMIN){
+                int userIndex=findUserIndex();
+                int index=0;
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                boolean isAdmin=false;
+                if(users.get(userIndex).getServers().get(index).getServerAdmin().getUsername().equalsIgnoreCase(users.get(userIndex).getUsername())){
+                    isAdmin=true;
+                }
+                Response response=new Response(ResponseCode.IS_SERVER_ADMIN);
+                response.addData("isAdmin",isAdmin);
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            else if(command.getCode()==RequestCode.GET_PERMISSIONS){
+                int userIndex=findUserIndex();
+                int index=0;
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                HashSet<Integer> permissionIndexes=new HashSet<>();
+                for (Role role:users.get(userIndex).getServers().get(index).getServerRoles()){
+                    for (User uu:role.getUsers()){
+                        if(uu.getUsername().equalsIgnoreCase(users.get(userIndex).getUsername())){
+                            ArrayList<Integer> arr=role.getPermissionIndexes();
+                            for (Integer i:arr){
+                                permissionIndexes.add(i);
+                            }
+                        }
+                    }
+                }
+                ArrayList<Integer> finalPermissionIndexes=new ArrayList<>();
+                for (Integer i:permissionIndexes){
+                    finalPermissionIndexes.add(i);
+                }
+                Collections.sort(finalPermissionIndexes);
+                Response response=new Response(ResponseCode.SUCCESSFUL);
+                response.addData("permissions",finalPermissionIndexes);
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 
 
 
@@ -652,21 +707,7 @@ public class ClientHandler implements Runnable {
 //                    throw new RuntimeException(e);
 //                }
 //            }
-//            //show is user server's admin or not
-//            else if(command.getCode()==RequestCode.IS_SERVER_ADMIN){
-//                int index= (int) command.getData("index");
-//                boolean isAdmin=false;
-//                if(user.getServers().get(index).getServerAdmin().getUsername().equalsIgnoreCase(user.getUsername())){
-//                    isAdmin=true;
-//                }
-//                Response response=new Response(ResponseCode.IS_SERVER_ADMIN);
-//                response.addData("isAdmin",isAdmin);
-//                try {
-//                    objectOutputStream.writeObject(response);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
+//
 //            //change server's name
 //            else if(command.getCode()==RequestCode.CHANGE_SERVER_NAME){
 //                int index= (int) command.getData("index");
@@ -1278,32 +1319,7 @@ public class ClientHandler implements Runnable {
 //                user.getServers().get(index).getServerRoles().get(roleIndex).setRolePermissions(newRolePermissions);
 //            }
 //
-//            else if(command.getCode()==RequestCode.GET_PERMISSIONS){
-//                int index= (int) command.getData("index");
-//                HashSet<Integer> permissionIndexes=new HashSet<>();
-//                for (Role role:user.getServers().get(index).getServerRoles()){
-//                    for (User uu:role.getUsers()){
-//                        if(uu.getUsername().equalsIgnoreCase(user.getUsername())){
-//                            ArrayList<Integer> arr=role.getPermissionIndexes();
-//                            for (Integer i:arr){
-//                                permissionIndexes.add(i);
-//                            }
-//                        }
-//                    }
-//                }
-//                ArrayList<Integer> finalPermissionIndexes=new ArrayList<>();
-//                for (Integer i:permissionIndexes){
-//                    finalPermissionIndexes.add(i);
-//                }
-//                Collections.sort(finalPermissionIndexes);
-//                Response response=new Response(ResponseCode.SUCCESSFUL);
-//                response.addData("permissions",finalPermissionIndexes);
-//                try {
-//                    objectOutputStream.writeObject(response);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
+//
 //            //add a member to server
 //            else if(command.getCode()==RequestCode.ADD_MEMBER){
 //                String username= (String) command.getData("username");

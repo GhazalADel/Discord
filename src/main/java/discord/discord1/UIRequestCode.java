@@ -17,5 +17,7 @@ public enum UIRequestCode {
     GET_SERVER_USERS,
     CHANGE_STATUS,
     SEE_CHANNELS,
-    GET_SERVER_NAME
+    GET_SERVER_NAME,
+    IS_ADMIN,
+    GET_PERMISSIONS
 }

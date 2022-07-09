@@ -1,11 +1,16 @@
 package discord.discord1;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -50,12 +55,20 @@ public class ServerPage implements Initializable {
     @FXML
     private HBox sendMessageHBox;
 
+    @FXML
+    private Label settingsLabel;
+
     private String serverName;
 
     private String username;
 
     private Object selectedChannel;
    private ArrayList<HBox> channelsHBox=new ArrayList<>();
+
+   private ArrayList<MenuItem> settingMenuItems=new ArrayList<>();
+   private boolean isAdmin;
+   private Object selectedPermission;
+   private ArrayList<String> permssions;
     @FXML
     void settingClick(MouseEvent event) {
         Stage stage= (Stage) statusCircle.getScene().getWindow();
@@ -270,7 +283,123 @@ public class ServerPage implements Initializable {
         serverNameText.setText(serverName);
 
         sendMessageHBox.setVisible(false);
+        UIRequest uiRequest5=new UIRequest(UIRequestCode.IS_ADMIN);
+        UIResponse uiResponse5;
+        try {
+            uiResponse5=Client.process(uiRequest5);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        isAdmin= (boolean) uiResponse5.getData("isAdmin");
+        if(isAdmin){
+            ContextMenu adminSettingsMenu=new ContextMenu();
+            MenuItem menuItem1=new MenuItem("change server name");
+            menuItem1.setOnAction((ActionEvent e)->{
+                selectedPermission=e.getSource();
+                findPermission();
+            });
+            adminSettingsMenu.getItems().add(menuItem1);
+            settingMenuItems.add(menuItem1);
 
+            MenuItem menuItem2=new MenuItem("Add role");
+            menuItem2.setOnAction((ActionEvent e)->{
+                selectedPermission=e.getSource();
+                findPermission();
+            });
+            adminSettingsMenu.getItems().add(menuItem2);
+            settingMenuItems.add(menuItem2);
+
+            MenuItem menuItem3=new MenuItem("limit member message");
+            menuItem3.setOnAction((ActionEvent e)->{
+                selectedPermission=e.getSource();
+                findPermission();
+            });
+            adminSettingsMenu.getItems().add(menuItem3);
+            settingMenuItems.add(menuItem3);
+
+            MenuItem menuItem4=new MenuItem("ban a member");
+            menuItem4.setOnAction((ActionEvent e)->{
+                selectedPermission=e.getSource();
+                findPermission();
+            });
+            adminSettingsMenu.getItems().add(menuItem4);
+            settingMenuItems.add(menuItem4);
+
+            MenuItem menuItem5=new MenuItem("create channel");
+            menuItem5.setOnAction((ActionEvent e)->{
+                selectedPermission=e.getSource();
+                findPermission();
+            });
+            adminSettingsMenu.getItems().add(menuItem5);
+            settingMenuItems.add(menuItem5);
+
+            MenuItem menuItem6=new MenuItem("remove channel");
+            menuItem6.setOnAction((ActionEvent e)->{
+                selectedPermission=e.getSource();
+                findPermission();
+            });
+            adminSettingsMenu.getItems().add(menuItem6);
+            settingMenuItems.add(menuItem6);
+
+            MenuItem menuItem7=new MenuItem("change role");
+            menuItem7.setOnAction((ActionEvent e)->{
+                selectedPermission=e.getSource();
+                findPermission();
+            });
+            adminSettingsMenu.getItems().add(menuItem7);
+            settingMenuItems.add(menuItem7);
+
+            MenuItem menuItem8=new MenuItem("remove server");
+            menuItem8.setOnAction((ActionEvent e)->{
+                selectedPermission=e.getSource();
+                findPermission();
+            });
+            adminSettingsMenu.getItems().add(menuItem8);
+            settingMenuItems.add(menuItem8);
+
+            MenuItem menuItem9=new MenuItem("see chat history");
+            menuItem9.setOnAction((ActionEvent e)->{
+                selectedPermission=e.getSource();
+                findPermission();
+            });
+            adminSettingsMenu.getItems().add(menuItem9);
+            settingMenuItems.add(menuItem9);
+            settingsLabel.setContextMenu(adminSettingsMenu);
+        }
+        else{
+            UIRequest uiRequest6=new UIRequest(UIRequestCode.GET_PERMISSIONS);
+            UIResponse uiResponse6;
+            try {
+              uiResponse6=Client.process(uiRequest6);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+          permssions= (ArrayList<String>) uiResponse6.getData("permissions");
+          ContextMenu contextMenu=new ContextMenu();
+          MenuItem menuItem1=new MenuItem("add a member");
+          menuItem1.setOnAction((ActionEvent e)->{
+                selectedPermission=e.getSource();
+                findPermission();
+            });
+            contextMenu.getItems().add(menuItem1);
+            settingMenuItems.add(menuItem1);
+            if(permssions!=null){
+                for (int i = 0; i < permssions.size(); i++) {
+                    MenuItem menuItem=new MenuItem(permssions.get(i));
+                    menuItem.setOnAction((ActionEvent e)->{
+                        selectedPermission=e.getSource();
+                        findPermission();
+                    });
+                    contextMenu.getItems().add(menuItem);
+                    settingMenuItems.add(menuItem);
+                }
+            }
+            settingsLabel.setContextMenu(contextMenu);
+        }
     }
     @FXML
     void discordCircleClick(MouseEvent event) {
@@ -335,7 +464,10 @@ public class ServerPage implements Initializable {
                break;
             }
         }
+    }
+    public void findPermission(){
 
 
     }
+
 }

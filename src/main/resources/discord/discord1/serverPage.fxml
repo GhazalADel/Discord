@@ -250,6 +250,11 @@
                   <Font name="System Bold" size="16.0" />
                </font>
             </Text>
+            <Label fx:id="settingsLabel" layoutX="133.0" layoutY="21.0" text="Settings" textFill="#f2e4e4">
+               <font>
+                  <Font name="System Bold Italic" size="11.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>
