@@ -256,6 +256,11 @@ public class Client {
             uiResponse=limitMember(enteredUsername,enteredChannelName);
             return uiResponse;
         }
+        else if(uiRequest.getCode()==UIRequestCode.BAN_MEMBER){
+            String enteredUsername= (String) uiRequest.getData("username");
+            uiResponse=banMember(enteredUsername);
+            return uiResponse;
+        }
 
 
 
@@ -588,6 +593,35 @@ public class Client {
         }
         return uiResponse;
 
+    }
+    //    /**
+//     * This method used to ban a member from server
+//     *
+//     * *@param index index of DiscordServer
+//     * *@return Nothing
+//     * *@throws IOException
+//     * *@throws ClassNotFoundException
+//     */
+//
+    public static UIResponse banMember(String username) throws IOException, ClassNotFoundException {
+        Request request2 = new Request(RequestCode.BAN_MEMBER);
+        request2.addData("username", username);
+        objectOutputStream.writeObject(request2);
+        Response response2 = (Response) objectInputStream.readObject();
+        UIResponse uiResponse=null;
+        if (response2.getCode() == ResponseCode.NOT_EXIST) {
+           uiResponse=new UIResponse(UIResponseCode.NOT_EXIST);
+
+        } else if (response2.getCode() == ResponseCode.NOT_IN_SERVER) {
+            uiResponse=new UIResponse(UIResponseCode.NOT_IN_SERVER);
+
+        } else if (response2.getCode() == ResponseCode.BANNED_BEFORE) {
+            uiResponse=new UIResponse(UIResponseCode.BAN_BEFORE);
+
+        } else if (response2.getCode() == ResponseCode.BAN_MEMBER) {
+            uiResponse=new UIResponse(UIResponseCode.OK);
+        }
+        return uiResponse;
     }
 
 
@@ -1576,40 +1610,7 @@ public class Client {
 //
 //
 //
-//    /**
-//     * This method used to ban a member from server
-//     *
-//     * *@param index index of DiscordServer
-//     * *@return Nothing
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     */
-//
-//    public void banMember(int index) throws IOException, ClassNotFoundException {
-//        System.out.println("enter username:");
-//        System.out.println("enter 0 to back menu:");
-//        String username = scan.nextLine();
-//        if (username.equals("0")) {
-//            return;
-//        }
-//        Request request2 = new Request(RequestCode.BAN_MEMBER);
-//        request2.addData("index", index);
-//        request2.addData("username", username);
-//        objectOutputStream.writeObject(request2);
-//        Response response2 = (Response) objectInputStream.readObject();
-//        if (response2.getCode() == ResponseCode.NOT_EXIST) {
-//            System.out.println("there is no " + username + " here!");
-//
-//        } else if (response2.getCode() == ResponseCode.NOT_IN_SERVER) {
-//            System.out.println(username + " is not in server");
-//
-//        } else if (response2.getCode() == ResponseCode.BANNED_BEFORE) {
-//            System.out.println(username + " banned before");
-//
-//        } else if (response2.getCode() == ResponseCode.BAN_MEMBER) {
-//            System.out.println(username + " banned successfully");
-//        }
-//    }
+
 //
 //
 //

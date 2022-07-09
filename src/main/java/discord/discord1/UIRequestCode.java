@@ -27,5 +27,6 @@ public enum UIRequestCode {
     ADD_MEMBER,
     CHANGE_SERVER_NAME,
     LIMIT_MEMBER,
-    CHANNEL_EXIST
+    CHANNEL_EXIST,
+    BAN_MEMBER
 }

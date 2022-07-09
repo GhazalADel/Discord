@@ -54,7 +54,7 @@
             <TextField layoutX="8.0" layoutY="17.0" prefHeight="25.0" prefWidth="142.0" style="-fx-background-color: #202225;" />
             <AnchorPane layoutY="423.0" prefHeight="63.0" prefWidth="159.0" style="-fx-background-color: #2f3136;">
                <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="6.0" prefHeight="47.0" prefWidth="75.0" text="Username" textFill="WHITE">
+                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="6.0" onMouseClicked="#userSettingClick" prefHeight="47.0" prefWidth="75.0" text="Username" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>

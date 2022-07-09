@@ -705,6 +705,68 @@ public class ClientHandler implements Runnable {
                     throw new RuntimeException(e);
                 }
             }
+            //ban a member form server
+            else if(command.getCode()==RequestCode.BAN_MEMBER){
+                int index=0;
+                int userIndex=findUserIndex();
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                String username= (String) command.getData("username");
+                User wanted=findUser(username);
+                Response response;
+                if(wanted==null){
+                    response=new Response(ResponseCode.NOT_EXIST);
+                }
+                else{
+                    boolean inServer=false;
+                    for (Role role:user.getServers().get(index).getServerRoles()){
+                        for (User user1:role.getUsers()){
+                            if(user1.getUsername().equalsIgnoreCase(username)){
+                                inServer=true;
+                                break;
+                            }
+                        }
+                    }
+                    if(!inServer){
+                        response=new Response(ResponseCode.NOT_IN_SERVER);
+                    }
+                    else {
+                        boolean bannedBefore = false;
+                        for (User uu : user.getServers().get(index).getBannedUsers()) {
+                            if (uu.getUsername().equalsIgnoreCase(username)) {
+                                bannedBefore = true;
+                                break;
+                            }
+                        }
+                        if (bannedBefore) {
+                            response = new Response(ResponseCode.BANNED_BEFORE);
+                        } else {
+                            response = new Response(ResponseCode.BAN_MEMBER);
+                            int userIndex2 = -1;
+                            for (int i = 0; i < users.size(); i++) {
+                                if (users.get(i).getUsername().equalsIgnoreCase(username)) {
+                                    userIndex2 = i;
+                                    break;
+                                }
+                            }
+                            user.getServers().get(index).getBannedUsers().add(users.get(userIndex2));
+                        }
+                    }
+
+                }
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+
+
 
 
 //            //add request friend
@@ -1185,60 +1247,6 @@ public class ClientHandler implements Runnable {
 //                }
 //            }
 //
-//
-//            //ban a member form server
-//            else if(command.getCode()==RequestCode.BAN_MEMBER){
-//                int index= (int) command.getData("index");
-//                String username= (String) command.getData("username");
-//                User wanted=findUser(username);
-//                Response response;
-//                if(wanted==null){
-//                    response=new Response(ResponseCode.NOT_EXIST);
-//                }
-//                else{
-//                    boolean inServer=false;
-//                    for (Role role:user.getServers().get(index).getServerRoles()){
-//                        for (User user1:role.getUsers()){
-//                            if(user1.getUsername().equalsIgnoreCase(username)){
-//                                inServer=true;
-//                                break;
-//                            }
-//                        }
-//                    }
-//                    if(!inServer){
-//                        response=new Response(ResponseCode.NOT_IN_SERVER);
-//                    }
-//                    else {
-//                        boolean bannedBefore = false;
-//                        for (User uu : user.getServers().get(index).getBannedUsers()) {
-//                            if (uu.getUsername().equalsIgnoreCase(username)) {
-//                                bannedBefore = true;
-//                                break;
-//                            }
-//                        }
-//                        if (bannedBefore) {
-//                            response = new Response(ResponseCode.BANNED_BEFORE);
-//                        } else {
-//                            response = new Response(ResponseCode.BAN_MEMBER);
-//                            int userIndex = -1;
-//                            for (int i = 0; i < users.size(); i++) {
-//                                if (users.get(i).getUsername().equalsIgnoreCase(username)) {
-//                                    userIndex = i;
-//                                    break;
-//                                }
-//                            }
-//                            user.getServers().get(index).getBannedUsers().add(users.get(userIndex));
-//                        }
-//                    }
-//
-//                }
-//                try {
-//                    objectOutputStream.writeObject(response);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//
-//            }
 //
 //
 //

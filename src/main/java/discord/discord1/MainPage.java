@@ -3,16 +3,21 @@ package discord.discord1;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -155,5 +160,17 @@ public class MainPage implements Initializable {
         else if(response.getCode() == UIResponseCode.OK) {
             canAddFriendText.setText("Request sent successfully");
         }
+    }
+    @FXML
+    void userSettingClick(MouseEvent event) {
+        Stage stage= (Stage) sendRequest.getScene().getWindow();
+        Parent root= null;
+        try {
+            root = FXMLLoader.load(getClass().getResource("profile-settings.fxml"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.setScene(new Scene(root));
+
     }
 }

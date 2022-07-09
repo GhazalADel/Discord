@@ -513,6 +513,10 @@ public class ServerPage implements Initializable {
                         limitMember();
                     }
                 }
+                else if(settingMenuItems.get(i).getText().equalsIgnoreCase("ban a member")){
+                    chatBox.setVisible(false);
+                    banMember();
+                }
 
 
 
@@ -559,30 +563,42 @@ public class ServerPage implements Initializable {
         dialogText.setText("Channel Name");
         dialogButton.setText("Create Channel");
         errorDialogText.setText("");
+        dialogTextField.setText("");
     }
     public void removeChannel(){
         dialogPane.setVisible(true);
         dialogText.setText("Channel Name");
         dialogButton.setText("Remove Channel");
         errorDialogText.setText("");
+        dialogTextField.setText("");
     }
     public void addMember(){
         dialogPane.setVisible(true);
         dialogText.setText("Enter Username");
         dialogButton.setText("Add to server");
         errorDialogText.setText("");
+        dialogTextField.setText("");
     }
     public void changeServerName(){
         dialogPane.setVisible(true);
         dialogText.setText("Enter new Name");
         dialogButton.setText("Change");
         errorDialogText.setText("");
+        dialogTextField.setText("");
     }
     public void limitMember(){
         dialogPane.setVisible(true);
         dialogText.setText("Enter Channel's name");
         dialogButton.setText("limit member");
         errorDialogText.setText("");
+        dialogTextField.setText("");
+    }
+    public void banMember(){
+        dialogPane.setVisible(true);
+        dialogText.setText("Enter username");
+        dialogButton.setText("ban member");
+        errorDialogText.setText("");
+        dialogTextField.setText("");
     }
     @FXML
     void exitImageClick(MouseEvent event) {
@@ -748,7 +764,29 @@ public class ServerPage implements Initializable {
                 }
 
             }
-
+        }
+        else if(dialogButton.getText().equalsIgnoreCase("ban member")){
+            String enteredUsername=dialogTextField.getText();
+            if(enteredUsername.equals("")){
+                errorDialogText.setText("enter a name!");
+            }
+            else{
+                UIRequest uiRequest=new UIRequest(UIRequestCode.BAN_MEMBER);
+                uiRequest.addData("username",enteredUsername);
+                UIResponse uiResponse=Client.process(uiRequest);
+                if(uiResponse.getCode()==UIResponseCode.NOT_EXIST){
+                    errorDialogText.setText("Invalid Username");
+                }
+                else if(uiResponse.getCode()==UIResponseCode.NOT_IN_SERVER){
+                    errorDialogText.setText("This user is not in server!");
+                }
+                else if(uiResponse.getCode()==UIResponseCode.BAN_BEFORE){
+                    errorDialogText.setText("This user banned before!");
+                }
+                else{
+                    dialogPane.setVisible(false);
+                }
+            }
 
 
         }
