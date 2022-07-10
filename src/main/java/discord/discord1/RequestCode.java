@@ -100,5 +100,6 @@ public enum RequestCode implements Serializable {
     GET_STATUS,
     GET_SERVER_NAME,
     GET_ROLE_PERMISSIONS,
-    CHANGE_ROLE_PERMISSION
+    CHANGE_ROLE_PERMISSION,
+    SET_CURRENT_SERVER
 }

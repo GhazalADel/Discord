@@ -267,16 +267,16 @@ public class User implements Serializable {
 //    public void setCurrentChannel(Channel currentChannel) {
 //        this.currentChannel = currentChannel;
 //    }
-//    /**
-//     * This method is used to set user's current server.
-//     *@param currentServer
-//     *@return Nothing
-//     */
-//
-//    public void setCurrentServer(DiscordServer currentServer) {
-//        this.currentServer = currentServer;
-//    }
-//
+    /**
+     * This method is used to set user's current server.
+     *@param currentServer
+     *@return Nothing
+     */
+
+    public void setCurrentServer(DiscordServer currentServer) {
+        this.currentServer = currentServer;
+    }
+
 //
 //    /**
 //     * This method is used to get a specific private chat by receiving chatName.

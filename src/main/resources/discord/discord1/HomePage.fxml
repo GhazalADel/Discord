@@ -1,11 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.BorderPane?>
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
-
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="525.0" prefWidth="900.0" style="-fx-background-color: #202225;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="discord.discord1.MainPage">
    <children>
-      <BorderPane layoutX="76.0" layoutY="33.0" prefHeight="492.0" prefWidth="824.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px;" />
+      <Circle fx:id="discordCircle" fill="#c4c8cd" layoutX="37.0" layoutY="43.0" radius="27.0" stroke="#c4c8cd" strokeType="INSIDE" />
+      <Circle fill="#36393f" layoutX="37.0" layoutY="110.0" onMouseClicked="#addServerClick" radius="27.0" stroke="#36393f" strokeType="INSIDE" />
+      <Label layoutX="21.0" layoutY="75.0" text="+" textFill="#397f52">
+         <font>
+            <Font size="45.0" />
+         </font>
+      </Label>
+      <Separator layoutX="12.0" layoutY="149.0" prefWidth="50.0" style="-fx-background-color: #36393f;" />
+      <ScrollPane hbarPolicy="NEVER" layoutX="5.0" layoutY="168.0" prefHeight="357.0" prefWidth="70.0" style="-fx-background-color: #202225;">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="357.0" prefWidth="70.0" style="-fx-background-color: #202225;">
+               <children>
+                  <VBox fx:id="serversVBOX" prefWidth="70.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+      <Pane fx:id="createServerPane" layoutX="319.0" layoutY="164.0" prefHeight="198.0" prefWidth="262.0" style="-fx-background-color: #36393f; -fx-background-radius: 6px;">
+         <children>
+            <Label layoutX="65.0" layoutY="32.0" text="Enter Name" textFill="#f8eded">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="35.0" fitWidth="31.0" layoutX="224.0" layoutY="9.0" onMouseClicked="#exitClick" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@escPicture.png" />
+               </image>
+            </ImageView>
+            <TextField fx:id="createServerTextField" layoutX="38.0" layoutY="102.0" prefHeight="35.0" prefWidth="191.0" style="-fx-text-fill: #ffffff; -fx-background-color: #36393f; -fx-border-color: #ffffff; -fx-background-radius: 6px;" />
+            <Button layoutX="98.0" layoutY="153.0" mnemonicParsing="false" onMouseClicked="#createButtonClick" prefHeight="31.0" prefWidth="70.0" stylesheets="@profileStyle.css" text="Create" textFill="#f8f3f3">
+               <styleClass>
+                  <String fx:value="buttons-color" />
+                  <String fx:value="change" />
+               </styleClass>
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Button>
+            <Label fx:id="errorLabel" layoutX="62.0" layoutY="67.0" text="Duplicated Name!" textFill="#d57a7c">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
    </children>
 </Pane>

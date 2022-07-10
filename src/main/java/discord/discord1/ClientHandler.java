@@ -977,6 +977,55 @@ public class ClientHandler implements Runnable {
                 }
 
             }
+            //show list of servers
+            else if(command.getCode()==RequestCode.SHOW_SERVERS){
+                String serverss="";
+                int userIndex=findUserIndex();
+                if(users.get(userIndex).getServers().size()!=0) {
+                    for (DiscordServer d : user.getServers()) {
+                        serverss += d.getName();
+                        serverss += "@@@";
+                    }
+                    int length = serverss.length();
+                    serverss = serverss.substring(0, length - 3);
+                }
+
+                Response response=new Response(ResponseCode.SHOW_SERVERS);
+                response.addData("servers",serverss);
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            else if(command.getCode()==RequestCode.SET_CURRENT_SERVER){
+                int index= (int) command.getData("index");
+                int userIndex=findUserIndex();
+                users.get(userIndex).setCurrentServer(users.get(userIndex).getServers().get(index));
+            }
+
+            //check is entered server's name duplicated
+            else if(command.getCode()==RequestCode.CHECK_SERVER_NAME_DUPLICATION){
+                String serverName= (String) command.getData("serverName");
+                boolean isDuplicated=false;
+                for (DiscordServer d:discordServers) {
+                    if(d.getName().equalsIgnoreCase(serverName)){
+                        isDuplicated=true;
+                        break;
+                    }
+                }
+                Response response=new Response(ResponseCode.SUCCESSFUL);
+                response.addData("IsDuplicated",isDuplicated);
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+
+
+
 
 
 
@@ -1215,57 +1264,7 @@ public class ClientHandler implements Runnable {
 //                user.getServers().add(discordServer);
 //                discordServers.add(discordServer);
 //            }
-//            //show list of servers
-//            else if(command.getCode()==RequestCode.SHOW_SERVERS){
-//                String serverss="";
-//                if(user.getServers().size()!=0) {
-//                    for (DiscordServer d : user.getServers()) {
-//                        serverss += d.getName();
-//                        serverss += "@@@";
-//                    }
-//                    int length = serverss.length();
-//                    serverss = serverss.substring(0, length - 3);
-//                }
-//                String notifications="";
-//                if(user.getNotifications().size()!=0){
-//                    for (Notification n:user.getNotifications()){
-//                        notifications+=n.toString();
-//                        notifications+="@@@";
-//                    }
-//                    int length=notifications.length();
-//                    notifications=notifications.substring(0,length-3);
-//                    user.getNotifications().clear();
-//                }
 //
-//                Response response=new Response(ResponseCode.SHOW_SERVERS);
-//                response.addData("servers",serverss);
-//                response.addData("notifications",notifications);
-//                try {
-//                    objectOutputStream.writeObject(response);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//
-//
-//            //check is entered server's name duplicated
-//            else if(command.getCode()==RequestCode.CHECK_SERVER_NAME_DUPLICATION){
-//                String serverName= (String) command.getData("serverName");
-//                boolean isDuplicated=false;
-//                for (DiscordServer d:discordServers) {
-//                    if(d.getName().equalsIgnoreCase(serverName)){
-//                        isDuplicated=true;
-//                        break;
-//                    }
-//                }
-//                Response response=new Response(ResponseCode.SUCCESSFUL);
-//                response.addData("IsDuplicated",isDuplicated);
-//                try {
-//                    objectOutputStream.writeObject(response);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
 //
 //
 //

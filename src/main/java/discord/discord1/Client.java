@@ -338,6 +338,38 @@ public class Client {
             request.addData("permissionArr",permissionsArr);
             objectOutputStream.writeObject(request);
         }
+        else if(uiRequest.getCode()==UIRequestCode.GET_SERVERS){
+            Request request = new Request(RequestCode.SHOW_SERVERS);
+            objectOutputStream.writeObject(request);
+            Response response = (Response) objectInputStream.readObject();
+            String servers = (String) response.getData("servers");
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            uiResponse.addData("servers",servers);
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.SEt_CURRENT_SERVER){
+            int index= (int) uiRequest.getData("index");
+            Request request=new Request(RequestCode.SET_CURRENT_SERVER);
+            request.addData("index",index);
+            objectOutputStream.writeObject(request);
+        }
+        else if(uiRequest.getCode()==UIRequestCode.CREATE_SERVER){
+            String name= (String) uiRequest.getData("name");
+            Request request = new Request(RequestCode.CHECK_SERVER_NAME_DUPLICATION);
+            request.addData("serverName", name);
+            objectOutputStream.writeObject(request);
+            Response response = (Response) objectInputStream.readObject();
+            Boolean isDuplicate = (Boolean) response.getData("IsDuplicated");
+            if (isDuplicate) {
+                uiResponse=new UIResponse(UIResponseCode.DUPLICATED);
+                return uiResponse;
+            }
+            Request request1 = new Request(RequestCode.ADD_SERVER);
+            request1.addData("serverName", name);
+            objectOutputStream.writeObject(request1);
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            return uiResponse;
+        }
 
         return null;
     }
