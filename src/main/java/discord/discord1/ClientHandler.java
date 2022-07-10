@@ -765,6 +765,33 @@ public class ClientHandler implements Runnable {
                 }
 
             }
+            //remove a server from program
+            else if(command.getCode()==RequestCode.REMOVE_SERVER){
+                int index=0;
+                int userIndex=findUserIndex();
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                DiscordServer d=users.get(userIndex).getServers().get(index);
+                int totalIndex=0;
+                for (DiscordServer dd:discordServers){
+                    if(dd.getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    totalIndex++;
+                }
+                for (int i = 0; i < users.size(); i++) {
+                    for (int j = 0; j < users.get(i).getServers().size(); j++) {
+                        if(users.get(i).getServers().get(j).getName().equalsIgnoreCase(d.getName())){
+                            users.get(i).getServers().remove(j);
+                        }
+                    }
+                }
+                discordServers.remove(totalIndex);
+            }
 
 
 
@@ -1250,26 +1277,7 @@ public class ClientHandler implements Runnable {
 //
 //
 //
-//            //remove a server from program
-//            else if(command.getCode()==RequestCode.REMOVE_SERVER){
-//                int index= (int) command.getData("index");
-//                DiscordServer d=user.getServers().get(index);
-//                int totalIndex=0;
-//                for (DiscordServer dd:discordServers){
-//                    if(dd.getName().equalsIgnoreCase(d.getName())){
-//                        break;
-//                    }
-//                    totalIndex++;
-//                }
-//                for (int i = 0; i < users.size(); i++) {
-//                    for (int j = 0; j < users.get(i).getServers().size(); j++) {
-//                        if(users.get(i).getServers().get(j).getName().equalsIgnoreCase(d.getName())){
-//                            users.get(i).getServers().remove(j);
-//                        }
-//                    }
-//                }
-//                discordServers.remove(totalIndex);
-//            }
+//
 //            //see list of limited users in server
 //            else if(command.getCode()==RequestCode.SEE_LIMITED_MEMBERS){
 //                int index= (int) command.getData("index");

@@ -261,8 +261,9 @@ public class Client {
             uiResponse=banMember(enteredUsername);
             return uiResponse;
         }
-
-
+        else if(uiRequest.getCode()==UIRequestCode.REMOVE_SERVER){
+            removeServer();
+        }
 
         return null;
     }
@@ -594,14 +595,14 @@ public class Client {
         return uiResponse;
 
     }
-    //    /**
-//     * This method used to ban a member from server
-//     *
-//     * *@param index index of DiscordServer
-//     * *@return Nothing
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     */
+        /**
+     * This method used to ban a member from server
+     *
+     * *@param index index of DiscordServer
+     * *@return Nothing
+     * *@throws IOException
+     * *@throws ClassNotFoundException
+     */
 //
     public static UIResponse banMember(String username) throws IOException, ClassNotFoundException {
         Request request2 = new Request(RequestCode.BAN_MEMBER);
@@ -622,6 +623,17 @@ public class Client {
             uiResponse=new UIResponse(UIResponseCode.OK);
         }
         return uiResponse;
+    }
+    /**
+     //     * This method used to remove a server by admin
+     //     *
+     //     * *@param -
+     //     * *@return Nothing
+     //     * *@throws IOException
+     //     */
+    public static void removeServer() throws IOException {
+        Request request = new Request(RequestCode.REMOVE_SERVER);
+        objectOutputStream.writeObject(request);
     }
 
 
@@ -1417,19 +1429,7 @@ public class Client {
 //        }
 //    }
 //
-//    /**
-//     * This method used to remove a server by admin
-//     *
-//     * *@param -
-//     * *@return Nothing
-//     * *@throws IOException
-//     */
-//    public void removeServer(int index) throws IOException {
-//        Request request = new Request(RequestCode.REMOVE_SERVER);
-//        request.addData("index", index);
-//        objectOutputStream.writeObject(request);
-//        System.out.println("server removed successfully");
-//    }
+//
 //
 //
 //    /**

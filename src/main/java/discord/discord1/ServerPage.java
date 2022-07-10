@@ -517,6 +517,24 @@ public class ServerPage implements Initializable {
                     chatBox.setVisible(false);
                     banMember();
                 }
+                else if(settingMenuItems.get(i).getText().equalsIgnoreCase("remove server")){
+                    UIRequest uiRequest=new UIRequest(UIRequestCode.REMOVE_SERVER);
+                    try {
+                        Client.process(uiRequest);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    } catch (ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                    Stage stage= (Stage) statusCircle.getScene().getWindow();
+                    Parent root= null;
+                    try {
+                        root = FXMLLoader.load(getClass().getResource("HomePage.fxml"));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    stage.setScene(new Scene(root));
+                }
 
 
 
