@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.ResourceBundle;
 
 public class ServerPage implements Initializable {
@@ -84,6 +85,44 @@ public class ServerPage implements Initializable {
     @FXML
     private Text errorDialogText;
 
+    @FXML
+    private Pane roleDialog;
+
+    @FXML
+    private Text roleDialogText1;
+
+    @FXML
+    private Text roleDialogText2;
+
+    @FXML
+    private CheckBox banMemberCheckBox;
+
+    @FXML
+    private CheckBox changeNameCheckBox;
+
+    @FXML
+    private CheckBox chatHistoryCheckBox;
+
+    @FXML
+    private CheckBox createChannelCheckBox;
+
+    @FXML
+    private CheckBox limitMemberCheckBox;
+
+    @FXML
+    private CheckBox pinMessageCheckBox;
+
+    @FXML
+    private CheckBox removeChannelCheckBox;
+
+    @FXML
+    private CheckBox removeMemberCheckBox;
+
+
+
+
+
+
 
     @FXML
     void settingClick(MouseEvent event) {
@@ -99,6 +138,7 @@ public class ServerPage implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        roleDialog.setVisible(false);
         dialogPane.setVisible(false);
         UIRequest uiRequest=new UIRequest(UIRequestCode.GET_STATUS);
         UIResponse uiResponse;
@@ -535,6 +575,11 @@ public class ServerPage implements Initializable {
                     }
                     stage.setScene(new Scene(root));
                 }
+                else if(settingMenuItems.get(i).getText().equalsIgnoreCase("Add role")){
+                    chatBox.setVisible(false);
+                    addRole();
+                }
+
 
 
 
@@ -615,6 +660,13 @@ public class ServerPage implements Initializable {
         dialogPane.setVisible(true);
         dialogText.setText("Enter username");
         dialogButton.setText("ban member");
+        errorDialogText.setText("");
+        dialogTextField.setText("");
+    }
+    public void addRole(){
+        dialogPane.setVisible(true);
+        dialogText.setText("Enter Role name");
+        dialogButton.setText("add role");
         errorDialogText.setText("");
         dialogTextField.setText("");
     }
@@ -719,6 +771,58 @@ public class ServerPage implements Initializable {
                 }
                 else{
                     dialogPane.setVisible(false);
+                    //////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
                 }
             }
         }
@@ -805,12 +909,119 @@ public class ServerPage implements Initializable {
                     dialogPane.setVisible(false);
                 }
             }
-
-
+        }
+        else if(dialogButton.getText().equalsIgnoreCase("add role")){
+            String enteredRoleName=dialogTextField.getText();
+            if(enteredRoleName.equals("")){
+                errorDialogText.setText("enter a name!");
+            }
+            else{
+                UIRequest uiRequest=new UIRequest(UIRequestCode.CHECK_ROLE);
+                uiRequest.addData("role",enteredRoleName);
+                UIResponse uiResponse=Client.process(uiRequest);
+                boolean isExist= (boolean) uiResponse.getData("exist");
+                if(isExist){
+                    dialogText.setText("Enter username");
+                    dialogButton.setText("Assign Role");
+                    errorDialogText.setText("");
+                    dialogTextField.setText("");
+                    String enteredUsername=dialogTextField.getText();
+                    if(enteredUsername.equals("")){
+                        errorDialogText.setText("enter a name!");
+                    }
+                    else{
+                        UIRequest uiRequest1=new UIRequest(UIRequestCode.ASSIGN_EXIST_ROLE);
+                        uiRequest1.addData("role",enteredRoleName);
+                        uiRequest1.addData("name",enteredUsername);
+                        UIResponse uiResponse1=Client.process(uiRequest1);
+                        if(uiResponse1.getCode()==UIResponseCode.NOT_EXIST){
+                            errorDialogText.setText("Invalid Username");
+                        }
+                        else if(uiResponse1.getCode()==UIResponseCode.BEFORE_IN_ROLE){
+                            errorDialogText.setText(enteredUsername+" has this role!");
+                        }
+                        else{
+                            roleDialog.setVisible(false);
+                        }
+                    }
+                }
+                else{
+                    dialogPane.setVisible(false);
+                    roleDialog.setVisible(true);
+                    roleDialogText1.setText(enteredRoleName+" is a new Role!");
+                    roleDialogText2.setText("Select permissions");
+                }
+            }
+        }
+    }
+    @FXML
+    void exitRoleDialogClick(MouseEvent event) {
+      roleDialog.setVisible(false);
+    }
+    @FXML
+    void doneRoleDialogClick(MouseEvent event) throws IOException, ClassNotFoundException {
+        HashSet<Integer> tmpPermission = new HashSet<>();
+        if(createChannelCheckBox.isSelected()){
+            tmpPermission.add(1);
+        }
+        if(removeChannelCheckBox.isSelected()){
+            tmpPermission.add(2);
+        }
+        if(removeMemberCheckBox.isSelected()){
+            tmpPermission.add(3);
+        }
+        if(banMemberCheckBox.isSelected()){
+            tmpPermission.add(4);
+        }
+        if(limitMemberCheckBox.isSelected()){
+            tmpPermission.add(5);
+        }
+        if(changeNameCheckBox.isSelected()){
+            tmpPermission.add(6);
+        }
+        if(chatHistoryCheckBox.isSelected()){
+            tmpPermission.add(7);
+        }
+        if(pinMessageCheckBox.isSelected()){
+            tmpPermission.add(8);
+        }
+        UIRequest uiRequest=new UIRequest(UIRequestCode.ROLL_AND_PERMISSIONS);
+        String s=roleDialogText1.getText();
+        String[] sArr=s.split(" ");
+        String roleName=sArr[0];
+        uiRequest.addData("role",roleName);
+        uiRequest.addData("permissions",tmpPermission);
+        Client.process(uiRequest);
+        roleDialog.setVisible(false);
+        assignRole(roleName);
+    }
+    public void assignRole(String roleName) throws IOException, ClassNotFoundException {
+        dialogPane.setVisible(true);
+        dialogText.setText("Enter Username");
+        dialogButton.setText("Assign Role");
+        errorDialogText.setText("");
+        dialogTextField.setText("");
+        String enteredUsername=dialogTextField.getText();
+        if(enteredUsername.equals("")){
+            errorDialogText.setText("enter a username!");
+        }
+        else{
+            UIRequest uiRequest=new UIRequest(UIRequestCode.ASSIGN_ROLE);
+            uiRequest.addData("role",roleName);
+            uiRequest.addData("name",username);
+            UIResponse uiResponse=Client.process(uiRequest);
+            if(uiResponse.getCode()==UIResponseCode.NOT_EXIST){
+                errorDialogText.setText("Invalid Username");
+            }
+            else if(uiResponse.getCode()==UIResponseCode.BEFORE_IN_ROLE){
+                errorDialogText.setText(enteredUsername+" has this role!");
+            }
+            else{
+                dialogPane.setVisible(false);
+            }
         }
 
     }
-
-    }
+}
 
 

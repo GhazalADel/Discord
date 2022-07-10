@@ -792,6 +792,146 @@ public class ClientHandler implements Runnable {
                 }
                 discordServers.remove(totalIndex);
             }
+            //check is role exist or not
+            else if(command.getCode()==RequestCode.CHECK_ROLE){
+                String name= (String) command.getData("name");
+                int index=0;
+                int userIndex=findUserIndex();
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                boolean isExist=false;
+                for (Role r:users.get(userIndex).getServers().get(index).getServerRoles()){
+                    if(r.getName().equalsIgnoreCase(name)){
+                        isExist=true;
+                        break;
+                    }
+                }
+                Response response=new Response(ResponseCode.SUCCESSFUL);
+                response.addData("exist",isExist);
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            //assign a role to a user
+            else if(command.getCode()==RequestCode.ASSIGN_ROLE){
+                String username= (String) command.getData("username");
+                int index=0;
+                int userIndex=findUserIndex();
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                String roleName= (String) command.getData("roleName");
+                Response response;
+                User u=findUser(username);
+                if(u==null){
+                    response=new Response(ResponseCode.NOT_EXIST);
+                }
+                else{
+                    boolean beforeInRole=false;
+                    for (Role role:user.getServers().get(index).getServerRoles()){
+                        if(role.getName().equalsIgnoreCase(roleName)){
+                            for (User user1:role.getUsers()){
+                                if(user1.getUsername().equalsIgnoreCase(username)){
+                                    beforeInRole=true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (beforeInRole) {
+                        response=new Response(ResponseCode.BEFORE_IN_ROLE);
+                    }
+                    else{
+                        int roleIndex=-1;
+                        for (int i = 0; i < user.getServers().get(index).getServerRoles().size(); i++) {
+                            if(user.getServers().get(index).getServerRoles().get(i).getName().equalsIgnoreCase(roleName)){
+                                roleIndex=i;
+                                break;
+                            }
+                        }
+                        int userIndex2=-1;
+                        for (int i = 0; i < users.size(); i++) {
+                            if(users.get(i).getUsername().equalsIgnoreCase(username)){
+                                userIndex=i;
+                                break;
+                            }
+                        }
+                        user.getServers().get(index).getServerRoles().get(roleIndex).getUsers().add(users.get(userIndex2));
+                        boolean haveServer=false;
+                        for (DiscordServer d: users.get(userIndex2).getServers()){
+                            if(d.getName().equalsIgnoreCase(user.getServers().get(index).getName())){
+                                haveServer=true;
+                                break;
+                            }
+                        }
+                        if(!haveServer){
+                            users.get(userIndex).getServers().add(user.getServers().get(index));
+//                            Notification notification=new Notification("welcome to "+ user.getServers().get(index).getName()+" server!", LocalDateTime.now());
+//                            users.get(userIndex).getNotifications().add(notification);
+                        }
+                        response=new Response(ResponseCode.ROLE_ASSIGNED);
+                    }
+                }
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            //add a new role with selected permissions
+            else if(command.getCode()==RequestCode.ROLL_AND_PERMISSIONS){
+                HashSet<Integer> permissions= (HashSet<Integer>) command.getData("permissions");
+                String roleName= (String) command.getData("roleName");
+                int index=0;
+                int userIndex=findUserIndex();
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                Role role=new Role(roleName);
+                for (Integer i:permissions) {
+                    role.getPermissionIndexes().add(i);
+                    switch (i){
+                        case 1:
+                            role.getRolePermissions().add(Permission.CREATE_CHANNEL);
+                            break;
+                        case 2:
+                            role.getRolePermissions().add(Permission.REMOVE_CHANNEL);
+                            break;
+                        case 3:
+                            role.getRolePermissions().add(Permission.REMOVE_MEMBER_FROM_SERVER);
+                            break;
+                        case 4:
+                            role.getRolePermissions().add(Permission.BAN_A_MEMBER);
+                            break;
+                        case 5:
+                            role.getRolePermissions().add(Permission.LIMIT_MEMBER);
+                            break;
+                        case 6:
+                            role.getRolePermissions().add(Permission.CHANGE_SERVER_NAME);
+                            break;
+                        case 7:
+                            role.getRolePermissions().add(Permission.SEE_CHAT_HISTORY);
+                            break;
+                        case 8:
+                            role.getRolePermissions().add(Permission.PIN_MESSAGE);
+                            break;
+
+                    }
+                }
+                user.getServers().get(index).getServerRoles().add(role);
+            }
 
 
 
@@ -1081,127 +1221,9 @@ public class ClientHandler implements Runnable {
 //                    throw new RuntimeException(e);
 //                }
 //            }
-//            //check is role exist or not
-//            else if(command.getCode()==RequestCode.CHECK_ROLE){
-//                String name= (String) command.getData("name");
-//                int index= (int) command.getData("index");
-//                boolean isExist=false;
-//                for (Role r:user.getServers().get(index).getServerRoles()){
-//                    if(r.getName().equalsIgnoreCase(name)){
-//                        isExist=true;
-//                        break;
-//                    }
-//                }
 //
-//                Response response=new Response(ResponseCode.SUCCESSFUL);
-//                response.addData("exist",isExist);
-//                try {
-//                    objectOutputStream.writeObject(response);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//            //assign a role to a user
-//            else if(command.getCode()==RequestCode.ASSIGN_ROLE){
-//                String username= (String) command.getData("username");
-//                int index= (int) command.getData("index");
-//                String roleName= (String) command.getData("roleName");
-//                Response response;
-//                User u=findUser(username);
-//                if(u==null){
-//                    response=new Response(ResponseCode.NOT_EXIST);
-//                }
-//                else{
-//                    boolean beforeInRole=false;
-//                    for (Role role:user.getServers().get(index).getServerRoles()){
-//                        if(role.getName().equalsIgnoreCase(roleName)){
-//                            for (User user1:role.getUsers()){
-//                                if(user1.getUsername().equalsIgnoreCase(username)){
-//                                    beforeInRole=true;
-//                                    break;
-//                                }
-//                            }
-//                        }
-//                    }
-//                    if (beforeInRole) {
-//                        response=new Response(ResponseCode.BEFORE_IN_ROLE);
-//                    }
-//                    else{
-//                        int roleIndex=-1;
-//                        for (int i = 0; i < user.getServers().get(index).getServerRoles().size(); i++) {
-//                            if(user.getServers().get(index).getServerRoles().get(i).getName().equalsIgnoreCase(roleName)){
-//                                roleIndex=i;
-//                                break;
-//                            }
-//                        }
-//                        int userIndex=-1;
-//                        for (int i = 0; i < users.size(); i++) {
-//                            if(users.get(i).getUsername().equalsIgnoreCase(username)){
-//                                userIndex=i;
-//                                break;
-//                            }
-//                        }
-//                        user.getServers().get(index).getServerRoles().get(roleIndex).getUsers().add(users.get(userIndex));
-//                        boolean haveServer=false;
-//                        for (DiscordServer d: users.get(userIndex).getServers()){
-//                            if(d.getName().equalsIgnoreCase(user.getServers().get(index).getName())){
-//                                haveServer=true;
-//                                break;
-//                            }
-//                        }
-//                        if(!haveServer){
-//                            users.get(userIndex).getServers().add(user.getServers().get(index));
-//                            Notification notification=new Notification("welcome to "+ user.getServers().get(index).getName()+" server!", LocalDateTime.now());
-//                            users.get(userIndex).getNotifications().add(notification);
-//                        }
-//                        response=new Response(ResponseCode.ROLE_ASSIGNED);
-//                    }
-//                }
-//                try {
-//                    objectOutputStream.writeObject(response);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//            //add a new role with selected permissions
-//            else if(command.getCode()==RequestCode.ROLL_AND_PERMISSIONS){
-//                HashSet<Integer> permissions= (HashSet<Integer>) command.getData("permissions");
-//                String roleName= (String) command.getData("roleName");
-//                int index= (int) command.getData("index");
-//                Role role=new Role(roleName);
-//                for (Integer i:permissions) {
-//                    role.getPermissionIndexes().add(i);
-//                    switch (i){
-//                        case 1:
-//                            role.getRolePermissions().add(Permission.CREATE_CHANNEL);
-//                            break;
-//                        case 2:
-//                            role.getRolePermissions().add(Permission.REMOVE_CHANNEL);
-//                            break;
-//                        case 3:
-//                            role.getRolePermissions().add(Permission.REMOVE_MEMBER_FROM_SERVER);
-//                            break;
-//                        case 4:
-//                            role.getRolePermissions().add(Permission.BAN_A_MEMBER);
-//                            break;
-//                        case 5:
-//                            role.getRolePermissions().add(Permission.LIMIT_MEMBER_MESSAGE);
-//                            break;
-//                        case 6:
-//                            role.getRolePermissions().add(Permission.CHANGING_SERVER_NAME);
-//                            break;
-//                        case 7:
-//                            role.getRolePermissions().add(Permission.SEE_CHAT_HISTORY);
-//                            break;
-//                        case 8:
-//                            role.getRolePermissions().add(Permission.PIN_MESSAGE);
-//                            break;
 //
-//                    }
-//                }
-//                user.getServers().get(index).getServerRoles().add(role);
 //
-//            }
 //            //remove a member form server
 //            else if(command.getCode()==RequestCode.REMOVE_MEMBER){
 //                String username= (String) command.getData("username");

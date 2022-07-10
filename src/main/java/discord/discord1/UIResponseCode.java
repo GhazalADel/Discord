@@ -27,6 +27,7 @@ public enum UIResponseCode {
     DUPLICATED,
     NOT_IN_SERVER,
     LIMIT_BEFORE,
-    BAN_BEFORE
+    BAN_BEFORE,
+    BEFORE_IN_ROLE
 
 }

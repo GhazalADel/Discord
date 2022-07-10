@@ -264,6 +264,59 @@ public class Client {
         else if(uiRequest.getCode()==UIRequestCode.REMOVE_SERVER){
             removeServer();
         }
+        else if(uiRequest.getCode()==UIRequestCode.CHECK_ROLE){
+            String roleName= (String) uiRequest.getData("role");
+            Request request = new Request(RequestCode.CHECK_ROLE);
+            request.addData("name", roleName);
+            objectOutputStream.writeObject(request);
+            Response response = (Response) objectInputStream.readObject();
+            boolean isExist = (boolean) response.getData("exist");
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            uiResponse.addData("exist",isExist);
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.ASSIGN_EXIST_ROLE){
+            String roleName= (String) uiRequest.getData("role");
+            String username= (String) uiRequest.getData("name");
+            Request request1 = new Request(RequestCode.ASSIGN_ROLE);
+            request1.addData("username", username);
+            request1.addData("roleName", roleName);
+            objectOutputStream.writeObject(request1);
+            Response response2 = (Response) objectInputStream.readObject();
+            if (response2.getCode() == ResponseCode.NOT_EXIST) {
+                uiResponse=new UIResponse(UIResponseCode.NOT_EXIST);
+            } else if (response2.getCode() == ResponseCode.BEFORE_IN_ROLE) {
+                uiResponse=new UIResponse(UIResponseCode.BEFORE_IN_ROLE);
+            } else if (response2.getCode() == ResponseCode.ROLE_ASSIGNED) {
+                uiResponse=new UIResponse(UIResponseCode.OK);
+            }
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.ROLL_AND_PERMISSIONS) {
+            String roleName = (String) uiRequest.getData("role");
+            HashSet<Integer> tmpPermission = (HashSet<Integer>) uiRequest.getData("permissions");
+            Request request1 = new Request(RequestCode.ROLL_AND_PERMISSIONS);
+            request1.addData("permissions", tmpPermission);
+            request1.addData("roleName", roleName);
+            objectOutputStream.writeObject(request1);
+        }
+        else if(uiRequest.getCode()==UIRequestCode.ASSIGN_ROLE) {
+            String roleName = (String) uiRequest.getData("role");
+            String username= (String) uiRequest.getData("name");
+            Request request2 = new Request(RequestCode.ASSIGN_ROLE);
+            request2.addData("username", username);
+            request2.addData("roleName", roleName);
+            objectOutputStream.writeObject(request2);
+            Response response2 = (Response) objectInputStream.readObject();
+            if (response2.getCode() == ResponseCode.NOT_EXIST) {
+                uiResponse=new UIResponse(UIResponseCode.NOT_EXIST);
+            } else if (response2.getCode() == ResponseCode.BEFORE_IN_ROLE) {
+                uiResponse=new UIResponse(UIResponseCode.BEFORE_IN_ROLE);
+            } else if (response2.getCode() == ResponseCode.ROLE_ASSIGNED) {
+                uiResponse=new UIResponse(UIResponseCode.OK);
+            }
+            return uiResponse;
+        }
 
         return null;
     }
@@ -635,14 +688,9 @@ public class Client {
         Request request = new Request(RequestCode.REMOVE_SERVER);
         objectOutputStream.writeObject(request);
     }
-
-
-
-
-
-
-
 }
+
+
 //
 //
 //    /**
@@ -843,77 +891,7 @@ public class Client {
 //
 
 
-//    /**
-//     * This method receive necessary information and check them for log in
-//     *
-//     * *@param -
-//     * *@return Nothing
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     */
-//    public int logIn() throws IOException, ClassNotFoundException {
-//        int logInReturn = 0;
-//        //-1:back to first menu
-//        //0:get input again
-//        //1:input got successfully
-//        String username = "";
-//        User u = null;
-//        while (logInReturn == 0) {
-//            System.out.println("Enter your username:");
-//            System.out.println("enter 0 to back to first menu.");
-//            username = scan.nextLine();
-//            if (username.equals("0")) {
-//                logInReturn = -1;
-//                return logInReturn;
-//            }
-//            Request request = new Request(RequestCode.FIND_USER_BY_USERNAME);
-//            request.addData("username", username);
-//            objectOutputStream.writeObject(request);
-//            Response response = (Response) objectInputStream.readObject();
-//            u = (User) response.getData("user");
-//
-//            if (u != null) {
-////                Request request1 = new Request(RequestCode.LOG_IN_ONCE);
-////                request1.addData("username", username);
-////                objectOutputStream.writeObject(request1);
-////                Response response1 = (Response) objectInputStream.readObject();
-////                boolean logInOnce = (boolean) response1.getData("once");
-////                if (logInOnce) {
-////                    System.out.println(u.getUsername() + " logged in before!");
-////                    return -1;
-////                }
-//                logInReturn = 1;
-//                break;
-//            }
-//            else {
-//                System.out.println("we don't have an account with this username...try again\n\n");
-//            }
-//
-//        }
-//        String password = "";
-//        logInReturn = 0;
-//        while (logInReturn == 0) {
-//            System.out.println("Enter your password:");
-//            System.out.println("enter 0 to back to first menu.");
-//            password = scan.nextLine();
-//            if (password.equals("0")) {
-//                logInReturn = -1;
-//                return logInReturn;
-//            }
-//            if (u.getPassword().equalsIgnoreCase(password)) {
-//                Request request = new Request(RequestCode.LOG_IN);
-//                request.addData("user", u);
-//                objectOutputStream.writeObject(request);
-//                logInReturn = 1;
-//                System.out.println("you logged in successfully!");
-//            } else {
-//                System.out.println("Incorrect password...try again\n\n");
-//                continue;
-//            }
-//        }
-//        return logInReturn;
-//    }
-//
+
 //    /**
 //     * This method shows user;s friends
 //     *
@@ -1040,90 +1018,7 @@ public class Client {
 //
 //    }
 //
-//    /**
-//     * This method used to change user's password
-//     *
-//     * *@param -
-//     * *@return Nothing
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     */
-//    public void changePassword() throws IOException, ClassNotFoundException {
-//        while (true) {
-//            System.out.println("enter your current password:");
-//            System.out.println("enter 0 to back to menu:");
-//            String inputPassword = scan.nextLine();
-//            if (inputPassword.equals("0")) {
-//                break;
-//            }
-//            Request request = new Request(RequestCode.CHECK_PASSWORD);
-//            request.addData("password", inputPassword);
-//            objectOutputStream.writeObject(request);
-//            Response response = (Response) objectInputStream.readObject();
-//            boolean isValid = (boolean) response.getData("valid");
-//            if (isValid ) {
-//                System.out.println("enter new password:");
-//                String newPassword = scan.nextLine();
-//                if (newPassword.length() < 8) {
-//                    System.out.println("password should have at least 8 characters...try again");
-//                }
-//                else {
-//                    boolean check = checkPassword(newPassword);
-//                    if (check) {
-//                        System.out.println("enter confirm password:");
-//                        String confirmNewPassword = scan.nextLine();
-//                        if (confirmNewPassword.equalsIgnoreCase(newPassword)) {
-//                            Request request1 = new Request(RequestCode.CHANGE_PASSWORD);
-//                            request1.addData("password", newPassword);
-//                            objectOutputStream.writeObject(request1);
-//                            System.out.println("password changed successfully");
-//                            break;
-//                        } else {
-//                            System.out.println("password and confirm password are not equal...try again");
-//                        }
-//                    } else {
-//                        System.out.println("Invalid format...try again");
-//                    }
-//                }
 //
-//            } else {
-//                System.out.println("Incorrect password...try again");
-//            }
-//        }
-//    }
-//
-//    /**
-//     * This method used to check entered password validation
-//     *
-//     * *@param password
-//     * *@return boolean This returns isValid
-//     */
-//    public boolean checkPassword(String password) {
-//        boolean isValid = true;
-//        boolean flag = true;
-//        boolean haveNumber = false;
-//        boolean haveLetter = false;
-//        for (int i = 0; i < password.length(); i++) {
-//            if ((int) (password.charAt(i)) < 48 || ((int) (password.charAt(i)) >= 58 && (int) (password.charAt(i)) <= 64) || ((int) (password.charAt(i)) >= 91 && (int) (password.charAt(i)) <= 96) || (int) (password.charAt(i)) > 123) {
-//                flag = false;
-//                break;
-//            }
-//            if (!haveNumber) {
-//                if ((int) (password.charAt(i)) >= 48 && (int) (password.charAt(i)) <= 57) {
-//                    haveNumber = true;
-//                }
-//            }
-//            if (!haveLetter) {
-//                if (((int) (password.charAt(i)) >= 65 && (int) (password.charAt(i)) <= 90) || ((int) (password.charAt(i)) >= 97 && (int) (password.charAt(i)) <= 122)) {
-//                    haveLetter = true;
-//                }
-//            }
-//        }
-//        if (!flag || !haveNumber || !haveLetter) {
-//            isValid = false;
-//        }
-//        return isValid;
-//    }
 //
 //    /**
 //     * This method used to build a new server in program
@@ -1432,124 +1327,7 @@ public class Client {
 //
 //
 //
-//    /**
-//     * This method used to add a new role and select permissions or add a member to an existing role
-//     *
-//     * *@param -
-//     * *@return Nothing
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     */
-//    public void addRole(int index) throws IOException, ClassNotFoundException {
-//        System.out.println("Enter name of role:");
-//        System.out.println("enter 0 to back to menu");
-//        String roleName = scan.nextLine();
-//        if (roleName.equals("0")) {
-//            return;
-//        }
-//        Request request = new Request(RequestCode.CHECK_ROLE);
-//        request.addData("name", roleName);
-//        request.addData("index", index);
-//        objectOutputStream.writeObject(request);
-//        Response response = (Response) objectInputStream.readObject();
-//        boolean isExist = (boolean) response.getData("exist");
-//        if (isExist) {
-//            //no permission
-//            System.out.println("enter username of someone you want take this role:");
-//            System.out.println("enter 0 to back to menu");
-//            String username = scan.nextLine();
-//            if (username.equals("0")) {
-//                return;
-//            }
-//            Request request1 = new Request(RequestCode.ASSIGN_ROLE);
-//            request1.addData("username", username);
-//            request1.addData("index", index);
-//            request1.addData("roleName", roleName);
-//            objectOutputStream.writeObject(request1);
-//            Response response2 = (Response) objectInputStream.readObject();
-//            if (response2.getCode() == ResponseCode.NOT_EXIST) {
-//                System.out.println(username + " doesn't exist!");
-//            } else if (response2.getCode() == ResponseCode.BEFORE_IN_ROLE) {
-//                System.out.println(username + " has this role!");
-//            } else if (response2.getCode() == ResponseCode.ROLE_ASSIGNED) {
-//                System.out.println("role assigned successfully");
-//            }
-//        } else {
-//            MenuHandler.permissionList();
-//            System.out.println("how many permission?");
-//            int permissionNum = 0;
-//            try {
-//                permissionNum = scan.nextInt();
-//                scan.nextLine();
-//            } catch (Exception e) {
-//                System.out.println("Invalid input");
-//                return;
-//            }
-//            if (permissionNum < 0 || permissionNum > 8) {
-//                System.out.println("Invalid input number");
-//            }
-//            else if (permissionNum == 0) {
-//                return;
-//            }
-//            else {
-//                int counter = 1;
-//                HashSet<Integer> tmpPermission = new HashSet<>();
-//                int index2 = 0;
-//                while (index2 < permissionNum) {
-//                    System.out.println("#permission " + counter + " : ");
-//                    int selectedPermission = 0;
-//                    try {
-//                        selectedPermission = scan.nextInt();
-//                        scan.nextLine();
-//                    } catch (Exception e) {
-//                        System.out.println("Invalid Input");
-//                        continue;
-//                    }
-//                    if (selectedPermission == 0) {
-//                        return;
-//                    }
-//                    if (selectedPermission < 0 || selectedPermission > 8) {
-//                        System.out.println("Invalid input number");
-//                        continue;
-//                    }
-//                    int sizeBefore = tmpPermission.size();
-//                    tmpPermission.add(selectedPermission);
-//                    int sizeAfter = tmpPermission.size();
-//                    if (sizeAfter == sizeBefore) {
-//                        System.out.println("this permission has selected!");
-//                    } else {
-//                        counter++;
-//                        index2++;
-//                    }
-//                }
-//                Request request1 = new Request(RequestCode.ROLL_AND_PERMISSIONS);
-//                request1.addData("permissions", tmpPermission);
-//                request1.addData("roleName", roleName);
-//                request1.addData("index", index);
-//                objectOutputStream.writeObject(request1);
-//                System.out.println("enter username of someone you want take this role:");
-//                System.out.println("enter 0 to back to menu");
-//                String username = scan.nextLine();
-//                if (username.equals("0")) {
-//                    return;
-//                }
-//                Request request2 = new Request(RequestCode.ASSIGN_ROLE);
-//                request2.addData("username", username);
-//                request2.addData("index", index);
-//                request2.addData("roleName", roleName);
-//                objectOutputStream.writeObject(request2);
-//                Response response2 = (Response) objectInputStream.readObject();
-//                if (response2.getCode() == ResponseCode.NOT_EXIST) {
-//                    System.out.println(username + " doesn't exist!");
-//                } else if (response2.getCode() == ResponseCode.BEFORE_IN_ROLE) {
-//                    System.out.println(username + " have this role!");
-//                } else if (response2.getCode() == ResponseCode.ROLE_ASSIGNED) {
-//                    System.out.println("role assigned successfully");
-//                }
-//            }
 //
-//        }
-//    }
 //
 //    /**
 //     * This method used to remove a member by admin
