@@ -253,9 +253,9 @@
                   </Pane>
                   <Pane fx:id="roleDialog" layoutX="127.0" layoutY="21.0" prefHeight="366.0" prefWidth="251.0" style="-fx-background-color: #2f3136; -fx-background-radius: 6px;">
                      <children>
-                        <Text fx:id="roleDialogText1" fill="#f2f2f2" layoutX="80.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Role!">
+                        <Text fx:id="roleDialogText1" fill="#f2f2f2" layoutX="87.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Role!">
                            <font>
-                              <Font size="20.0" />
+                              <Font size="17.0" />
                            </font>
                         </Text>
                         <Text fx:id="roleDialogText2" fill="#5865f2" layoutX="41.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select Permissions">

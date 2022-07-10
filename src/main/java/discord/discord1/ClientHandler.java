@@ -932,6 +932,51 @@ public class ClientHandler implements Runnable {
                 }
                 user.getServers().get(index).getServerRoles().add(role);
             }
+            else if(command.getCode()==RequestCode.GET_ROLE_PERMISSIONS){
+                String roleName= (String) command.getData("role");
+                int userIndex=findUserIndex();
+                int index=0;
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                ArrayList<Permission> permissions=null;
+                for (Role r:users.get(userIndex).getServers().get(index).getServerRoles()){
+                    if(r.getName().equalsIgnoreCase(roleName)){
+                        permissions=r.getRolePermissions();
+                        break;
+                    }
+                }
+                Response response=new Response(ResponseCode.REQUEST_OK);
+                response.addData("permissions",permissions);
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            else if(command.getCode()==RequestCode.CHANGE_ROLE_PERMISSION){
+                String roleName= (String) command.getData("role");
+                ArrayList<Integer> permissionIndexes= (ArrayList<Integer>) command.getData("permissionsIndex");
+                ArrayList<Permission> permissionsArr= (ArrayList<Permission>) command.getData("permissionsArr");
+                int userIndex=findUserIndex();
+                int index=0;
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                for (int i = 0; i <users.get(userIndex).getServers().get(index).getServerRoles().size(); i++) {
+                    if(users.get(userIndex).getServers().get(index).getServerRoles().get(i).getName().equalsIgnoreCase(roleName)){
+                        users.get(userIndex).getServers().get(index).getServerRoles().get(i).setPermissionIndexes(permissionIndexes);
+                        users.get(userIndex).getServers().get(index).getServerRoles().get(i).setRolePermissions(permissionsArr);
+                    }
+                }
+
+            }
 
 
 

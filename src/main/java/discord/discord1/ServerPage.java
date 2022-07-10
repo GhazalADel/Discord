@@ -20,7 +20,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -579,6 +578,10 @@ public class ServerPage implements Initializable {
                     chatBox.setVisible(false);
                     addRole();
                 }
+                else if(settingMenuItems.get(i).getText().equalsIgnoreCase("change role")){
+                    chatBox.setVisible(false);
+                    changeRole();
+                }
 
 
 
@@ -667,6 +670,13 @@ public class ServerPage implements Initializable {
         dialogPane.setVisible(true);
         dialogText.setText("Enter Role name");
         dialogButton.setText("add role");
+        errorDialogText.setText("");
+        dialogTextField.setText("");
+    }
+    public void changeRole(){
+        dialogPane.setVisible(true);
+        dialogText.setText("Enter Role name");
+        dialogButton.setText("change permissions");
         errorDialogText.setText("");
         dialogTextField.setText("");
     }
@@ -782,14 +792,15 @@ public class ServerPage implements Initializable {
                     /////////////////////////////////////////////////////////////////////////////
                     /////////////////////////////////////////////////////////////////////////////
                     /////////////////////////////////////////////////////////////////////////////
+                    ////////////////////////////////////
+                    // ///////////////////////////////////////
                     /////////////////////////////////////////////////////////////////////////////
                     /////////////////////////////////////////////////////////////////////////////
                     /////////////////////////////////////////////////////////////////////////////
                     /////////////////////////////////////////////////////////////////////////////
                     /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
+                    ////////////////////////////////////.////////////////////////////////////////
+                    /////////////////////////////////.///////////////////////////////////////////
                     /////////////////////////////////////////////////////////////////////////////
                     /////////////////////////////////////////////////////////////////////////////
                     /////////////////////////////////////////////////////////////////////////////
@@ -953,6 +964,59 @@ public class ServerPage implements Initializable {
                 }
             }
         }
+        else if(dialogButton.getText().equalsIgnoreCase("change permissions")){
+            String enteredRoleName=dialogTextField.getText();
+            if(enteredRoleName.equals("")){
+                errorDialogText.setText("enter a name!");
+            }
+            else{
+                UIRequest uiRequest=new UIRequest(UIRequestCode.CHECK_ROLE);
+                uiRequest.addData("role",enteredRoleName);
+                UIResponse uiResponse=Client.process(uiRequest);
+                boolean isExist= (boolean) uiResponse.getData("exist");
+                if(!isExist){
+                    errorDialogText.setText("Invalid Role name");
+                }
+                else{
+                    UIRequest uiRequest1=new UIRequest(UIRequestCode.GET_ROLE_PERMISSIONS);
+                    uiRequest1.addData("role",enteredRoleName);
+                    UIResponse uiResponse1=Client.process(uiRequest1);
+                    ArrayList<Permission> rolePermssions= (ArrayList<Permission>) uiResponse1.getData("permissions");
+                    for(Permission p:rolePermssions){
+                        if(p==Permission.CREATE_CHANNEL){
+                            createChannelCheckBox.setSelected(true);
+                        }
+                        else if(p==Permission.REMOVE_CHANNEL){
+                            removeChannelCheckBox.setSelected(true);
+                        }
+                        else if(p==Permission.REMOVE_MEMBER_FROM_SERVER){
+                            removeMemberCheckBox.setSelected(true);
+                        }
+                        else if(p==Permission.BAN_A_MEMBER){
+                            banMemberCheckBox.setSelected(true);
+                        }
+                        else if(p==Permission.LIMIT_MEMBER){
+                            limitMemberCheckBox.setSelected(true);
+                        }
+                        else if(p==Permission.CHANGE_SERVER_NAME){
+                            changeNameCheckBox.setSelected(true);
+                        }
+                        else if(p==Permission.SEE_CHAT_HISTORY){
+                            chatHistoryCheckBox.setSelected(true);
+                        }
+                        else{
+                            pinMessageCheckBox.setSelected(true);
+                        }
+                    }
+                    dialogPane.setVisible(false);
+                    roleDialog.setVisible(true);
+                    roleDialogText1.setText(enteredRoleName);
+                    roleDialogText2.setText("Select permissions");
+
+                }
+
+            }
+        }
     }
     @FXML
     void exitRoleDialogClick(MouseEvent event) {
@@ -961,39 +1025,69 @@ public class ServerPage implements Initializable {
     @FXML
     void doneRoleDialogClick(MouseEvent event) throws IOException, ClassNotFoundException {
         HashSet<Integer> tmpPermission = new HashSet<>();
+        ArrayList<Integer> permissionIndexes=new ArrayList<>();
+        ArrayList<Permission> permissionsArr=new ArrayList<>();
         if(createChannelCheckBox.isSelected()){
             tmpPermission.add(1);
+            permissionIndexes.add(1);
+            permissionsArr.add(Permission.CREATE_CHANNEL);
         }
         if(removeChannelCheckBox.isSelected()){
             tmpPermission.add(2);
+            permissionIndexes.add(2);
+            permissionsArr.add(Permission.REMOVE_CHANNEL);
         }
         if(removeMemberCheckBox.isSelected()){
             tmpPermission.add(3);
+            permissionIndexes.add(3);
+            permissionsArr.add(Permission.REMOVE_MEMBER_FROM_SERVER);
         }
         if(banMemberCheckBox.isSelected()){
             tmpPermission.add(4);
+            permissionIndexes.add(4);
+            permissionsArr.add(Permission.BAN_A_MEMBER);
         }
         if(limitMemberCheckBox.isSelected()){
             tmpPermission.add(5);
+            permissionIndexes.add(5);
+            permissionsArr.add(Permission.LIMIT_MEMBER);
         }
         if(changeNameCheckBox.isSelected()){
             tmpPermission.add(6);
+            permissionIndexes.add(6);
+            permissionsArr.add(Permission.CHANGE_SERVER_NAME);
+
         }
         if(chatHistoryCheckBox.isSelected()){
             tmpPermission.add(7);
+            permissionIndexes.add(7);
+            permissionsArr.add(Permission.SEE_CHAT_HISTORY);
         }
         if(pinMessageCheckBox.isSelected()){
             tmpPermission.add(8);
+            permissionIndexes.add(8);
+            permissionsArr.add(Permission.PIN_MESSAGE);
         }
-        UIRequest uiRequest=new UIRequest(UIRequestCode.ROLL_AND_PERMISSIONS);
         String s=roleDialogText1.getText();
         String[] sArr=s.split(" ");
-        String roleName=sArr[0];
-        uiRequest.addData("role",roleName);
-        uiRequest.addData("permissions",tmpPermission);
-        Client.process(uiRequest);
-        roleDialog.setVisible(false);
-        assignRole(roleName);
+        if(sArr.length==1){
+            UIRequest uiRequest=new UIRequest(UIRequestCode.CHANGE_PERMISSION);
+            String roleName=sArr[0];
+            uiRequest.addData("role",roleName);
+            uiRequest.addData("permissionsIndex",permissionIndexes);
+            uiRequest.addData("permissionsArr",permissionsArr);
+            Client.process(uiRequest);
+            roleDialog.setVisible(false);
+        }
+        else{
+            UIRequest uiRequest=new UIRequest(UIRequestCode.ROLL_AND_PERMISSIONS);
+            String roleName=sArr[0];
+            uiRequest.addData("role",roleName);
+            uiRequest.addData("permissions",tmpPermission);
+            Client.process(uiRequest);
+            roleDialog.setVisible(false);
+            assignRole(roleName);
+        }
     }
     public void assignRole(String roleName) throws IOException, ClassNotFoundException {
         dialogPane.setVisible(true);

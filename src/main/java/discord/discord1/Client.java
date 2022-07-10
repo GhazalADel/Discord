@@ -317,6 +317,27 @@ public class Client {
             }
             return uiResponse;
         }
+        else if(uiRequest.getCode()==UIRequestCode.GET_ROLE_PERMISSIONS){
+            String roleName= (String) uiRequest.getData("role");
+            Request request=new Request(RequestCode.GET_ROLE_PERMISSIONS);
+            request.addData("role",roleName);
+            objectOutputStream.writeObject(request);
+            Response resultResponse= (Response) objectInputStream.readObject();
+            ArrayList<Permission> permissions= (ArrayList<Permission>) resultResponse.getData("permissions");
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            uiResponse.addData("permissions",permissions);
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.CHANGE_PERMISSION){
+            String roleName= (String) uiRequest.getData("role");
+            ArrayList<Integer> permissionIndexes= (ArrayList<Integer>) uiRequest.getData("permissionsIndex");
+            ArrayList<Permission> permissionsArr= (ArrayList<Permission>) uiRequest.getData("permissionsArr");
+            Request request=new Request(RequestCode.CHANGE_ROLE_PERMISSION);
+            request.addData("name",roleName);
+            request.addData("permissionIndexes",permissionIndexes);
+            request.addData("permissionArr",permissionsArr);
+            objectOutputStream.writeObject(request);
+        }
 
         return null;
     }
@@ -1392,201 +1413,6 @@ public class Client {
 //
 //
 //
-//    /**
-//     * This method used to change role's permissions(add or remove some permissions) by admin
-//     * *@param index index of DiscordServer
-//     * *@return Nothing
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     */
-//    public void changeRole(int index) throws IOException, ClassNotFoundException {
-//        System.out.println("Enter role name:");
-//        String roleName = scan.nextLine();
-//        Request request = new Request(RequestCode.CHECK_ROLE);
-//        request.addData("name", roleName);
-//        request.addData("index", index);
-//        objectOutputStream.writeObject(request);
-//        Response response = (Response) objectInputStream.readObject();
-//        boolean isExist = (boolean) response.getData("exist");
-//        if (!isExist) {
-//            System.out.println("There is no " + roleName + " role in this server!");
-//            return;
-//        }
-//        System.out.println("Permissions:");
-//        Request request1 = new Request(RequestCode.ROLE_PERMISSIONS);
-//        request1.addData("index", index);
-//        request1.addData("name", roleName);
-//        objectOutputStream.writeObject(request1);
-//        Response response1 = (Response) objectInputStream.readObject();
-//        ArrayList<Integer> permissions = (ArrayList<Integer>) response1.getData("permissions");
-//        for (int i = 0; i < permissions.size(); i++) {
-//            System.out.print((i + 1) + ". ");
-//            String strPer = String.valueOf(DiscordServer.allPermissions[permissions.get(i) - 1]);
-//            String[] strPerArr = strPer.split("_");
-//            for (int j = 0; j < strPerArr.length; j++) {
-//                System.out.print(strPerArr[j].toLowerCase(Locale.ROOT) + " ");
-//            }
-//            System.out.println();
-//        }
-//        System.out.println("\n");
-//        System.out.println("1.add permission(s)");
-//        System.out.println("2.remove permission(s)");
-//        System.out.println("0.back");
-//        String input = scan.nextLine();
-//        if (input.equals("0"))
-//            return;
-//        int inputNum = 0;
-//        try {
-//            inputNum = Integer.parseInt(input);
-//        } catch (Exception e) {
-//            System.out.println("Invalid Input");
-//            return;
-//        }
-//        if (inputNum < 0 || inputNum > 2) {
-//            System.out.println("Invalid Input Number");
-//            return;
-//        }
-//        if (inputNum == 1) {
-//            System.out.println("how many permissions you want to add?");
-//            System.out.println("enter 0 to back to menu");
-//            String inputAddPermission = scan.nextLine();
-//            if (inputAddPermission.equals("0")) {
-//                return;
-//            }
-//            int inputAddPermissionNum = 0;
-//            try {
-//                inputAddPermissionNum = Integer.parseInt(inputAddPermission);
-//            } catch (Exception e) {
-//                System.out.println("Invalid Input");
-//                return;
-//            }
-//            if (inputAddPermissionNum < 0) {
-//                System.out.println("Invalid Input number");
-//                return;
-//            }
-//            if (8 - (inputAddPermissionNum + permissions.size()) < 0) {
-//                System.out.println("count of permissions you want to add is out of bound!");
-//                return;
-//            }
-//            ArrayList<Integer> otherPermissionsIndexes = new ArrayList<>();
-//            int i = 0;
-//            for (int j = 0; j < 8; j++) {
-//                if (i < permissions.size()) {
-//                    if (permissions.get(i) != j + 1) {
-//                        otherPermissionsIndexes.add(j + 1);
-//                    } else {
-//                        i++;
-//                    }
-//                } else {
-//                    otherPermissionsIndexes.add(j + 1);
-//                }
-//            }
-//            Collections.sort(otherPermissionsIndexes);
-//            for (int k = 0; k < otherPermissionsIndexes.size(); k++) {
-//                String enumToSting = String.valueOf(DiscordServer.allPermissions[otherPermissionsIndexes.get(k) - 1]);
-//                String[] enumToStringArr = enumToSting.split("_");
-//                System.out.print((k + 1) + ".");
-//                for (int j = 0; j < enumToStringArr.length; j++) {
-//                    System.out.print(enumToStringArr[j] + " ");
-//                }
-//                System.out.println();
-//            }
-//
-//            int selectedPermissions = 1;
-//            HashSet<Integer> tmpPermission = new HashSet<>();
-//            while (selectedPermissions <= inputAddPermissionNum) {
-//                System.out.print("#Permission " + selectedPermissions + " : ");
-//                System.out.println("enter 0 to back to menu");
-//                int selectedPermission = 0;
-//                String str = scan.nextLine();
-//                if (str.equals("0")) {
-//                    return;
-//                }
-//                try {
-//                    selectedPermission = Integer.parseInt(str);
-//                } catch (Exception e) {
-//                    System.out.println("Invalid Input");
-//                    continue;
-//                }
-//                if (selectedPermission < 0 || selectedPermission > otherPermissionsIndexes.size()) {
-//                    System.out.println("Invalid input number");
-//                    continue;
-//                }
-//                int sizeBefore = tmpPermission.size();
-//                tmpPermission.add(selectedPermission);
-//                int sizeAfter = tmpPermission.size();
-//                if (sizeAfter == sizeBefore) {
-//                    System.out.println("this permission has selected!");
-//                } else {
-//                    selectedPermissions++;
-//                }
-//            }
-//            Request request2 = new Request(RequestCode.CHANGE_PERMISSION_ADD);
-//            request2.addData("index", index);
-//            request2.addData("tmpPermission", tmpPermission);
-//            request2.addData("otherPermissions", otherPermissionsIndexes);
-//            request2.addData("name", roleName);
-//            objectOutputStream.writeObject(request2);
-//
-//        } else {
-//            System.out.println("how many permissions you want to remove?");
-//            System.out.println("enter 0 to back to menu");
-//            String inputRemovePermission = scan.nextLine();
-//            if (inputRemovePermission.equals("0")) {
-//                return;
-//            }
-//            int inputRemovePermissionNum = 0;
-//            try {
-//                inputRemovePermissionNum = Integer.parseInt(inputRemovePermission);
-//            } catch (Exception e) {
-//                System.out.println("Invalid Input");
-//                return;
-//            }
-//            if (inputRemovePermissionNum < 0) {
-//                System.out.println("Invalid Input number");
-//                return;
-//            }
-//            if (inputRemovePermissionNum > permissions.size()) {
-//                System.out.println("count of permissions you want to add is out of bound!");
-//                return;
-//            }
-//            int selectedPermissions = 1;
-//            HashSet<Integer> tmpPermission = new HashSet<>();
-//            while (selectedPermissions <= inputRemovePermissionNum) {
-//                System.out.print("#Permission " + selectedPermissions + " : ");
-//                System.out.println("enter 0 to back to menu");
-//                int selectedPermission = 0;
-//                try {
-//                    selectedPermission = scan.nextInt();
-//                    scan.nextLine();
-//                } catch (Exception e) {
-//                    System.out.println("Invalid Input");
-//                    continue;
-//                }
-//                if (selectedPermission == 0) {
-//                    return;
-//                }
-//                if (selectedPermission < 0 || selectedPermission > permissions.size()) {
-//                    System.out.println("Invalid input number");
-//                    continue;
-//                }
-//                int sizeBefore = tmpPermission.size();
-//                tmpPermission.add(selectedPermission);
-//                int sizeAfter = tmpPermission.size();
-//                if (sizeAfter == sizeBefore) {
-//                    System.out.println("this permission has selected!");
-//                } else {
-//                    selectedPermissions++;
-//                }
-//            }
-//            Request request3 = new Request(RequestCode.CHANGE_PERMISSION_REMOVE);
-//            request3.addData("index", index);
-//            request3.addData("tmpPermission", tmpPermission);
-//            request3.addData("name", roleName);
-//            objectOutputStream.writeObject(request3);
-//
-//        }
-//    }
 //
 //
 //
