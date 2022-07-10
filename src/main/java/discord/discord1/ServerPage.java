@@ -7,10 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -27,6 +24,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.ResourceBundle;
 
 public class ServerPage implements Initializable {
@@ -70,6 +68,63 @@ public class ServerPage implements Initializable {
    private Object selectedPermission;
    private ArrayList<String> permssions;
     @FXML
+    private ScrollPane chatBox;
+
+    @FXML
+    private Pane dialogPane;
+
+    @FXML
+    private Text dialogText;
+
+    @FXML
+    private Button dialogButton;
+
+    @FXML
+    private TextField dialogTextField;
+
+    @FXML
+    private Text errorDialogText;
+
+    @FXML
+    private Pane roleDialog;
+
+    @FXML
+    private Text roleDialogText1;
+
+    @FXML
+    private Text roleDialogText2;
+
+    @FXML
+    private CheckBox banMemberCheckBox;
+
+    @FXML
+    private CheckBox changeNameCheckBox;
+
+    @FXML
+    private CheckBox chatHistoryCheckBox;
+
+    @FXML
+    private CheckBox createChannelCheckBox;
+
+    @FXML
+    private CheckBox limitMemberCheckBox;
+
+    @FXML
+    private CheckBox pinMessageCheckBox;
+
+    @FXML
+    private CheckBox removeChannelCheckBox;
+
+    @FXML
+    private CheckBox removeMemberCheckBox;
+
+
+
+
+
+
+
+    @FXML
     void settingClick(MouseEvent event) {
         Stage stage= (Stage) statusCircle.getScene().getWindow();
         Parent root= null;
@@ -83,6 +138,8 @@ public class ServerPage implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        roleDialog.setVisible(false);
+        dialogPane.setVisible(false);
         UIRequest uiRequest=new UIRequest(UIRequestCode.GET_STATUS);
         UIResponse uiResponse;
         try {
@@ -147,6 +204,9 @@ public class ServerPage implements Initializable {
         String members= (String) uiResponse1.getData("members");
         String[] membersArr=members.split("@@@");
         ArrayList<HBox> membersHboxArr=new ArrayList<>();
+
+
+
         for (int i = 0; i < membersArr.length; i++) {
             String tmp=membersArr[i];
             String[] tmpArr=tmp.split(" ");
@@ -216,10 +276,6 @@ public class ServerPage implements Initializable {
             ap.getChildren().add(statusCircle2);
             ap.getChildren().add(usernameText2);
             h.getChildren().add(ap);
-            h.setOnMouseClicked((MouseEvent e)->{
-                selectedChannel=e.getSource();
-                findChannel();
-            });
             membersHboxArr.add(h);
         }
         for (int i = 0; i <membersHboxArr.size() ; i++) {
@@ -264,6 +320,10 @@ public class ServerPage implements Initializable {
                 ap.getChildren().add(imageView);
                 ap.getChildren().add(channelText);
                 h.getChildren().add(ap);
+                h.setOnMouseClicked((MouseEvent e)->{
+                    selectedChannel=e.getSource();
+                    findChannel();
+                });
                 channelsHBox.add(h);
             }
             for (int i = 0; i <channelsHBox.size() ; i++) {
@@ -311,7 +371,7 @@ public class ServerPage implements Initializable {
             adminSettingsMenu.getItems().add(menuItem2);
             settingMenuItems.add(menuItem2);
 
-            MenuItem menuItem3=new MenuItem("limit member message");
+            MenuItem menuItem3=new MenuItem("limit member");
             menuItem3.setOnAction((ActionEvent e)->{
                 selectedPermission=e.getSource();
                 findPermission();
@@ -400,6 +460,7 @@ public class ServerPage implements Initializable {
             }
             settingsLabel.setContextMenu(contextMenu);
         }
+        chatBox.setVisible(false);
     }
     @FXML
     void discordCircleClick(MouseEvent event) {
@@ -466,8 +527,501 @@ public class ServerPage implements Initializable {
         }
     }
     public void findPermission(){
+        for (int i = 0; i < settingMenuItems.size(); i++) {
+            if(selectedPermission.equals(settingMenuItems.get(i))){
+                if(settingMenuItems.get(i).getText().equalsIgnoreCase("create channel")){
+                   chatBox.setVisible(false);
+                   createChannel();
+                }
+                else if(settingMenuItems.get(i).getText().equalsIgnoreCase("remove channel")){
+                    if(channelsHBox.size()!=0){
+                        chatBox.setVisible(false);
+                        removeChannel();
+                    }
+                }
+                else if(settingMenuItems.get(i).getText().equalsIgnoreCase("add a member")){
+                    chatBox.setVisible(false);
+                    addMember();
+                }
+                else if(settingMenuItems.get(i).getText().equalsIgnoreCase("change server name")){
+                    chatBox.setVisible(false);
+                    changeServerName();
+                }
+                else if(settingMenuItems.get(i).getText().equalsIgnoreCase("limit member")){
+                    if(channelsHBox.size()!=0) {
+                        chatBox.setVisible(false);
+                        limitMember();
+                    }
+                }
+                else if(settingMenuItems.get(i).getText().equalsIgnoreCase("ban a member")){
+                    chatBox.setVisible(false);
+                    banMember();
+                }
+                else if(settingMenuItems.get(i).getText().equalsIgnoreCase("remove server")){
+                    UIRequest uiRequest=new UIRequest(UIRequestCode.REMOVE_SERVER);
+                    try {
+                        Client.process(uiRequest);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    } catch (ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                    Stage stage= (Stage) statusCircle.getScene().getWindow();
+                    Parent root= null;
+                    try {
+                        root = FXMLLoader.load(getClass().getResource("HomePage.fxml"));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    stage.setScene(new Scene(root));
+                }
+                else if(settingMenuItems.get(i).getText().equalsIgnoreCase("Add role")){
+                    chatBox.setVisible(false);
+                    addRole();
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            }
+
+
+        }
 
 
     }
+    public void createChannel(){
+        dialogPane.setVisible(true);
+        dialogText.setText("Channel Name");
+        dialogButton.setText("Create Channel");
+        errorDialogText.setText("");
+        dialogTextField.setText("");
+    }
+    public void removeChannel(){
+        dialogPane.setVisible(true);
+        dialogText.setText("Channel Name");
+        dialogButton.setText("Remove Channel");
+        errorDialogText.setText("");
+        dialogTextField.setText("");
+    }
+    public void addMember(){
+        dialogPane.setVisible(true);
+        dialogText.setText("Enter Username");
+        dialogButton.setText("Add to server");
+        errorDialogText.setText("");
+        dialogTextField.setText("");
+    }
+    public void changeServerName(){
+        dialogPane.setVisible(true);
+        dialogText.setText("Enter new Name");
+        dialogButton.setText("Change");
+        errorDialogText.setText("");
+        dialogTextField.setText("");
+    }
+    public void limitMember(){
+        dialogPane.setVisible(true);
+        dialogText.setText("Enter Channel's name");
+        dialogButton.setText("limit member");
+        errorDialogText.setText("");
+        dialogTextField.setText("");
+    }
+    public void banMember(){
+        dialogPane.setVisible(true);
+        dialogText.setText("Enter username");
+        dialogButton.setText("ban member");
+        errorDialogText.setText("");
+        dialogTextField.setText("");
+    }
+    public void addRole(){
+        dialogPane.setVisible(true);
+        dialogText.setText("Enter Role name");
+        dialogButton.setText("add role");
+        errorDialogText.setText("");
+        dialogTextField.setText("");
+    }
+    @FXML
+    void exitImageClick(MouseEvent event) {
+        dialogPane.setVisible(false);
+    }
+    @FXML
+    void dialogButtonClick(MouseEvent event) throws IOException, ClassNotFoundException {
+        if(dialogButton.getText().equalsIgnoreCase("Create Channel")){
+            String enteredChannelName=dialogTextField.getText();
+            if(enteredChannelName.equals("")){
+                errorDialogText.setText("enter a name!");
+            }
+            else{
+                UIRequest uiRequest=new UIRequest(UIRequestCode.CREATE_CHANNEL);
+                uiRequest.addData("name",enteredChannelName);
+                UIResponse uiResponse=Client.process(uiRequest);
+                boolean isDuplicated= (boolean) uiResponse.getData("isDuplicated");
+                if(isDuplicated){
+                    errorDialogText.setText("Duplicated Name");
+                }
+                else{
+                    HBox h=new HBox();
+                    h.setPrefHeight(30);
+                    h.setPrefWidth(186);
+                    h.setBackground(new Background(new BackgroundFill(Paint.valueOf("#2f3136"),
+                            CornerRadii.EMPTY,
+                            Insets.EMPTY)));
+                    AnchorPane ap=new AnchorPane();
+                    ap.setPrefHeight(30);
+                    ap.setPrefWidth(186);
+                    ImageView imageView=new ImageView();
+                    imageView.setFitWidth(30);
+                    imageView.setFitHeight(20);
+                    Image channelImage=new Image(getClass().getResourceAsStream("channel.png"));
+                    imageView.setImage(channelImage);
+                    Text channelText=new Text();
+                    Font font = Font.font("System", FontWeight.BOLD, 14);
+                    channelText.setFont(font);
+                    channelText.setX(30);
+                    channelText.setY(12);
+                    channelText.setText(enteredChannelName);
+                    channelText.setFill(Paint.valueOf("#96989d"));
+                    ap.getChildren().add(imageView);
+                    ap.getChildren().add(channelText);
+                    h.getChildren().add(ap);
+                    h.setOnMouseClicked((MouseEvent e)->{
+                        selectedChannel=e.getSource();
+                        findChannel();
+                    });
+                    channelsHBox.add(h);
+                    channelVBox.getChildren().add(h);
+                    dialogPane.setVisible(false);
+                }
+            }
+        }
+        else if(dialogButton.getText().equalsIgnoreCase("Remove Channel")){
+            String enteredChannelName=dialogTextField.getText();
+            if(enteredChannelName.equals("")){
+                errorDialogText.setText("enter a name!");
+            }
+            else{
+                UIRequest uiRequest=new UIRequest(UIRequestCode.REMOVE_CHANNEL);
+                uiRequest.addData("name",enteredChannelName);
+                UIResponse uiResponse=Client.process(uiRequest);
+                boolean isExist= (boolean) uiResponse.getData("isExist");
+                if(!isExist){
+                    errorDialogText.setText("Invalid Name");
+                }
+                else{
+                    int channelIndexHBox=0;
+                    for (int i = 0; i < channelVBox.getChildren().size(); i++) {
+                        HBox a= (HBox) channelVBox.getChildren().get(i);
+                        AnchorPane b= (AnchorPane) a.getChildren().get(0);
+                        Text c= (Text) b.getChildren().get(1);
+                        if(c.getText().equals(enteredChannelName)) {
+                            break;
+                        }
+                        channelIndexHBox++;
+                    }
+                    channelVBox.getChildren().remove(channelIndexHBox);
+                    channelsHBox.remove(channelIndexHBox);
+                    dialogPane.setVisible(false);
+                }
+            }
+        }
+        else if(dialogButton.getText().equalsIgnoreCase("Add to server")){
+            String enteredUsername=dialogTextField.getText();
+            if(enteredUsername.equals("")){
+                errorDialogText.setText("enter a name!");
+            }
+            else{
+                UIRequest uiRequest=new UIRequest(UIRequestCode.ADD_MEMBER);
+                uiRequest.addData("name",enteredUsername);
+                UIResponse uiResponse=Client.process(uiRequest);
+                if(uiResponse.getCode()==UIResponseCode.NOT_EXIST){
+                    errorDialogText.setText("Invalid Username!");
+                }
+                else if(uiResponse.getCode()==UIResponseCode.IS_EXISTS){
+                    errorDialogText.setText(enteredUsername+" added before!");
+                }
+                else{
+                    dialogPane.setVisible(false);
+                    //////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////
+                }
+            }
+        }
+        else if(dialogButton.getText().equalsIgnoreCase("Change")){
+            String enteredName=dialogTextField.getText();
+            if(enteredName.equals("")){
+                errorDialogText.setText("enter a name!");
+            }
+            else{
+                UIRequest uiRequest=new UIRequest(UIRequestCode.CHANGE_SERVER_NAME);
+                uiRequest.addData("name",enteredName);
+                UIResponse uiResponse=Client.process(uiRequest);
+                if(uiResponse.getCode()==UIResponseCode.NOT_CHANGE){
+                    errorDialogText.setText("you didn't change server's name");
+                }
+                else if(uiResponse.getCode()==UIResponseCode.DUPLICATED){
+                    errorDialogText.setText("Duplicated name");
+                }
+                else{
+                    serverNameText.setText(enteredName);
+                    dialogPane.setVisible(false);
+                }
+            }
+        }
+        else if(dialogButton.getText().equalsIgnoreCase("limit member")){
+            String enteredChannelName=dialogTextField.getText();
+            if(enteredChannelName.equals("")){
+                errorDialogText.setText("enter a name!");
+            }
+            else{
+                UIRequest uiRequest=new UIRequest(UIRequestCode.CHANNEL_EXIST);
+                uiRequest.addData("name",enteredChannelName);
+                UIResponse uiResponse=Client.process(uiRequest);
+                if(uiResponse.getCode()==UIResponseCode.NOT_EXIST){
+                    errorDialogText.setText("Invalid Channel Name");
+                }
+                else{
+                    dialogText.setText("enter username");
+                    dialogTextField.setText("");
+                    String enteredUsername=dialogTextField.getText();
+                    UIRequest uiRequest2=new UIRequest(UIRequestCode.LIMIT_MEMBER);
+                    uiRequest2.addData("username",enteredUsername);
+                    uiRequest2.addData("channel",enteredChannelName);
+                    UIResponse uiResponse2=Client.process(uiRequest2);
+                    if(uiResponse2.getCode()==UIResponseCode.NOT_EXIST){
+                        errorDialogText.setText("Invalid Username");
+                    }
+                    else if(uiResponse2.getCode()==UIResponseCode.NOT_IN_SERVER){
+                        errorDialogText.setText("This user is not in server!");
+                    }
+                    else if(uiResponse2.getCode()==UIResponseCode.LIMIT_BEFORE){
+                        errorDialogText.setText("This user limitted before!");
+                    }
+                    else if(uiResponse2.getCode()==UIResponseCode.BAN_BEFORE){
+                        errorDialogText.setText("This user banned before!");
+                    }
+                    else{
+                        dialogPane.setVisible(false);
+                    }
 
+                }
+
+            }
+        }
+        else if(dialogButton.getText().equalsIgnoreCase("ban member")){
+            String enteredUsername=dialogTextField.getText();
+            if(enteredUsername.equals("")){
+                errorDialogText.setText("enter a name!");
+            }
+            else{
+                UIRequest uiRequest=new UIRequest(UIRequestCode.BAN_MEMBER);
+                uiRequest.addData("username",enteredUsername);
+                UIResponse uiResponse=Client.process(uiRequest);
+                if(uiResponse.getCode()==UIResponseCode.NOT_EXIST){
+                    errorDialogText.setText("Invalid Username");
+                }
+                else if(uiResponse.getCode()==UIResponseCode.NOT_IN_SERVER){
+                    errorDialogText.setText("This user is not in server!");
+                }
+                else if(uiResponse.getCode()==UIResponseCode.BAN_BEFORE){
+                    errorDialogText.setText("This user banned before!");
+                }
+                else{
+                    dialogPane.setVisible(false);
+                }
+            }
+        }
+        else if(dialogButton.getText().equalsIgnoreCase("add role")){
+            String enteredRoleName=dialogTextField.getText();
+            if(enteredRoleName.equals("")){
+                errorDialogText.setText("enter a name!");
+            }
+            else{
+                UIRequest uiRequest=new UIRequest(UIRequestCode.CHECK_ROLE);
+                uiRequest.addData("role",enteredRoleName);
+                UIResponse uiResponse=Client.process(uiRequest);
+                boolean isExist= (boolean) uiResponse.getData("exist");
+                if(isExist){
+                    dialogText.setText("Enter username");
+                    dialogButton.setText("Assign Role");
+                    errorDialogText.setText("");
+                    dialogTextField.setText("");
+                    String enteredUsername=dialogTextField.getText();
+                    if(enteredUsername.equals("")){
+                        errorDialogText.setText("enter a name!");
+                    }
+                    else{
+                        UIRequest uiRequest1=new UIRequest(UIRequestCode.ASSIGN_EXIST_ROLE);
+                        uiRequest1.addData("role",enteredRoleName);
+                        uiRequest1.addData("name",enteredUsername);
+                        UIResponse uiResponse1=Client.process(uiRequest1);
+                        if(uiResponse1.getCode()==UIResponseCode.NOT_EXIST){
+                            errorDialogText.setText("Invalid Username");
+                        }
+                        else if(uiResponse1.getCode()==UIResponseCode.BEFORE_IN_ROLE){
+                            errorDialogText.setText(enteredUsername+" has this role!");
+                        }
+                        else{
+                            roleDialog.setVisible(false);
+                        }
+                    }
+                }
+                else{
+                    dialogPane.setVisible(false);
+                    roleDialog.setVisible(true);
+                    roleDialogText1.setText(enteredRoleName+" is a new Role!");
+                    roleDialogText2.setText("Select permissions");
+                }
+            }
+        }
+    }
+    @FXML
+    void exitRoleDialogClick(MouseEvent event) {
+      roleDialog.setVisible(false);
+    }
+    @FXML
+    void doneRoleDialogClick(MouseEvent event) throws IOException, ClassNotFoundException {
+        HashSet<Integer> tmpPermission = new HashSet<>();
+        if(createChannelCheckBox.isSelected()){
+            tmpPermission.add(1);
+        }
+        if(removeChannelCheckBox.isSelected()){
+            tmpPermission.add(2);
+        }
+        if(removeMemberCheckBox.isSelected()){
+            tmpPermission.add(3);
+        }
+        if(banMemberCheckBox.isSelected()){
+            tmpPermission.add(4);
+        }
+        if(limitMemberCheckBox.isSelected()){
+            tmpPermission.add(5);
+        }
+        if(changeNameCheckBox.isSelected()){
+            tmpPermission.add(6);
+        }
+        if(chatHistoryCheckBox.isSelected()){
+            tmpPermission.add(7);
+        }
+        if(pinMessageCheckBox.isSelected()){
+            tmpPermission.add(8);
+        }
+        UIRequest uiRequest=new UIRequest(UIRequestCode.ROLL_AND_PERMISSIONS);
+        String s=roleDialogText1.getText();
+        String[] sArr=s.split(" ");
+        String roleName=sArr[0];
+        uiRequest.addData("role",roleName);
+        uiRequest.addData("permissions",tmpPermission);
+        Client.process(uiRequest);
+        roleDialog.setVisible(false);
+        assignRole(roleName);
+    }
+    public void assignRole(String roleName) throws IOException, ClassNotFoundException {
+        dialogPane.setVisible(true);
+        dialogText.setText("Enter Username");
+        dialogButton.setText("Assign Role");
+        errorDialogText.setText("");
+        dialogTextField.setText("");
+        String enteredUsername=dialogTextField.getText();
+        if(enteredUsername.equals("")){
+            errorDialogText.setText("enter a username!");
+        }
+        else{
+            UIRequest uiRequest=new UIRequest(UIRequestCode.ASSIGN_ROLE);
+            uiRequest.addData("role",roleName);
+            uiRequest.addData("name",username);
+            UIResponse uiResponse=Client.process(uiRequest);
+            if(uiResponse.getCode()==UIResponseCode.NOT_EXIST){
+                errorDialogText.setText("Invalid Username");
+            }
+            else if(uiResponse.getCode()==UIResponseCode.BEFORE_IN_ROLE){
+                errorDialogText.setText(enteredUsername+" has this role!");
+            }
+            else{
+                dialogPane.setVisible(false);
+            }
+        }
+
+    }
 }
+
+

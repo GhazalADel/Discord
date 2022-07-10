@@ -193,7 +193,130 @@ public class Client {
             uiResponse=new UIResponse(UIResponseCode.OK);
             uiResponse.addData("permissions",permissionsArr);
         }
-
+        else if(uiRequest.getCode()==UIRequestCode.CREATE_CHANNEL){
+            String name= (String) uiRequest.getData("name");
+            boolean isDuplicated=createChannel(name);
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            uiResponse.addData("isDuplicated",isDuplicated);
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.REMOVE_CHANNEL){
+            String name= (String) uiRequest.getData("name");
+            boolean isExist=removeChannel(name);
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            uiResponse.addData("isExist",isExist);
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.ADD_MEMBER){
+            String inputUsername= (String) uiRequest.getData("name");
+            Request request3 = new Request(RequestCode.ADD_MEMBER);
+            request3.addData("username", inputUsername);
+            objectOutputStream.writeObject(request3);
+            Response response3 = (Response) objectInputStream.readObject();
+            if (response3.getCode() == ResponseCode.NOT_EXIST) {
+                uiResponse=new UIResponse(UIResponseCode.NOT_EXIST);
+            }
+            else if (response3.getCode() == ResponseCode.IS_EXISTS) {
+                uiResponse=new UIResponse(UIResponseCode.IS_EXISTS);
+            }
+            else {
+                uiResponse=new UIResponse(UIResponseCode.OK);
+            }
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.CHANGE_SERVER_NAME){
+            Request request4 = new Request(RequestCode.CHANGE_SERVER_NAME);
+            String newName= (String) uiRequest.getData("name");
+            request4.addData("name", newName);
+            objectOutputStream.writeObject(request4);
+            Response response4 = (Response) objectInputStream.readObject();
+            if (response4.getCode() == ResponseCode.NOT_CHANGE) {
+                uiResponse=new UIResponse(UIResponseCode.NOT_CHANGE);
+            } else if (response4.getCode() == ResponseCode.DUPLICATED) {
+                uiResponse=new UIResponse(UIResponseCode.DUPLICATED);
+            } else {
+               uiResponse=new UIResponse(UIResponseCode.OK);
+            }
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.CHANNEL_EXIST){
+            String channelName= (String) uiRequest.getData("name");
+            boolean exist=checkChannel(channelName);
+            if(exist){
+                uiResponse=new UIResponse(UIResponseCode.OK);
+            }
+            else{
+                uiResponse=new UIResponse(UIResponseCode.NOT_EXIST);
+            }
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.LIMIT_MEMBER){
+            String enteredChannelName= (String) uiRequest.getData("channel");
+            String enteredUsername= (String) uiRequest.getData("username");
+            uiResponse=limitMember(enteredUsername,enteredChannelName);
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.BAN_MEMBER){
+            String enteredUsername= (String) uiRequest.getData("username");
+            uiResponse=banMember(enteredUsername);
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.REMOVE_SERVER){
+            removeServer();
+        }
+        else if(uiRequest.getCode()==UIRequestCode.CHECK_ROLE){
+            String roleName= (String) uiRequest.getData("role");
+            Request request = new Request(RequestCode.CHECK_ROLE);
+            request.addData("name", roleName);
+            objectOutputStream.writeObject(request);
+            Response response = (Response) objectInputStream.readObject();
+            boolean isExist = (boolean) response.getData("exist");
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            uiResponse.addData("exist",isExist);
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.ASSIGN_EXIST_ROLE){
+            String roleName= (String) uiRequest.getData("role");
+            String username= (String) uiRequest.getData("name");
+            Request request1 = new Request(RequestCode.ASSIGN_ROLE);
+            request1.addData("username", username);
+            request1.addData("roleName", roleName);
+            objectOutputStream.writeObject(request1);
+            Response response2 = (Response) objectInputStream.readObject();
+            if (response2.getCode() == ResponseCode.NOT_EXIST) {
+                uiResponse=new UIResponse(UIResponseCode.NOT_EXIST);
+            } else if (response2.getCode() == ResponseCode.BEFORE_IN_ROLE) {
+                uiResponse=new UIResponse(UIResponseCode.BEFORE_IN_ROLE);
+            } else if (response2.getCode() == ResponseCode.ROLE_ASSIGNED) {
+                uiResponse=new UIResponse(UIResponseCode.OK);
+            }
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.ROLL_AND_PERMISSIONS) {
+            String roleName = (String) uiRequest.getData("role");
+            HashSet<Integer> tmpPermission = (HashSet<Integer>) uiRequest.getData("permissions");
+            Request request1 = new Request(RequestCode.ROLL_AND_PERMISSIONS);
+            request1.addData("permissions", tmpPermission);
+            request1.addData("roleName", roleName);
+            objectOutputStream.writeObject(request1);
+        }
+        else if(uiRequest.getCode()==UIRequestCode.ASSIGN_ROLE) {
+            String roleName = (String) uiRequest.getData("role");
+            String username= (String) uiRequest.getData("name");
+            Request request2 = new Request(RequestCode.ASSIGN_ROLE);
+            request2.addData("username", username);
+            request2.addData("roleName", roleName);
+            objectOutputStream.writeObject(request2);
+            Response response2 = (Response) objectInputStream.readObject();
+            if (response2.getCode() == ResponseCode.NOT_EXIST) {
+                uiResponse=new UIResponse(UIResponseCode.NOT_EXIST);
+            } else if (response2.getCode() == ResponseCode.BEFORE_IN_ROLE) {
+                uiResponse=new UIResponse(UIResponseCode.BEFORE_IN_ROLE);
+            } else if (response2.getCode() == ResponseCode.ROLE_ASSIGNED) {
+                uiResponse=new UIResponse(UIResponseCode.OK);
+            }
+            return uiResponse;
+        }
 
         return null;
     }
@@ -451,12 +574,123 @@ public class Client {
         String channels = (String) response.getData("channels");
         return channels;
     }
+    /**
+     //     * This method used to create a new channel in server
+     //     * *@param index index of DiscordServer
+     //     * *@return Nothing
+     //     * *@throws IOException
+     //     * *@throws ClassNotFoundException
+     //     */
+    public static boolean createChannel(String channelName) throws IOException, ClassNotFoundException {
+        Request request = new Request(RequestCode.CREATE_CHANNEL);
+        request.addData("channel", channelName);
+        objectOutputStream.writeObject(request);
+        Response response = (Response) objectInputStream.readObject();
+        boolean isDuplicate = (boolean) response.getData("Duplicate");
+        return isDuplicate;
+    }
 
+    /**
+     //     * This method used to remove an existing channel in server
+     //     * @param index index of DiscordServer
+     //     * *@return Nothing
+     //     * *@throws IOException
+     //     * *@throws ClassNotFoundException
+     //     */
+    public static boolean removeChannel(String channelName) throws IOException, ClassNotFoundException {
+        Request request = new Request(RequestCode.REMOVE_CHANNEL);
+        request.addData("channel", channelName);
+        objectOutputStream.writeObject(request);
+        Response response = (Response) objectInputStream.readObject();
+        boolean isExist = (boolean) response.getData("exist");
+        return isExist;
+    }
+    /**
+     //     * This method used to limit a member from specific channel
+     //     *
+     //     * *@param index index of DiscordServer
+     //     * *@return Nothing
+     //     * *@throws IOException
+     //     * *@throws ClassNotFoundException
+     //     */
+    public static boolean checkChannel(String channelName) throws IOException, ClassNotFoundException {
+        Request request1 = new Request(RequestCode.IS_CHANNEL_EXIST);
+        request1.addData("channel", channelName);
+        objectOutputStream.writeObject(request1);
+        Response response1 = (Response) objectInputStream.readObject();
+        boolean exist = (boolean) response1.getData("exist");
+        return exist;
+//
+    }
+    public static UIResponse limitMember(String username,String channelName) throws IOException, ClassNotFoundException {
+        Request request2 = new Request(RequestCode.LIMIT_MEMBER);
+        request2.addData("username", username);
+        request2.addData("channel", channelName);
+        objectOutputStream.writeObject(request2);
+        Response response2 = (Response) objectInputStream.readObject();
+        UIResponse uiResponse;
+        if (response2.getCode() == ResponseCode.NOT_EXIST) {
+            uiResponse=new UIResponse(UIResponseCode.NOT_EXIST);
 
+        }
+        else if (response2.getCode() == ResponseCode.NOT_IN_SERVER) {
+            uiResponse=new UIResponse(UIResponseCode.NOT_IN_SERVER);
 
+        } else if (response2.getCode() == ResponseCode.LIMIT_BEFORE) {
+            uiResponse=new UIResponse(UIResponseCode.LIMIT_BEFORE);
 
+        } else if (response2.getCode() == ResponseCode.BANNED_BEFORE) {
+           uiResponse=new UIResponse(UIResponseCode.BAN_BEFORE);
 
+        } else {
+            uiResponse=new UIResponse(UIResponseCode.OK);
+        }
+        return uiResponse;
+
+    }
+        /**
+     * This method used to ban a member from server
+     *
+     * *@param index index of DiscordServer
+     * *@return Nothing
+     * *@throws IOException
+     * *@throws ClassNotFoundException
+     */
+//
+    public static UIResponse banMember(String username) throws IOException, ClassNotFoundException {
+        Request request2 = new Request(RequestCode.BAN_MEMBER);
+        request2.addData("username", username);
+        objectOutputStream.writeObject(request2);
+        Response response2 = (Response) objectInputStream.readObject();
+        UIResponse uiResponse=null;
+        if (response2.getCode() == ResponseCode.NOT_EXIST) {
+           uiResponse=new UIResponse(UIResponseCode.NOT_EXIST);
+
+        } else if (response2.getCode() == ResponseCode.NOT_IN_SERVER) {
+            uiResponse=new UIResponse(UIResponseCode.NOT_IN_SERVER);
+
+        } else if (response2.getCode() == ResponseCode.BANNED_BEFORE) {
+            uiResponse=new UIResponse(UIResponseCode.BAN_BEFORE);
+
+        } else if (response2.getCode() == ResponseCode.BAN_MEMBER) {
+            uiResponse=new UIResponse(UIResponseCode.OK);
+        }
+        return uiResponse;
+    }
+    /**
+     //     * This method used to remove a server by admin
+     //     *
+     //     * *@param -
+     //     * *@return Nothing
+     //     * *@throws IOException
+     //     */
+    public static void removeServer() throws IOException {
+        Request request = new Request(RequestCode.REMOVE_SERVER);
+        objectOutputStream.writeObject(request);
+    }
 }
+
+
 //
 //
 //    /**
@@ -657,77 +891,7 @@ public class Client {
 //
 
 
-//    /**
-//     * This method receive necessary information and check them for log in
-//     *
-//     * *@param -
-//     * *@return Nothing
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     */
-//    public int logIn() throws IOException, ClassNotFoundException {
-//        int logInReturn = 0;
-//        //-1:back to first menu
-//        //0:get input again
-//        //1:input got successfully
-//        String username = "";
-//        User u = null;
-//        while (logInReturn == 0) {
-//            System.out.println("Enter your username:");
-//            System.out.println("enter 0 to back to first menu.");
-//            username = scan.nextLine();
-//            if (username.equals("0")) {
-//                logInReturn = -1;
-//                return logInReturn;
-//            }
-//            Request request = new Request(RequestCode.FIND_USER_BY_USERNAME);
-//            request.addData("username", username);
-//            objectOutputStream.writeObject(request);
-//            Response response = (Response) objectInputStream.readObject();
-//            u = (User) response.getData("user");
-//
-//            if (u != null) {
-////                Request request1 = new Request(RequestCode.LOG_IN_ONCE);
-////                request1.addData("username", username);
-////                objectOutputStream.writeObject(request1);
-////                Response response1 = (Response) objectInputStream.readObject();
-////                boolean logInOnce = (boolean) response1.getData("once");
-////                if (logInOnce) {
-////                    System.out.println(u.getUsername() + " logged in before!");
-////                    return -1;
-////                }
-//                logInReturn = 1;
-//                break;
-//            }
-//            else {
-//                System.out.println("we don't have an account with this username...try again\n\n");
-//            }
-//
-//        }
-//        String password = "";
-//        logInReturn = 0;
-//        while (logInReturn == 0) {
-//            System.out.println("Enter your password:");
-//            System.out.println("enter 0 to back to first menu.");
-//            password = scan.nextLine();
-//            if (password.equals("0")) {
-//                logInReturn = -1;
-//                return logInReturn;
-//            }
-//            if (u.getPassword().equalsIgnoreCase(password)) {
-//                Request request = new Request(RequestCode.LOG_IN);
-//                request.addData("user", u);
-//                objectOutputStream.writeObject(request);
-//                logInReturn = 1;
-//                System.out.println("you logged in successfully!");
-//            } else {
-//                System.out.println("Incorrect password...try again\n\n");
-//                continue;
-//            }
-//        }
-//        return logInReturn;
-//    }
-//
+
 //    /**
 //     * This method shows user;s friends
 //     *
@@ -854,90 +1018,7 @@ public class Client {
 //
 //    }
 //
-//    /**
-//     * This method used to change user's password
-//     *
-//     * *@param -
-//     * *@return Nothing
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     */
-//    public void changePassword() throws IOException, ClassNotFoundException {
-//        while (true) {
-//            System.out.println("enter your current password:");
-//            System.out.println("enter 0 to back to menu:");
-//            String inputPassword = scan.nextLine();
-//            if (inputPassword.equals("0")) {
-//                break;
-//            }
-//            Request request = new Request(RequestCode.CHECK_PASSWORD);
-//            request.addData("password", inputPassword);
-//            objectOutputStream.writeObject(request);
-//            Response response = (Response) objectInputStream.readObject();
-//            boolean isValid = (boolean) response.getData("valid");
-//            if (isValid ) {
-//                System.out.println("enter new password:");
-//                String newPassword = scan.nextLine();
-//                if (newPassword.length() < 8) {
-//                    System.out.println("password should have at least 8 characters...try again");
-//                }
-//                else {
-//                    boolean check = checkPassword(newPassword);
-//                    if (check) {
-//                        System.out.println("enter confirm password:");
-//                        String confirmNewPassword = scan.nextLine();
-//                        if (confirmNewPassword.equalsIgnoreCase(newPassword)) {
-//                            Request request1 = new Request(RequestCode.CHANGE_PASSWORD);
-//                            request1.addData("password", newPassword);
-//                            objectOutputStream.writeObject(request1);
-//                            System.out.println("password changed successfully");
-//                            break;
-//                        } else {
-//                            System.out.println("password and confirm password are not equal...try again");
-//                        }
-//                    } else {
-//                        System.out.println("Invalid format...try again");
-//                    }
-//                }
 //
-//            } else {
-//                System.out.println("Incorrect password...try again");
-//            }
-//        }
-//    }
-//
-//    /**
-//     * This method used to check entered password validation
-//     *
-//     * *@param password
-//     * *@return boolean This returns isValid
-//     */
-//    public boolean checkPassword(String password) {
-//        boolean isValid = true;
-//        boolean flag = true;
-//        boolean haveNumber = false;
-//        boolean haveLetter = false;
-//        for (int i = 0; i < password.length(); i++) {
-//            if ((int) (password.charAt(i)) < 48 || ((int) (password.charAt(i)) >= 58 && (int) (password.charAt(i)) <= 64) || ((int) (password.charAt(i)) >= 91 && (int) (password.charAt(i)) <= 96) || (int) (password.charAt(i)) > 123) {
-//                flag = false;
-//                break;
-//            }
-//            if (!haveNumber) {
-//                if ((int) (password.charAt(i)) >= 48 && (int) (password.charAt(i)) <= 57) {
-//                    haveNumber = true;
-//                }
-//            }
-//            if (!haveLetter) {
-//                if (((int) (password.charAt(i)) >= 65 && (int) (password.charAt(i)) <= 90) || ((int) (password.charAt(i)) >= 97 && (int) (password.charAt(i)) <= 122)) {
-//                    haveLetter = true;
-//                }
-//            }
-//        }
-//        if (!flag || !haveNumber || !haveLetter) {
-//            isValid = false;
-//        }
-//        return isValid;
-//    }
 //
 //    /**
 //     * This method used to build a new server in program
@@ -1243,139 +1324,10 @@ public class Client {
 //        }
 //    }
 //
-//    /**
-//     * This method used to remove a server by admin
-//     *
-//     * *@param -
-//     * *@return Nothing
-//     * *@throws IOException
-//     */
-//    public void removeServer(int index) throws IOException {
-//        Request request = new Request(RequestCode.REMOVE_SERVER);
-//        request.addData("index", index);
-//        objectOutputStream.writeObject(request);
-//        System.out.println("server removed successfully");
-//    }
 //
 //
-//    /**
-//     * This method used to add a new role and select permissions or add a member to an existing role
-//     *
-//     * *@param -
-//     * *@return Nothing
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     */
-//    public void addRole(int index) throws IOException, ClassNotFoundException {
-//        System.out.println("Enter name of role:");
-//        System.out.println("enter 0 to back to menu");
-//        String roleName = scan.nextLine();
-//        if (roleName.equals("0")) {
-//            return;
-//        }
-//        Request request = new Request(RequestCode.CHECK_ROLE);
-//        request.addData("name", roleName);
-//        request.addData("index", index);
-//        objectOutputStream.writeObject(request);
-//        Response response = (Response) objectInputStream.readObject();
-//        boolean isExist = (boolean) response.getData("exist");
-//        if (isExist) {
-//            //no permission
-//            System.out.println("enter username of someone you want take this role:");
-//            System.out.println("enter 0 to back to menu");
-//            String username = scan.nextLine();
-//            if (username.equals("0")) {
-//                return;
-//            }
-//            Request request1 = new Request(RequestCode.ASSIGN_ROLE);
-//            request1.addData("username", username);
-//            request1.addData("index", index);
-//            request1.addData("roleName", roleName);
-//            objectOutputStream.writeObject(request1);
-//            Response response2 = (Response) objectInputStream.readObject();
-//            if (response2.getCode() == ResponseCode.NOT_EXIST) {
-//                System.out.println(username + " doesn't exist!");
-//            } else if (response2.getCode() == ResponseCode.BEFORE_IN_ROLE) {
-//                System.out.println(username + " has this role!");
-//            } else if (response2.getCode() == ResponseCode.ROLE_ASSIGNED) {
-//                System.out.println("role assigned successfully");
-//            }
-//        } else {
-//            MenuHandler.permissionList();
-//            System.out.println("how many permission?");
-//            int permissionNum = 0;
-//            try {
-//                permissionNum = scan.nextInt();
-//                scan.nextLine();
-//            } catch (Exception e) {
-//                System.out.println("Invalid input");
-//                return;
-//            }
-//            if (permissionNum < 0 || permissionNum > 8) {
-//                System.out.println("Invalid input number");
-//            }
-//            else if (permissionNum == 0) {
-//                return;
-//            }
-//            else {
-//                int counter = 1;
-//                HashSet<Integer> tmpPermission = new HashSet<>();
-//                int index2 = 0;
-//                while (index2 < permissionNum) {
-//                    System.out.println("#permission " + counter + " : ");
-//                    int selectedPermission = 0;
-//                    try {
-//                        selectedPermission = scan.nextInt();
-//                        scan.nextLine();
-//                    } catch (Exception e) {
-//                        System.out.println("Invalid Input");
-//                        continue;
-//                    }
-//                    if (selectedPermission == 0) {
-//                        return;
-//                    }
-//                    if (selectedPermission < 0 || selectedPermission > 8) {
-//                        System.out.println("Invalid input number");
-//                        continue;
-//                    }
-//                    int sizeBefore = tmpPermission.size();
-//                    tmpPermission.add(selectedPermission);
-//                    int sizeAfter = tmpPermission.size();
-//                    if (sizeAfter == sizeBefore) {
-//                        System.out.println("this permission has selected!");
-//                    } else {
-//                        counter++;
-//                        index2++;
-//                    }
-//                }
-//                Request request1 = new Request(RequestCode.ROLL_AND_PERMISSIONS);
-//                request1.addData("permissions", tmpPermission);
-//                request1.addData("roleName", roleName);
-//                request1.addData("index", index);
-//                objectOutputStream.writeObject(request1);
-//                System.out.println("enter username of someone you want take this role:");
-//                System.out.println("enter 0 to back to menu");
-//                String username = scan.nextLine();
-//                if (username.equals("0")) {
-//                    return;
-//                }
-//                Request request2 = new Request(RequestCode.ASSIGN_ROLE);
-//                request2.addData("username", username);
-//                request2.addData("index", index);
-//                request2.addData("roleName", roleName);
-//                objectOutputStream.writeObject(request2);
-//                Response response2 = (Response) objectInputStream.readObject();
-//                if (response2.getCode() == ResponseCode.NOT_EXIST) {
-//                    System.out.println(username + " doesn't exist!");
-//                } else if (response2.getCode() == ResponseCode.BEFORE_IN_ROLE) {
-//                    System.out.println(username + " have this role!");
-//                } else if (response2.getCode() == ResponseCode.ROLE_ASSIGNED) {
-//                    System.out.println("role assigned successfully");
-//                }
-//            }
 //
-//        }
-//    }
+//
 //
 //    /**
 //     * This method used to remove a member by admin
@@ -1435,103 +1387,8 @@ public class Client {
 //    }
 //
 //
-//    /**
-//     * This method used to limit a member from specific channel
-//     *
-//     * *@param index index of DiscordServer
-//     * *@return Nothing
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     */
-//    public void limitMember(int index) throws IOException, ClassNotFoundException {
-//        Request request = new Request(RequestCode.CHECK_CHANNEL_COUNT);
-//        request.addData("index", index);
-//        objectOutputStream.writeObject(request);
-//        Response response = (Response) objectInputStream.readObject();
-//        boolean isZero = (boolean) response.getData("isZero");
-//        if (isZero) {
-//            System.out.println("there is no channel in server!");
-//            return;
-//        }
-//        System.out.println("Enter channel name:");
-//        System.out.println("Enter 0 to back menu");
-//        String channelName = scan.nextLine();
-//        if (channelName.equals("0")) {
-//            return;
-//        }
-//        Request request1 = new Request(RequestCode.IS_CHANNEL_EXIST);
-//        request1.addData("index", index);
-//        request1.addData("channel", channelName);
-//        objectOutputStream.writeObject(request1);
-//        Response response1 = (Response) objectInputStream.readObject();
-//        boolean exist = (boolean) response1.getData("exist");
-//        if (!exist) {
-//            System.out.println("there is no channel with this name!");
-//            return;
-//        }
-//        System.out.println("enter username:");
-//        System.out.println("enter 0 to back menu:");
-//        String username = scan.nextLine();
-//        if (username.equals("0")) {
-//            return;
-//        }
-//        Request request2 = new Request(RequestCode.LIMIT_MEMBER);
-//        request2.addData("index", index);
-//        request2.addData("username", username);
-//        request2.addData("channel", channelName);
-//        objectOutputStream.writeObject(request2);
-//        Response response2 = (Response) objectInputStream.readObject();
-//        if (response2.getCode() == ResponseCode.NOT_EXIST) {
-//            System.out.println("there is no " + username + " here!");
 //
-//        } else if (response2.getCode() == ResponseCode.NOT_IN_SERVER) {
-//            System.out.println(username + " is not in server");
-//
-//        } else if (response2.getCode() == ResponseCode.LIMIT_BEFORE) {
-//            System.out.println(username + " limited from this channel before");
-//
-//        } else if (response2.getCode() == ResponseCode.BANNED_BEFORE) {
-//            System.out.println(username + " banned from this channel before");
-//
-//        } else {
-//            System.out.println(username + " limited from channel successfully");
-//        }
-//    }
-//
-//    /**
-//     * This method used to ban a member from server
-//     *
-//     * *@param index index of DiscordServer
-//     * *@return Nothing
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     */
-//
-//    public void banMember(int index) throws IOException, ClassNotFoundException {
-//        System.out.println("enter username:");
-//        System.out.println("enter 0 to back menu:");
-//        String username = scan.nextLine();
-//        if (username.equals("0")) {
-//            return;
-//        }
-//        Request request2 = new Request(RequestCode.BAN_MEMBER);
-//        request2.addData("index", index);
-//        request2.addData("username", username);
-//        objectOutputStream.writeObject(request2);
-//        Response response2 = (Response) objectInputStream.readObject();
-//        if (response2.getCode() == ResponseCode.NOT_EXIST) {
-//            System.out.println("there is no " + username + " here!");
-//
-//        } else if (response2.getCode() == ResponseCode.NOT_IN_SERVER) {
-//            System.out.println(username + " is not in server");
-//
-//        } else if (response2.getCode() == ResponseCode.BANNED_BEFORE) {
-//            System.out.println(username + " banned before");
-//
-//        } else if (response2.getCode() == ResponseCode.BAN_MEMBER) {
-//            System.out.println(username + " banned successfully");
-//        }
-//    }
+
 //
 //
 //
@@ -1732,60 +1589,8 @@ public class Client {
 //    }
 //
 //
-//    /**
-//     * This method used to create a new channel in server
-//     * *@param index index of DiscordServer
-//     * *@return Nothing
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     */
-//    public void createChannel(int index) throws IOException, ClassNotFoundException {
-//        System.out.println("Enter channel name:");
-//        System.out.println("Enter 0 to back to menu");
-//        String channelName = scan.nextLine();
-//        if (channelName.equals("0"))
-//            return;
-//        Request request = new Request(RequestCode.CREATE_CHANNEL);
-//        request.addData("channel", channelName);
-//        request.addData("index", index);
-//        objectOutputStream.writeObject(request);
-//        Response response = (Response) objectInputStream.readObject();
-//        boolean isDuplicate = (boolean) response.getData("Duplicate");
-//        if (isDuplicate) {
-//            System.out.println("there is a channel with this name...");
-//        } else {
-//            System.out.println("channel created successfully");
-//        }
-//    }
 //
-//    /**
-//     * This method used to remove an existing channel in server
-//     * @param index index of DiscordServer
-//     * *@return Nothing
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     */
-//    public void removeChannel(int index) throws IOException, ClassNotFoundException {
-//        System.out.println("Enter channel name:");
-//        System.out.println("Enter 0 to back menu");
-//        String channelName = scan.nextLine();
-//        if (channelName.equals("0")) {
-//            return;
-//        }
-//        Request request = new Request(RequestCode.REMOVE_CHANNEL);
-//        request.addData("index", index);
-//        request.addData("channel", channelName);
-//        objectOutputStream.writeObject(request);
-//        Response response = (Response) objectInputStream.readObject();
-//        boolean isExist = (boolean) response.getData("exist");
-//        if (isExist) {
-//            System.out.println("channel removed successfully");
 //
-//        } else {
-//            System.out.println("There is no channel with this name");
-//
-//        }
-//    }
 //
 //
 //    /**

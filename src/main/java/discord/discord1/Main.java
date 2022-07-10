@@ -28,7 +28,7 @@ Main extends Application {
         }
             //creating client object and invoking process method!
         Client client=new Client(socket);
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("serverPage.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("signUp.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Discord");
         stage.setScene(scene);
