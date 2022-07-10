@@ -1,5 +1,6 @@
 package discord.discord1;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -38,6 +39,8 @@ public class User implements Serializable {
 //
 //    private ArrayList<File> files;
 //    private ArrayList<File> requestFiles;
+
+    private File profile;
 
     //constructor
     public User(String username, String password, String email, String tel) {
@@ -374,4 +377,12 @@ public class User implements Serializable {
 //    public ArrayList<File> getRequestFiles() {
 //        return requestFiles;
 //    }
+
+    public void setProfile(File file) {
+        this.profile = profile;
+    }
+
+    public File getProfile() {
+        return profile;
+    }
 }
