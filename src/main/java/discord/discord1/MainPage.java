@@ -51,31 +51,38 @@ public class MainPage implements Initializable {
     @FXML
     void exitClick(MouseEvent event) {
         createServerPane.setVisible(false);
+        createServerTextField.setText("");
     }
     @FXML
     void createButtonClick(MouseEvent event) throws IOException, ClassNotFoundException {
        String enteredName=createServerTextField.getText();
-       if(!enteredName.equalsIgnoreCase("")){
+       if(enteredName.equals("")){
+           errorLabel.setText("Enter a name!");
+       }
+       else{
            UIRequest uiRequest=new UIRequest(UIRequestCode.CREATE_SERVER);
            uiRequest.addData("name",enteredName);
            UIResponse uiResponse=Client.process(uiRequest);
            if(uiResponse.getCode()==UIResponseCode.DUPLICATED){
+               errorLabel.setText("Duplicated Name!");
                errorLabel.setVisible(true);
                createServerTextField.setText("");
            }
            else{
                HBox hBox=new HBox();
                hBox.setPrefWidth(70);
-               hBox.setPrefWidth(60);
+               hBox.setPrefHeight(70);
                Button serverButton=new Button();
+               serverButton.setPrefWidth(50);
+               serverButton.setPrefHeight(50);
                serverButton.setText(enteredName.substring(0,1).toUpperCase());
+               serverButton.setStyle("-fx-background-color: #5865f2; -fx-background-radius: 25px;");
                serverButton.setTextFill(Color.WHITE);
-               serverButton.setStyle("-fx-border-color: #5865f2; -fx-background-radius: 25px;");
                Tooltip tt = new Tooltip();
                tt.setText(enteredName);
-               tt.setStyle("-fx-font: normal bold 4 Langdon; "
+               tt.setStyle("-fx-font: normal bold 15 Langdon; "
                        + "-fx-base: #36393f; "
-                       + "-fx-text-fill: #5865f2;");
+                       + "-fx-text-fill: #397f52;");
                serverButton.setTooltip(tt);
                serverButton.setOnMouseClicked( e ->{
                    selectedServer=e.getSource();
@@ -89,9 +96,9 @@ public class MainPage implements Initializable {
                });
                serverButtons.add(serverButton);
                hBox.getChildren().add(serverButton);
-               serverButton.setPadding(new Insets(0,0,0,1));
                serversVBOX.getChildren().add(hBox);
                createServerPane.setVisible(false);
+               createServerTextField.setText("");
            }
        }
     }
@@ -99,6 +106,7 @@ public class MainPage implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        serversVBOX.getChildren().removeAll(serversVBOX.getChildren());
         createServerPane.setVisible(false);
         Image image=new Image(getClass().getResourceAsStream("pictures/diimg.jpg"));
         discordCircle.setFill(new ImagePattern(image));
@@ -117,16 +125,18 @@ public class MainPage implements Initializable {
             for (int i = 0; i < serversArr.length; i++) {
                 HBox hBox = new HBox();
                 hBox.setPrefWidth(70);
-                hBox.setPrefWidth(60);
+                hBox.setPrefHeight(70);
                 Button serverButton = new Button();
-                serverButton.setText(serversArr[i].substring(0,2).toUpperCase());
+                serverButton.setPrefWidth(50);
+                serverButton.setPrefHeight(50);
+                serverButton.setText(serversArr[i].substring(0,1).toUpperCase());
+                serverButton.setStyle("-fx-background-color: #5865f2; -fx-background-radius: 25px;");
                 serverButton.setTextFill(Color.WHITE);
-                serverButton.setStyle("-fx-border-color: #5865f2; -fx-background-radius: 25px;");
                 Tooltip tt = new Tooltip();
                 tt.setText(serversArr[i]);
-                tt.setStyle("-fx-font: normal bold 4 Langdon; "
+                tt.setStyle("-fx-font: normal bold 15 Langdon; "
                         + "-fx-base: #36393f; "
-                        + "-fx-text-fill: #5865f2;");
+                        + "-fx-text-fill: #397f52;");
                 serverButton.setTooltip(tt);
                 serverButton.setOnMouseClicked(e -> {
                     selectedServer = e.getSource();
@@ -140,7 +150,6 @@ public class MainPage implements Initializable {
                 });
                 serverButtons.add(serverButton);
                 hBox.getChildren().add(serverButton);
-                serverButton.setPadding(new Insets(0, 0, 0, 1));
                 serversVBOX.getChildren().add(hBox);
             }
         }
@@ -161,17 +170,6 @@ public class MainPage implements Initializable {
         Parent root= null;
         try {
             root = FXMLLoader.load(getClass().getResource("serverPage.fxml"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        stage.setScene(new Scene(root));
-    }
-    @FXML
-    void change(MouseEvent event) {
-        Stage stage= (Stage) discordCircle.getScene().getWindow();
-        Parent root= null;
-        try {
-            root = FXMLLoader.load(getClass().getResource("profile-settings.fxml"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

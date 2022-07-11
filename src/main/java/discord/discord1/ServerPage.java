@@ -159,7 +159,7 @@ public class ServerPage implements Initializable {
             statusCircle.setFill(Paint.valueOf("#eb9e19"));
         }
         else if(userStatus==Status.INVISIBLE){
-            statusCircle.setFill(Paint.valueOf("##747f8d"));
+            statusCircle.setFill(Paint.valueOf("#747f8d"));
         }
         UIRequest uiRequest2=new UIRequest(UIRequestCode.GET_USERNAME);
         UIResponse uiResponse2;
@@ -171,22 +171,22 @@ public class ServerPage implements Initializable {
             throw new RuntimeException(e);
         }
         username= (String) uiResponse2.getData("name");
-        if(getClass().getResourceAsStream(username+".jpg")!=null || getClass().getResourceAsStream(username+".png")!=null ){
-            if(getClass().getResourceAsStream(username+".jpg")!=null){
+        if(getClass().getResourceAsStream("pictures/"+username+".jpg")!=null || getClass().getResourceAsStream("pictures/"+username+".png")!=null ){
+            if(getClass().getResourceAsStream("pictures/"+username+".jpg")!=null){
                 Image image=new Image(getClass().getResourceAsStream(username+".jpg"));
                 profileCircle.setFill(new ImagePattern(image));
             }
             else{
-                Image image=new Image(getClass().getResourceAsStream(username+".png"));
+                Image image=new Image(getClass().getResourceAsStream("pictures/"+username+".png"));
                 profileCircle.setFill(new ImagePattern(image));
             }
         }
         else{
-            Image image=new Image(getClass().getResourceAsStream("diimg.jpg"));
+            Image image=new Image(getClass().getResourceAsStream("pictures/"+"diimg.jpg"));
             profileCircle.setFill(new ImagePattern(image));
         }
         usernameText.setText(username);
-        Image image=new Image(getClass().getResourceAsStream("diimg.jpg"));
+        Image image=new Image(getClass().getResourceAsStream("pictures/"+"diimg.jpg"));
         discordCircle.setFill(new ImagePattern(image));
 
 
@@ -222,16 +222,16 @@ public class ServerPage implements Initializable {
                 pro.setRadius(15);
                 pro.setCenterX(20);
                 pro.setCenterY(20);
-                if (getClass().getResourceAsStream(username2 + ".jpg") != null || getClass().getResourceAsStream(username2 + ".png") != null) {
+                if (getClass().getResourceAsStream("pictures/"+username2 + ".jpg") != null || getClass().getResourceAsStream("pictures/"+username2 + ".png") != null) {
                     if (getClass().getResourceAsStream(username2 + ".jpg") != null) {
-                        Image image1 = new Image(getClass().getResourceAsStream(username2 + ".jpg"));
+                        Image image1 = new Image(getClass().getResourceAsStream("pictures/"+username2 + ".jpg"));
                         pro.setFill(new ImagePattern(image1));
                     } else {
-                        Image image1 = new Image(getClass().getResourceAsStream(username2 + ".png"));
+                        Image image1 = new Image(getClass().getResourceAsStream("pictures/"+username2 + ".png"));
                         pro.setFill(new ImagePattern(image1));
                     }
                 } else {
-                    Image image1 = new Image(getClass().getResourceAsStream("diimg.jpg"));
+                    Image image1 = new Image(getClass().getResourceAsStream("pictures/"+"diimg.jpg"));
                     pro.setFill(new ImagePattern(image1));
                 }
                 Circle back = new Circle();
@@ -300,7 +300,7 @@ public class ServerPage implements Initializable {
                 ImageView imageView=new ImageView();
                 imageView.setFitWidth(30);
                 imageView.setFitHeight(20);
-                Image channelImage=new Image(getClass().getResourceAsStream("channel.png"));
+                Image channelImage=new Image(getClass().getResourceAsStream("pictures/"+"channel.png"));
                 imageView.setImage(channelImage);
                 Text channelText=new Text();
                 Font font = Font.font("System", FontWeight.BOLD, 14);
@@ -705,7 +705,7 @@ public class ServerPage implements Initializable {
                     ImageView imageView=new ImageView();
                     imageView.setFitWidth(30);
                     imageView.setFitHeight(20);
-                    Image channelImage=new Image(getClass().getResourceAsStream("channel.png"));
+                    Image channelImage=new Image(getClass().getResourceAsStream("pictures/"+"channel.png"));
                     imageView.setImage(channelImage);
                     Text channelText=new Text();
                     Font font = Font.font("System", FontWeight.BOLD, 14);

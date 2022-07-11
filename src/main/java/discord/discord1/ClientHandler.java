@@ -386,7 +386,6 @@ public class ClientHandler implements Runnable {
             else if(command.getCode()==RequestCode.GET_SERVER_NAME){
                 int userIndex=findUserIndex();
                 int index=0;
-                boolean flag=false;
                 for (DiscordServer d:users.get(userIndex).getServers()){
                     if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
                         break;
@@ -394,10 +393,7 @@ public class ClientHandler implements Runnable {
                     index++;
                 }
                 Response response=new Response(ResponseCode.REQUEST_OK);
-                String name="";
-                if(flag){
-                   name=users.get(userIndex).getServers().get(index).getName();
-                }
+                   String name=users.get(userIndex).getServers().get(index).getName();
                 response.addData("name",name);
                 try {
                     objectOutputStream.writeObject(response);
@@ -1003,7 +999,7 @@ public class ClientHandler implements Runnable {
                 String serverss="";
                 int userIndex=findUserIndex();
                 if(users.get(userIndex).getServers().size()!=0) {
-                    for (DiscordServer d : user.getServers()) {
+                    for (DiscordServer d : users.get(userIndex).getServers()) {
                         serverss += d.getName();
                         serverss += "@@@";
                     }
@@ -1059,6 +1055,18 @@ public class ClientHandler implements Runnable {
                     users.get(userIndex).setUserStatus(Status.ONLINE);
                 }
                 user=users.get(userIndex);
+            }
+            //add a new server in program
+            else if(command.getCode()==RequestCode.ADD_SERVER){
+                String serverName= (String) command.getData("serverName");
+                DiscordServer discordServer=new DiscordServer(serverName);
+                int userIndex=findUserIndex();
+                discordServer.setServerAdmin(users.get(userIndex));
+                Role role=new Role("normal");
+                discordServer.getServerRoles().add(role);
+                users.get(userIndex).getServers().add(discordServer);
+                //user.getServers().add(discordServer);
+                discordServers.add(discordServer);
             }
 
 
@@ -1275,16 +1283,7 @@ public class ClientHandler implements Runnable {
 //                user.getFriends().add(unblockFriend);
 //                user.getBlockedFriends().remove(index);
 //            }
-//            //add a new server in program
-//            else if(command.getCode()==RequestCode.ADD_SERVER){
-//                String serverName= (String) command.getData("serverName");
-//                DiscordServer discordServer=new DiscordServer(serverName);
-//                discordServer.setServerAdmin(user);
-//                Role role=new Role("normal");
-//                discordServer.getServerRoles().add(role);
-//                user.getServers().add(discordServer);
-//                discordServers.add(discordServer);
-//            }
+//
 //
 //
 //
