@@ -54,6 +54,7 @@ public class Client {
             String newPassword= (String) uiRequest.getData("new");
             String confirmPassword= (String) uiRequest.getData("confirm");
             uiResponse=changePassword(currentPassword,newPassword,confirmPassword);
+            return uiResponse;
         }
         else if(uiRequest.getCode()==UIRequestCode.LOG_OUT){
             Request request = new Request(RequestCode.LOG_OUT);

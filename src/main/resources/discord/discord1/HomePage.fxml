@@ -33,7 +33,7 @@
             </AnchorPane>
         </content>
       </ScrollPane>
-      <Pane fx:id="createServerPane" layoutX="319.0" layoutY="164.0" prefHeight="198.0" prefWidth="262.0" style="-fx-background-color: #36393f; -fx-background-radius: 6px;">
+      <Pane fx:id="createServerPane" layoutX="319.0" layoutY="164.0" prefHeight="198.0" prefWidth="262.0" style="-fx-background-color: #36393f; -fx-background-radius: 6px;" visible="false">
          <children>
             <Label layoutX="65.0" layoutY="32.0" text="Enter Name" textFill="#f8eded">
                <font>
@@ -42,11 +42,11 @@
             </Label>
             <ImageView fitHeight="35.0" fitWidth="31.0" layoutX="224.0" layoutY="9.0" onMouseClicked="#exitClick" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@escPicture.png" />
+                  <Image url="@pictures/escPicture.png" />
                </image>
             </ImageView>
             <TextField fx:id="createServerTextField" layoutX="38.0" layoutY="102.0" prefHeight="35.0" prefWidth="191.0" style="-fx-text-fill: #ffffff; -fx-background-color: #36393f; -fx-border-color: #ffffff; -fx-background-radius: 6px;" />
-            <Button layoutX="98.0" layoutY="153.0" mnemonicParsing="false" onMouseClicked="#createButtonClick" prefHeight="31.0" prefWidth="70.0" stylesheets="@profileStyle.css" text="Create" textFill="#f8f3f3">
+            <Button layoutX="98.0" layoutY="153.0" mnemonicParsing="false" onMouseClicked="#createButtonClick" prefHeight="31.0" prefWidth="70.0" stylesheets="@styles/profileStyle.css" text="Create" textFill="#f8f3f3">
                <styleClass>
                   <String fx:value="buttons-color" />
                   <String fx:value="change" />
@@ -62,5 +62,6 @@
             </Label>
          </children>
       </Pane>
+      <Button layoutX="375.0" layoutY="238.0" mnemonicParsing="false" onMouseClicked="#change" text="Button" />
    </children>
 </Pane>

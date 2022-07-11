@@ -74,8 +74,7 @@ public class profileSettings implements Initializable {
     @FXML
     private Text phoneNumberText;
 
-    @FXML
-    private Text revealPhoneNumber;
+
 
     @FXML
     private Text removePhoneNumberText;
@@ -151,14 +150,11 @@ public class profileSettings implements Initializable {
             phoneNumberEdit.setText("Add");
             removePhoneNumberText.setVisible(false);
             phoneNumberText.setText("You haven't added a phone number yet.");
-            revealPhoneNumber.setVisible(false);
         }
         else{
             phoneNumberEdit.setText("Edit");
             removePhoneNumberText.setVisible(true);
-            phoneNumberText.setText("*********"+phoneNumber.substring(9));
-            revealPhoneNumber.setVisible(true);
-            revealPhoneNumber.setText("Reveal");
+            phoneNumberText.setText(phoneNumber);
         }
         UIRequest uiRequest1=new UIRequest(UIRequestCode.GET_EMAIL);
         UIResponse uiResponse1;
@@ -214,18 +210,18 @@ public class profileSettings implements Initializable {
             statusCircle.setFill(Paint.valueOf("##747f8d"));
         }
 
-        if(getClass().getResourceAsStream(username+".jpg")!=null || getClass().getResourceAsStream(username+".png")!=null ){
+        if(getClass().getResourceAsStream("pictures/"+username+".jpg")!=null || getClass().getResourceAsStream("pictures/"+username+".png")!=null ){
            if(getClass().getResourceAsStream(username+".jpg")!=null){
-               Image image=new Image(getClass().getResourceAsStream(username+".jpg"));
+               Image image=new Image(getClass().getResourceAsStream("pictures/"+username+".jpg"));
                profileCircle.setFill(new ImagePattern(image));
            }
            else{
-               Image image=new Image(getClass().getResourceAsStream(username+".png"));
+               Image image=new Image(getClass().getResourceAsStream("pictures/"+username+".png"));
                profileCircle.setFill(new ImagePattern(image));
            }
         }
         else{
-            Image image=new Image(getClass().getResourceAsStream("diimg.jpg"));
+            Image image=new Image(getClass().getResourceAsStream("pictures/"+"diimg.jpg"));
             profileCircle.setFill(new ImagePattern(image));
         }
 
@@ -252,6 +248,9 @@ public class profileSettings implements Initializable {
     @FXML
     void changePasswordCancleClick(MouseEvent event) {
         changePasswordDialog.setVisible(false);
+        currentPassword.setText("");
+        newPassword.setText("");
+        confirmPassword.setText("");
     }
 
     @FXML
@@ -311,6 +310,9 @@ public class profileSettings implements Initializable {
                     }
                     else{
                         changePasswordDialog.setVisible(false);
+                        currentPassword.setText("");
+                        newPassword.setText("");
+                        confirmPassword.setText("");
                     }
             }
 
@@ -321,7 +323,11 @@ public class profileSettings implements Initializable {
     @FXML
     void changePasswordEscClick(MouseEvent event) {
         changePasswordDialog.setVisible(false);
+        currentPassword.setText("");
+        newPassword.setText("");
+        confirmPassword.setText("");
     }
+
 
 
 
@@ -349,27 +355,16 @@ public class profileSettings implements Initializable {
     void phoneNumberEditClick(MouseEvent event) {
       phoneNumberDialog.setVisible(true);
       invalidPhoneNumberText.setVisible(false);
-      revealPhoneNumber.setVisible(false);
+        phoneNumberTextField.setText("");
     }
 
-    @FXML
-    void revealPhoneNumerClick(MouseEvent event) {
-        if(revealPhoneNumber.getText().equals("Reveal")){
-            phoneNumberText.setText(phoneNumber);
-            revealPhoneNumber.setText("Hide");
-        }
-        else{
-            phoneNumberText.setText("*********"+phoneNumber.substring(9));
-            revealPhoneNumber.setText("Reveal");
-        }
-    }
+
 
     @FXML
     void removePhoneNumberClick(MouseEvent event) throws IOException, ClassNotFoundException {
         phoneNumberEdit.setText("Add");
         removePhoneNumberText.setVisible(false);
         phoneNumberText.setText("You haven't added a phone number yet.");
-        revealPhoneNumber.setVisible(false);
         UIRequest uiRequest=new UIRequest(UIRequestCode.REMOVE_PHONE_NUMBER);
         Client.process(uiRequest);
     }
@@ -393,17 +388,15 @@ public class profileSettings implements Initializable {
             phoneNumberDialog.setVisible(false);
             phoneNumberEdit.setText("Edit");
             removePhoneNumberText.setVisible(true);
-            phoneNumberText.setText("*********"+phoneNumber.substring(9));
-            revealPhoneNumber.setVisible(true);
-            revealPhoneNumber.setText("Reveal");
+            phoneNumberText.setText(phoneNumber);
+            phoneNumberTextField.setText("");
+
         }
     }
     @FXML
     void phoneNumberCancle(MouseEvent event) {
         phoneNumberDialog.setVisible(false);
-        if(!phoneNumber.equals("")){
-            revealPhoneNumber.setVisible(true);
-        }
+        phoneNumberTextField.setText("");
     }
 
     @FXML
@@ -411,6 +404,7 @@ public class profileSettings implements Initializable {
       emailDialog.setVisible(true);
       invalidEmailText.setVisible(false);
       revealEmailText.setVisible(false);
+        emailTextField.setText("");
     }
     @FXML
     void revealEmailClick(MouseEvent event) {
@@ -435,6 +429,7 @@ public class profileSettings implements Initializable {
     void exitEmailDialogCLick(MouseEvent event) {
       emailDialog.setVisible(false);
       revealEmailText.setVisible(true);
+        emailTextField.setText("");
     }
 
     @FXML
@@ -461,6 +456,7 @@ public class profileSettings implements Initializable {
             emailText.setText(showHide);
             emailDialog.setVisible(false);
             revealEmailText.setVisible(true);
+            emailTextField.setText("");
         }
     }
 
@@ -468,11 +464,13 @@ public class profileSettings implements Initializable {
     void editUsernameClick(MouseEvent event) {
         usernameDialog.setVisible(true);
         usernameInvalidText.setVisible(false);
+        usernameTextField.setText("");
     }
 
     @FXML
     void changeUsernameEscClick(MouseEvent event) {
         usernameDialog.setVisible(false);
+        usernameTextField.setText("");
     }
     @FXML
     void usernameDoneClick(MouseEvent event) throws IOException, ClassNotFoundException {
@@ -507,6 +505,7 @@ public class profileSettings implements Initializable {
                     username=input;
                     usernameText.setText(username);
                     userText.setText(username);
+                    usernameTextField.setText("");
                 }
             }
         }
@@ -536,7 +535,7 @@ public class profileSettings implements Initializable {
         File f = new File(pathStr);
         byte[] content = Files.readAllBytes(f.toPath());
         pathStr=pathStr.substring(pathStr.indexOf("."));
-        File f2 = new File("./src/main/resources/discord/discord1/"+username+ pathStr);
+        File f2 = new File("./src/main/resources/discord/discord1/pictures/"+username+ pathStr);
         try {
             Files.write(f2.toPath(), content);
         }

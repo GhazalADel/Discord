@@ -292,7 +292,9 @@ public class ClientHandler implements Runnable {
                 String username= (String) command.getData("username");
                 int userIndex=findUserIndex();
                 int index=0;
+                boolean flag=false;
                 for (DiscordServer d:users.get(userIndex).getServers()){
+                    flag=true;
                     if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
                         break;
                     }
@@ -300,22 +302,26 @@ public class ClientHandler implements Runnable {
                 }
                 String members="";
                 HashSet<String> temp=new HashSet<>();
-                members+=users.get(userIndex).getServers().get(index).getServerAdmin().getUsername()+" "+users.get(userIndex).getServers().get(index).getServerAdmin().getUserStatus();
-                members+="@@@";
-                for (int i = 0; i < users.get(userIndex).getServers().get(index).getServerRoles().size(); i++) {
-                    for (int j = 0; j < users.get(userIndex).getServers().get(index).getServerRoles().get(i).getUsers().size(); j++) {
-                        int sizeBefore= temp.size();
-                        temp.add(users.get(userIndex).getServers().get(index).getServerRoles().get(i).getUsers().get(j).getUsername());
-                        int sizeAfter=temp.size();
-                        if(sizeBefore!=sizeAfter){
-                            members+=users.get(userIndex).getServers().get(index).getServerRoles().get(i).getUsers().get(j).getUsername();
-                            members+=" ";
-                            members+=users.get(userIndex).getServers().get(index).getServerRoles().get(i).getUsers().get(j).getUserStatus();
-                            members+="@@@";
+                if(flag){
+                    members+=users.get(userIndex).getServers().get(index).getServerAdmin().getUsername()+" "+users.get(userIndex).getServers().get(index).getServerAdmin().getUserStatus();
+                    members+="@@@";
+                    for (int i = 0; i < users.get(userIndex).getServers().get(index).getServerRoles().size(); i++) {
+                        for (int j = 0; j < users.get(userIndex).getServers().get(index).getServerRoles().get(i).getUsers().size(); j++) {
+                            int sizeBefore= temp.size();
+                            temp.add(users.get(userIndex).getServers().get(index).getServerRoles().get(i).getUsers().get(j).getUsername());
+                            int sizeAfter=temp.size();
+                            if(sizeBefore!=sizeAfter){
+                                members+=users.get(userIndex).getServers().get(index).getServerRoles().get(i).getUsers().get(j).getUsername();
+                                members+=" ";
+                                members+=users.get(userIndex).getServers().get(index).getServerRoles().get(i).getUsers().get(j).getUserStatus();
+                                members+="@@@";
+                            }
                         }
                     }
+                    members=members.substring(0,members.length()-3);
                 }
-                members=members.substring(0,members.length()-3);
+
+
                 Response response=new Response(ResponseCode.SUCCESSFUL);
                 response.addData("members",members);
                 try {
@@ -350,19 +356,24 @@ public class ClientHandler implements Runnable {
             else if(command.getCode()==RequestCode.SEE_CHANNELS){
                 int userIndex=findUserIndex();
                 int index=0;
+                boolean flag=false;
                 for (DiscordServer d:users.get(userIndex).getServers()){
+                    flag=true;
                     if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
                         break;
                     }
                     index++;
                 }
+
                 String channels="";
-                if(users.get(userIndex).getServers().get(index).getChannels().size()!=0) {
-                    for (Channel c : users.get(userIndex).getServers().get(index).getChannels()) {
-                        channels += c.getChannelName();
-                        channels += "@@@";
+                if(flag==true) {
+                    if (users.get(userIndex).getServers().get(index).getChannels().size() != 0) {
+                        for (Channel c : users.get(userIndex).getServers().get(index).getChannels()) {
+                            channels += c.getChannelName();
+                            channels += "@@@";
+                        }
+                        channels = channels.substring(0, channels.length() - 3);
                     }
-                    channels = channels.substring(0, channels.length() - 3);
                 }
                 Response response=new Response(ResponseCode.SHOW_CHANNELS);
                 response.addData("channels",channels);
@@ -375,6 +386,7 @@ public class ClientHandler implements Runnable {
             else if(command.getCode()==RequestCode.GET_SERVER_NAME){
                 int userIndex=findUserIndex();
                 int index=0;
+                boolean flag=false;
                 for (DiscordServer d:users.get(userIndex).getServers()){
                     if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
                         break;
@@ -382,7 +394,10 @@ public class ClientHandler implements Runnable {
                     index++;
                 }
                 Response response=new Response(ResponseCode.REQUEST_OK);
-                String name=users.get(userIndex).getServers().get(index).getName();
+                String name="";
+                if(flag){
+                   name=users.get(userIndex).getServers().get(index).getName();
+                }
                 response.addData("name",name);
                 try {
                     objectOutputStream.writeObject(response);

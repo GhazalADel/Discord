@@ -201,84 +201,77 @@ public class ServerPage implements Initializable {
             throw new RuntimeException(e);
         }
         String members= (String) uiResponse1.getData("members");
-        String[] membersArr=members.split("@@@");
-        ArrayList<HBox> membersHboxArr=new ArrayList<>();
-
-
-
-        for (int i = 0; i < membersArr.length; i++) {
-            String tmp=membersArr[i];
-            String[] tmpArr=tmp.split(" ");
-            String username2=tmpArr[0];
-            String status=tmpArr[1];
-            HBox h=new HBox();
-            h.setPrefHeight(40);
-            h.setPrefWidth(148);
-            h.setBackground(new Background(new BackgroundFill(Paint.valueOf("#2f3136"),
-                    CornerRadii.EMPTY,
-                    Insets.EMPTY)));
-            AnchorPane ap=new AnchorPane();
-            ap.setPrefHeight(40);
-            ap.setPrefWidth(148);
-            Circle pro=new Circle();
-            pro.setRadius(15);
-            pro.setCenterX(20);
-            pro.setCenterY(20);
-            if(getClass().getResourceAsStream(username2+".jpg")!=null || getClass().getResourceAsStream(username2+".png")!=null ){
-                if(getClass().getResourceAsStream(username2+".jpg")!=null){
-                    Image image1=new Image(getClass().getResourceAsStream(username2+".jpg"));
+        if(!members.equals("")) {
+            String[] membersArr = members.split("@@@");
+            ArrayList<HBox> membersHboxArr = new ArrayList<>();
+            for (int i = 0; i < membersArr.length; i++) {
+                String tmp = membersArr[i];
+                String[] tmpArr = tmp.split(" ");
+                String username2 = tmpArr[0];
+                String status = tmpArr[1];
+                HBox h = new HBox();
+                h.setPrefHeight(40);
+                h.setPrefWidth(148);
+                h.setBackground(new Background(new BackgroundFill(Paint.valueOf("#2f3136"),
+                        CornerRadii.EMPTY,
+                        Insets.EMPTY)));
+                AnchorPane ap = new AnchorPane();
+                ap.setPrefHeight(40);
+                ap.setPrefWidth(148);
+                Circle pro = new Circle();
+                pro.setRadius(15);
+                pro.setCenterX(20);
+                pro.setCenterY(20);
+                if (getClass().getResourceAsStream(username2 + ".jpg") != null || getClass().getResourceAsStream(username2 + ".png") != null) {
+                    if (getClass().getResourceAsStream(username2 + ".jpg") != null) {
+                        Image image1 = new Image(getClass().getResourceAsStream(username2 + ".jpg"));
+                        pro.setFill(new ImagePattern(image1));
+                    } else {
+                        Image image1 = new Image(getClass().getResourceAsStream(username2 + ".png"));
+                        pro.setFill(new ImagePattern(image1));
+                    }
+                } else {
+                    Image image1 = new Image(getClass().getResourceAsStream("diimg.jpg"));
                     pro.setFill(new ImagePattern(image1));
                 }
-                else{
-                    Image image1=new Image(getClass().getResourceAsStream(username2+".png"));
-                    pro.setFill(new ImagePattern(image1));
+                Circle back = new Circle();
+                back.setRadius(8);
+                back.setFill(Color.valueOf("#2f3136"));
+                back.setCenterX(30);
+                back.setCenterY(28);
+                Circle statusCircle2 = new Circle();
+                statusCircle2.setRadius(5);
+                statusCircle2.setCenterX(30);
+                statusCircle2.setCenterY(28);
+                if (status.equalsIgnoreCase("ONLINE")) {
+                    statusCircle2.setFill(Paint.valueOf("#3ba55d"));
+                } else if (status.equalsIgnoreCase("DO_NOT_DISTURB")) {
+                    statusCircle2.setFill(Paint.valueOf("#e03f41"));
+                } else if (status.equalsIgnoreCase("IDLE")) {
+                    statusCircle2.setFill(Paint.valueOf("#eb9e19"));
+                } else if (status.equalsIgnoreCase("INVISIBLE")) {
+                    statusCircle2.setFill(Paint.valueOf("#747f8d"));
+                } else {
+                    statusCircle2.setVisible(false);
+                    back.setVisible(false);
                 }
+                Text usernameText2 = new Text();
+                Font font = Font.font("System", FontWeight.BOLD, 12);
+                usernameText2.setFont(font);
+                usernameText2.setX(40);
+                usernameText2.setY(23);
+                usernameText2.setText(username2);
+                usernameText2.setFill(Color.WHITE);
+                ap.getChildren().add(pro);
+                ap.getChildren().add(back);
+                ap.getChildren().add(statusCircle2);
+                ap.getChildren().add(usernameText2);
+                h.getChildren().add(ap);
+                membersHboxArr.add(h);
             }
-            else{
-                Image image1=new Image(getClass().getResourceAsStream("diimg.jpg"));
-                pro.setFill(new ImagePattern(image1));
+            for (int i = 0; i < membersHboxArr.size(); i++) {
+                usersVBox.getChildren().add(membersHboxArr.get(i));
             }
-            Circle back=new Circle();
-            back.setRadius(8);
-            back.setFill(Color.valueOf("#2f3136"));
-            back.setCenterX(30);
-            back.setCenterY(28);
-            Circle statusCircle2=new Circle();
-            statusCircle2.setRadius(5);
-            statusCircle2.setCenterX(30);
-            statusCircle2.setCenterY(28);
-            if(status.equalsIgnoreCase("ONLINE")){
-                statusCircle2.setFill(Paint.valueOf("#3ba55d"));
-            }
-            else if(status.equalsIgnoreCase("DO_NOT_DISTURB")){
-                statusCircle2.setFill(Paint.valueOf("#e03f41"));
-            }
-            else if(status.equalsIgnoreCase("IDLE")){
-                statusCircle2.setFill(Paint.valueOf("#eb9e19"));
-            }
-            else if(status.equalsIgnoreCase("INVISIBLE")){
-                statusCircle2.setFill(Paint.valueOf("#747f8d"));
-            }
-            else{
-                statusCircle2.setVisible(false);
-                back.setVisible(false);
-            }
-            Text usernameText2=new Text();
-            Font font = Font.font("System", FontWeight.BOLD, 12);
-            usernameText2.setFont(font);
-            usernameText2.setX(40);
-            usernameText2.setY(23);
-            usernameText2.setText(username2);
-            usernameText2.setFill(Color.WHITE);
-            ap.getChildren().add(pro);
-            ap.getChildren().add(back);
-            ap.getChildren().add(statusCircle2);
-            ap.getChildren().add(usernameText2);
-            h.getChildren().add(ap);
-            membersHboxArr.add(h);
-        }
-        for (int i = 0; i <membersHboxArr.size() ; i++) {
-            usersVBox.getChildren().add(membersHboxArr.get(i));
         }
         changeStatusVBox.setVisible(false);
         UIRequest uiRequest3=new UIRequest(UIRequestCode.SEE_CHANNELS);

@@ -100,7 +100,7 @@ public class MainPage implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         createServerPane.setVisible(false);
-        Image image=new Image(getClass().getResourceAsStream("diimg.jpg"));
+        Image image=new Image(getClass().getResourceAsStream("pictures/diimg.jpg"));
         discordCircle.setFill(new ImagePattern(image));
         UIRequest uiRequest=new UIRequest(UIRequestCode.GET_SERVERS);
         UIResponse uiResponse;
@@ -161,6 +161,17 @@ public class MainPage implements Initializable {
         Parent root= null;
         try {
             root = FXMLLoader.load(getClass().getResource("serverPage.fxml"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.setScene(new Scene(root));
+    }
+    @FXML
+    void change(MouseEvent event) {
+        Stage stage= (Stage) discordCircle.getScene().getWindow();
+        Parent root= null;
+        try {
+            root = FXMLLoader.load(getClass().getResource("profile-settings.fxml"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
