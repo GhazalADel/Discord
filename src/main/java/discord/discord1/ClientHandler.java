@@ -1028,6 +1028,23 @@ public class ClientHandler implements Runnable {
                     throw new RuntimeException(e);
                 }
             }
+           //log in
+            else if(command.getCode()==RequestCode.LOG_IN){
+                User u= (User) command.getData("user");
+                int userIndex=0;
+                for(User uu:users){
+                    if(uu.getUsername().equalsIgnoreCase(u.getUsername())){
+                        break;
+                    }
+                    userIndex++;
+                }
+                if (users.get(userIndex).getSelectedUserStatus() != null) {
+                    users.get(userIndex).setUserStatus(users.get(userIndex).getSelectedUserStatus());
+                } else {
+                    users.get(userIndex).setUserStatus(Status.ONLINE);
+                }
+                user=users.get(userIndex);
+            }
 
 
 
@@ -1192,24 +1209,7 @@ public class ClientHandler implements Runnable {
 //                }
 //            }
 //
-//            //log in
-//            else if(command.getCode()==RequestCode.LOG_IN){
-//                User u= (User) command.getData("user");
-//                int userIndex=0;
-//                for(User uu:users){
-//                    if(uu.getUsername().equalsIgnoreCase(u.getUsername())){
-//                        break;
-//                    }
-//                    userIndex++;
-//                }
-//
-//                if (users.get(userIndex).getSelectedUserStatus() != null) {
-//                    users.get(userIndex).setUserStatus(users.get(userIndex).getSelectedUserStatus());
-//                } else {
-//                    users.get(userIndex).setUserStatus(Status.ONLINE);
-//                }
-//                user=users.get(userIndex);
-//            }
+
 //            else if(command.getCode()==RequestCode.OFFLINE_ACTIVE_USER){
 //                int userIndex=0;
 //                for(User uu:users){

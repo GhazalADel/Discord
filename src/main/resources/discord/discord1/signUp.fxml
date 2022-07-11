@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
@@ -35,23 +36,29 @@
                         <Font size="15.0" />
                      </font>
                   </Label>
-                      <TextField fx:id="username" layoutX="30.0" layoutY="100.0" prefHeight="38.0" prefWidth="384.0" style="-fx-background-color: #161616; -fx-text-fill: #ffffff; -fx-border-color: #ffffff;" />
+                      <TextField fx:id="username" layoutX="30.0" layoutY="100.0" prefHeight="38.0" prefWidth="384.0" style="-fx-background-color: #161616; -fx-text-fill: #ffffff; -fx-border-color: #ffffff; -fx-background-radius: 6px; -fx-border-radius: 6px;">
+                     <cursor>
+                        <Cursor fx:constant="TEXT" />
+                     </cursor></TextField>
                       <Label fx:id="label_password" layoutX="31.0" layoutY="225.0" text="PASSWORD" textFill="WHITE">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </Label>
-                      <PasswordField fx:id="password" layoutX="30.0" layoutY="250.0" prefHeight="41.0" prefWidth="384.0" style="-fx-background-color: #161616; -fx-text-fill: #ffffff; -fx-border-color: #ffffff;" />
+                      <PasswordField fx:id="password" layoutX="30.0" layoutY="250.0" prefHeight="41.0" prefWidth="384.0" style="-fx-background-color: #161616; -fx-text-fill: #ffffff; -fx-border-color: #ffffff; -fx-background-radius: 6px; -fx-border-radius: 6px;" />
                   <Label layoutX="31.0" layoutY="300.0" prefHeight="17.0" prefWidth="218.0" text="PHONE NUMBER (optional)" textFill="WHITE">
                      <font>
                         <Font name="Arial" size="15.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="phoneNumber" layoutX="30.0" layoutY="325.0" prefHeight="38.0" prefWidth="384.0" style="-fx-background-color: #161616; -fx-text-fill: #ffffff; -fx-border-color: #ffffff;" />
-                      <Button fx:id="button_continue" alignment="CENTER" contentDisplay="CENTER" layoutX="30.0" layoutY="377.0" mnemonicParsing="false" onAction="#signUp" prefHeight="35.0" prefWidth="384.0" style="-fx-background-color: #7b68ee; -fx-background-radius: 6px;" text="Sign Up" textAlignment="CENTER" textFill="#ebe1e1">
+                  <TextField fx:id="phoneNumber" layoutX="30.0" layoutY="325.0" prefHeight="38.0" prefWidth="384.0" style="-fx-background-color: #161616; -fx-text-fill: #ffffff; -fx-border-color: #ffffff; -fx-background-radius: 6px; -fx-border-radius: 6px;" />
+                      <Button fx:id="button_continue" alignment="CENTER" contentDisplay="CENTER" layoutX="30.0" layoutY="377.0" mnemonicParsing="false" onAction="#signUp" prefHeight="35.0" prefWidth="384.0" style="-fx-background-color: #7b68ee; -fx-background-radius: 6px; -fx-border-radius: 6px;" text="Sign Up" textAlignment="CENTER" textFill="#ebe1e1">
                           <font>
                               <Font name="System Bold" size="18.0" />
                           </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                       </Button>
                       <Label fx:id="label_login" layoutX="23.0" layoutY="423.0" prefHeight="36.0" prefWidth="179.0" text="already have an account?" textFill="WHITE">
                      <font>
@@ -62,8 +69,11 @@
                      <font>
                         <Font size="15.0" />
                      </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </Button>
-                      <TextField fx:id="email" layoutX="30.0" layoutY="175.0" prefHeight="38.0" prefWidth="384.0" style="-fx-background-color: #161616; -fx-text-fill: #ffffff; -fx-border-color: #ffffff;" />
+                      <TextField fx:id="email" layoutX="30.0" layoutY="175.0" prefHeight="38.0" prefWidth="384.0" style="-fx-background-color: #161616; -fx-text-fill: #ffffff; -fx-border-color: #ffffff; -fx-background-radius: 6px; -fx-border-radius: 6px;" />
                </children>
             </Pane>
             </children>

@@ -14,7 +14,8 @@ public class LogInController {
     @FXML
     private PasswordField password;
     @FXML
-    private Label message;
+    private Label messageLabel;
+
 
     Main main = new Main();
 
@@ -22,7 +23,7 @@ public class LogInController {
         String usernameS = username.getText().toString();
         String passwordS = password.getText().toString();
         if(usernameS.isEmpty() || passwordS.isEmpty()) {
-            message.setText("Fill The Fields");
+            messageLabel.setText("Fill The Fields");
         }
         else {
             UIRequest request = new UIRequest(UIRequestCode.LOG_IN);
@@ -33,10 +34,10 @@ public class LogInController {
                 main.changeScene("HomePage.fxml");
             }
             else if(response.getCode() == UIResponseCode.NO_USER) {
-                message.setText("No User With This Username");
+                messageLabel.setText("No User With This Username");
             }
             else if(response.getCode() == UIResponseCode.INVALID_PASSWORD) {
-                message.setText("Correct Your PassWord");
+                messageLabel.setText("Correct Your password");
             }
         }
     }
