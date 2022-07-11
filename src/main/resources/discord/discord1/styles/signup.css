@@ -1,5 +1,5 @@
 .bodybg{
-    -fx-background-image: url("discordWallpaper.png");
+    -fx-background-image: url("../pictures/discordWallpaper.png");
 }
 .changeButton:hover{
     -fx-background-color: #4752c4;

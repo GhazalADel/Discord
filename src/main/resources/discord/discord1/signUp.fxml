@@ -11,7 +11,7 @@
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="discord.discord1.SignUpController">
     <children>
-        <AnchorPane prefHeight="550.0" prefWidth="900.0" styleClass="bodybg" stylesheets="@signup.css">
+        <AnchorPane prefHeight="550.0" prefWidth="900.0" styleClass="bodybg" stylesheets="@styles/signup.css">
             <children>
             <Pane layoutX="216.0" layoutY="37.0" prefHeight="470.0" prefWidth="445.0" style="-fx-background-color: #313131; -fx-background-radius: 10px;">
                <children>
