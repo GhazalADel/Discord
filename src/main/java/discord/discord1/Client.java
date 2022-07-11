@@ -499,6 +499,7 @@ public class Client {
             Request request = new Request(RequestCode.ADD_USER);
             request.addData("user", user);
             objectOutputStream.writeObject(request);
+            Response result= (Response) objectInputStream.readObject();
             uiResponse = new UIResponse(UIResponseCode.OK);
             return uiResponse;
         }

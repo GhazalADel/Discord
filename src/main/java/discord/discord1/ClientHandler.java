@@ -25,7 +25,7 @@ public class ClientHandler implements Runnable {
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
     private Socket socket;
-    private static User user;
+    private  User user;
     private static File usersFile=new File("./Files/userFiles.txt");
 
     private int counter = 0;
@@ -142,9 +142,15 @@ public class ClientHandler implements Runnable {
             else if (command.getCode() == RequestCode.ADD_USER) {
                 User u = (User) command.getData("user");
                 user = u;
-//                user.setUserStatus(Status.ONLINE);
+                user.setUserStatus(Status.ONLINE);
                 users.add(user);
                 writeUsersFile();
+                Response response=new Response(ResponseCode.REQUEST_OK);
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
             //find user based on username
             else if (command.getCode() == RequestCode.FIND_USER_BY_USERNAME) {
@@ -2093,7 +2099,7 @@ public class ClientHandler implements Runnable {
          * *@return boolean isDuplicate
          */
 
-        private static boolean checkDuplication (String username){
+        private boolean checkDuplication(String username){
             boolean isDuplicate = false;
             for (User user1 : users) {
                 if (user1 != user) {

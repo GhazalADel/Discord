@@ -251,7 +251,7 @@
                         </Text>
                      </children>
                   </Pane>
-                  <Pane fx:id="roleDialog" layoutX="127.0" layoutY="21.0" prefHeight="366.0" prefWidth="251.0" style="-fx-background-color: #2f3136; -fx-background-radius: 6px;">
+                  <Pane fx:id="roleDialog" layoutX="127.0" layoutY="21.0" prefHeight="366.0" prefWidth="251.0" style="-fx-background-color: #2f3136; -fx-background-radius: 6px;" visible="false">
                      <children>
                         <Text fx:id="roleDialogText1" fill="#f2f2f2" layoutX="87.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Role!">
                            <font>

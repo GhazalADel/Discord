@@ -6,56 +6,66 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="discord.discord1.SignUpController">
     <children>
-        <AnchorPane prefHeight="550.0" prefWidth="900.0" style="-fx-background-color: #313131;">
+        <AnchorPane prefHeight="550.0" prefWidth="900.0" styleClass="bodybg" stylesheets="@signup.css">
             <children>
-                <Label fx:id="label_username" layoutX="51.0" layoutY="147.0" text="USERNAME" textFill="WHITE">
-               <font>
-                  <Font size="15.0" />
-               </font></Label>
-                <Label fx:id="label_create" alignment="CENTER" contentDisplay="CENTER" layoutX="343.0" layoutY="19.0" prefHeight="31.0" prefWidth="238.0" text="Create an Account" textFill="WHITE">
-                    <font>
-                        <Font name="Arial Bold" size="21.0" />
-                    </font>
-                </Label>
-                <Label fx:id="label_email" layoutX="52.0" layoutY="64.0" prefHeight="17.0" prefWidth="61.0" text="EMAIL" textFill="WHITE">
-               <font>
-                  <Font size="15.0" />
-               </font></Label>
-                <TextField fx:id="email" layoutX="48.0" layoutY="102.0" prefHeight="38.0" prefWidth="818.0" style="-fx-background-color: #161616;" />
-                <TextField fx:id="username" layoutX="47.0" layoutY="185.0" prefHeight="38.0" prefWidth="823.0" style="-fx-background-color: #161616;" />
-                <Label fx:id="label_password" layoutX="48.0" layoutY="236.0" text="PASSWORD" textFill="WHITE">
-               <font>
-                  <Font size="15.0" />
-               </font></Label>
-                <Button fx:id="button_continue" alignment="CENTER" contentDisplay="CENTER" layoutX="46.0" layoutY="426.0" mnemonicParsing="false" onAction="#signUp" prefHeight="32.0" prefWidth="826.0" style="-fx-background-color: #7b68ee;" text="Continue" textAlignment="CENTER">
-                    <font>
-                        <Font name="System Bold" size="15.0" />
-                    </font>
-                </Button>
-                <Label fx:id="label_login" layoutX="40.0" layoutY="484.0" prefHeight="36.0" prefWidth="179.0" text="already have an account?" textFill="WHITE">
-               <font>
-                  <Font size="16.0" />
-               </font></Label>
-                <Button fx:id="login" layoutX="218.0" layoutY="482.0" mnemonicParsing="false" onAction="#logIn" prefHeight="35.0" prefWidth="58.0" style="-fx-background-color: #313131;" text="Login" textFill="#1453f2" underline="true">
-               <font>
-                  <Font size="15.0" />
-               </font></Button>
-                <PasswordField fx:id="password" layoutX="46.0" layoutY="273.0" prefHeight="41.0" prefWidth="824.0" style="-fx-background-color: #161616;" />
-                <Label fx:id="message" alignment="CENTER" contentDisplay="CENTER" layoutX="361.0" layoutY="55.0" prefHeight="17.0" prefWidth="191.0" text="Welcome To Discord" textFill="WHITE">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Label>
-            <Label layoutX="50.0" layoutY="325.0" prefHeight="17.0" prefWidth="135.0" text="PHONE NUMBER" textFill="WHITE">
-               <font>
-                  <Font name="Arial" size="15.0" />
-               </font>
-            </Label>
-            <TextField fx:id="phoneNumber" layoutX="46.0" layoutY="357.0" prefHeight="38.0" prefWidth="825.0" style="-fx-background-color: #161616;" />
+            <Pane layoutX="216.0" layoutY="37.0" prefHeight="470.0" prefWidth="445.0" style="-fx-background-color: #313131; -fx-background-radius: 10px;">
+               <children>
+                      <Label fx:id="label_create" alignment="CENTER" contentDisplay="CENTER" layoutX="106.0" layoutY="7.0" prefHeight="31.0" prefWidth="238.0" text="Create an Account" textFill="WHITE">
+                          <font>
+                              <Font name="Arial Bold" size="21.0" />
+                          </font>
+                      </Label>
+                      <Label fx:id="message" alignment="CENTER" contentDisplay="CENTER" layoutX="33.0" layoutY="42.0" prefHeight="20.0" prefWidth="379.0" textFill="#d57a7c">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                      </Label>
+                      <Label fx:id="label_email" layoutX="31.0" layoutY="150.0" prefHeight="15.0" prefWidth="61.0" text="EMAIL" textFill="WHITE">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                      <Label fx:id="label_username" layoutX="31.0" layoutY="75.0" text="USERNAME" textFill="WHITE">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                      <TextField fx:id="username" layoutX="30.0" layoutY="100.0" prefHeight="38.0" prefWidth="384.0" style="-fx-background-color: #161616; -fx-text-fill: #ffffff; -fx-border-color: #ffffff;" />
+                      <Label fx:id="label_password" layoutX="31.0" layoutY="225.0" text="PASSWORD" textFill="WHITE">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                      <PasswordField fx:id="password" layoutX="30.0" layoutY="250.0" prefHeight="41.0" prefWidth="384.0" style="-fx-background-color: #161616; -fx-text-fill: #ffffff; -fx-border-color: #ffffff;" />
+                  <Label layoutX="31.0" layoutY="300.0" prefHeight="17.0" prefWidth="218.0" text="PHONE NUMBER (optional)" textFill="WHITE">
+                     <font>
+                        <Font name="Arial" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="phoneNumber" layoutX="30.0" layoutY="325.0" prefHeight="38.0" prefWidth="384.0" style="-fx-background-color: #161616; -fx-text-fill: #ffffff; -fx-border-color: #ffffff;" />
+                      <Button fx:id="button_continue" alignment="CENTER" contentDisplay="CENTER" layoutX="30.0" layoutY="377.0" mnemonicParsing="false" onAction="#signUp" prefHeight="35.0" prefWidth="384.0" style="-fx-background-color: #7b68ee; -fx-background-radius: 6px;" text="Sign Up" textAlignment="CENTER" textFill="#ebe1e1">
+                          <font>
+                              <Font name="System Bold" size="18.0" />
+                          </font>
+                      </Button>
+                      <Label fx:id="label_login" layoutX="23.0" layoutY="423.0" prefHeight="36.0" prefWidth="179.0" text="already have an account?" textFill="WHITE">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                      <Button fx:id="login" layoutX="203.0" layoutY="423.0" mnemonicParsing="false" onAction="#logIn" prefHeight="35.0" prefWidth="58.0" style="-fx-background-color: #313131;" text="Login" textFill="MEDIUMSLATEBLUE" underline="true">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Button>
+                      <TextField fx:id="email" layoutX="30.0" layoutY="175.0" prefHeight="38.0" prefWidth="384.0" style="-fx-background-color: #161616; -fx-text-fill: #ffffff; -fx-border-color: #ffffff;" />
+               </children>
+            </Pane>
             </children>
         </AnchorPane>
     </children>

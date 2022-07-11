@@ -22,7 +22,7 @@ public class SignUpController {
 
     Main main = new Main();
 
-
+    @FXML
     public void signUp() throws IOException, ClassNotFoundException {
         String emailS = email.getText().toString();
         String usernameS = username.getText().toString();

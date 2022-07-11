@@ -112,35 +112,37 @@ public class MainPage implements Initializable {
             throw new RuntimeException(e);
         }
         String servers= (String) uiResponse.getData("servers");
-        String[] serversArr=servers.split("@@@");
-        for (int i = 0; i < serversArr.length; i++) {
-            HBox hBox=new HBox();
-            hBox.setPrefWidth(70);
-            hBox.setPrefWidth(60);
-            Button serverButton=new Button();
-            serverButton.setText(serversArr[i].substring(0,1).toUpperCase());
-            serverButton.setTextFill(Color.WHITE);
-            serverButton.setStyle("-fx-border-color: #5865f2; -fx-background-radius: 25px;");
-            Tooltip tt = new Tooltip();
-            tt.setText(serversArr[i]);
-            tt.setStyle("-fx-font: normal bold 4 Langdon; "
-                    + "-fx-base: #36393f; "
-                    + "-fx-text-fill: #5865f2;");
-            serverButton.setTooltip(tt);
-            serverButton.setOnMouseClicked( e ->{
-                selectedServer=e.getSource();
-                try {
-                    findServer();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                } catch (ClassNotFoundException ex) {
-                    throw new RuntimeException(ex);
-                }
-            });
-            serverButtons.add(serverButton);
-            hBox.getChildren().add(serverButton);
-            serverButton.setPadding(new Insets(0,0,0,1));
-            serversVBOX.getChildren().add(hBox);
+        if(servers.length()!=0) {
+            String[] serversArr = servers.split("@@@");
+            for (int i = 0; i < serversArr.length; i++) {
+                HBox hBox = new HBox();
+                hBox.setPrefWidth(70);
+                hBox.setPrefWidth(60);
+                Button serverButton = new Button();
+                serverButton.setText(serversArr[i].substring(0,2).toUpperCase());
+                serverButton.setTextFill(Color.WHITE);
+                serverButton.setStyle("-fx-border-color: #5865f2; -fx-background-radius: 25px;");
+                Tooltip tt = new Tooltip();
+                tt.setText(serversArr[i]);
+                tt.setStyle("-fx-font: normal bold 4 Langdon; "
+                        + "-fx-base: #36393f; "
+                        + "-fx-text-fill: #5865f2;");
+                serverButton.setTooltip(tt);
+                serverButton.setOnMouseClicked(e -> {
+                    selectedServer = e.getSource();
+                    try {
+                        findServer();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    } catch (ClassNotFoundException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                });
+                serverButtons.add(serverButton);
+                hBox.getChildren().add(serverButton);
+                serverButton.setPadding(new Insets(0, 0, 0, 1));
+                serversVBOX.getChildren().add(hBox);
+            }
         }
 
     }

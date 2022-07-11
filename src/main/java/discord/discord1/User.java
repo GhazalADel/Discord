@@ -21,24 +21,24 @@ public class User implements Serializable {
     private String email;
     private String tel;
 
-//    private ArrayList<RequestFriend> requests;
-//
-//    private ArrayList<User> friends;
-//
-//    private ArrayList<User> blockedFriends;
+    private ArrayList<RequestFriend> requests;
+
+    private ArrayList<User> friends;
+
+    private ArrayList<User> blockedFriends;
 //
     private Status userStatus;
     private Status selectedUserStatus;
     private ArrayList<DiscordServer> servers;
-//    private ArrayList<Notification> notifications;
-//    private ArrayList<PrivateChat> chats;
-//    private PrivateChat currentChat;
+    //private ArrayList<Notification> notifications;
+   // private ArrayList<PrivateChat> chats;
+   // private PrivateChat currentChat;
 //
     private DiscordServer currentServer;
     private Channel currentChannel;
 //
-//    private ArrayList<File> files;
-//    private ArrayList<File> requestFiles;
+    private ArrayList<File> files;
+    private ArrayList<File> requestFiles;
 
     private File profile;
 
@@ -48,14 +48,14 @@ public class User implements Serializable {
         this.password = password;
         this.email = email;
         this.tel = tel;
-//        requests = new ArrayList<>();
-//        friends=new ArrayList<>();
-//        blockedFriends=new ArrayList<>();
-//        servers=new ArrayList<>();
-//        notifications=new ArrayList<>();
-//        chats=new ArrayList<>();
-//        files = new ArrayList<>();
-//        requestFiles = new ArrayList<>();
+        requests = new ArrayList<>();
+        friends=new ArrayList<>();
+        blockedFriends=new ArrayList<>();
+        servers=new ArrayList<>();
+      //  notifications=new ArrayList<>();
+        //chats=new ArrayList<>();
+        files = new ArrayList<>();
+        requestFiles = new ArrayList<>();
     }
 
     //getter methods

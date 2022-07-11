@@ -4,7 +4,8 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.HBox;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -31,6 +32,11 @@ Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("signUp.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Discord");
+//        Image image=new Image(getClass().getResourceAsStream("diimg.jpg"));
+//        BackgroundImage bg=new BackgroundImage(image,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER,new BackgroundSize(900,550,true,true,true,true));
+//        Background b=new Background(bg);
+//
+//        root.setBackground(b);
         stage.setScene(scene);
         stage.show();
 
