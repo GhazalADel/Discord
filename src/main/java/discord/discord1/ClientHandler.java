@@ -1116,6 +1116,18 @@ public class ClientHandler implements Runnable {
                     }
                 }
             }
+            else if(command.getCode()==RequestCode.SET_CURRENT_CHANNEL){
+                int channelIndex= (int) command.getData("index");
+                int index=0;
+                int userIndex=findUserIndex();
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                users.get(userIndex).setCurrentChannel(users.get(userIndex).getServers().get(index).getChannels().get(channelIndex));
+            }
 
 
 

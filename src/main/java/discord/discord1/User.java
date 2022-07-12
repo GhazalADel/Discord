@@ -258,15 +258,15 @@ public class User implements Serializable {
 //    public void setCurrentChat(PrivateChat currentChat) {
 //        this.currentChat = currentChat;
 //    }
-//    /**
-//     * This method is used to set user's current channel.
-//     *@param currentChannel
-//     *@return Nothing
-//     */
-//
-//    public void setCurrentChannel(Channel currentChannel) {
-//        this.currentChannel = currentChannel;
-//    }
+    /**
+     * This method is used to set user's current channel.
+     *@param currentChannel
+     *@return Nothing
+     */
+
+    public void setCurrentChannel(Channel currentChannel) {
+        this.currentChannel = currentChannel;
+    }
     /**
      * This method is used to set user's current server.
      *@param currentServer

@@ -610,7 +610,16 @@ public class ServerPage implements Initializable {
                break;
             }
         }
-      //  System.out.println(channelIndex);
+        UIRequest uiRequest=new UIRequest(UIRequestCode.SET_CURRENT_CHANNEL);
+        uiRequest.addData("index",channelIndex);
+        try {
+            Client.process(uiRequest);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        //  System.out.println(channelIndex);
     }
     public void findPermission(){
         for (int i = 0; i < settingMenuItems.size(); i++) {

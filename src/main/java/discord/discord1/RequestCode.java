@@ -102,5 +102,6 @@ public enum RequestCode implements Serializable {
     GET_ROLE_PERMISSIONS,
     CHANGE_ROLE_PERMISSION,
     SET_CURRENT_SERVER,
-    GET_ADMIN_NAME
+    GET_ADMIN_NAME,
+    SET_CURRENT_CHANNEL
 }

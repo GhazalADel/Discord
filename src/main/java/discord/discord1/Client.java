@@ -385,6 +385,12 @@ public class Client {
             String removedUsername= (String) uiRequest.getData("username");
             removeMember(removedUsername);
         }
+        else if(uiRequest.getCode()==UIRequestCode.SET_CURRENT_CHANNEL){
+            int channelIndex= (int) uiRequest.getData("index");
+            Request request=new Request(RequestCode.SET_CURRENT_CHANNEL);
+            request.addData("index",channelIndex);
+            objectOutputStream.writeObject(request);
+        }
 
         return null;
     }
