@@ -15,7 +15,7 @@ public enum Permission implements Serializable {
 
     CREATE_CHANNEL,
     REMOVE_CHANNEL,
-    REMOVE_MEMBER_FROM_SERVER,
+    REMOVE_MEMBER,
     LIMIT_MEMBER,
     CHANGE_SERVER_NAME,
     SEE_CHAT_HISTORY,

@@ -58,7 +58,7 @@
                         </Text>
                         <ImageView fitHeight="37.0" fitWidth="33.0" layoutX="146.0" layoutY="9.0" onMouseClicked="#settingClick" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@setting.png" />
+                              <Image url="@pictures/setting.png" />
                            </image>
                            <cursor>
                               <Cursor fx:constant="HAND" />
@@ -87,7 +87,7 @@
                                     <Insets left="17.0" top="10.0" />
                                  </HBox.margin>
                               </Circle>
-                              <Label styleClass="statusText" stylesheets="@serverStyle.css" text="Online" textFill="#f8f4f4">
+                              <Label styleClass="statusText" stylesheets="@styles/serverStyle.css" text="Online" textFill="#f8f4f4">
                                  <font>
                                     <Font name="System Bold" size="15.0" />
                                  </font>
@@ -104,13 +104,13 @@
                            <children>
                               <ImageView fitHeight="27.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@idle.png" />
+                                    <Image url="@pictures/idle.png" />
                                  </image>
                                  <HBox.margin>
                                     <Insets left="10.0" top="5.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <Label styleClass="statusText" stylesheets="@serverStyle.css" text="Idle" textFill="#f8f4f4">
+                              <Label styleClass="statusText" stylesheets="@styles/serverStyle.css" text="Idle" textFill="#f8f4f4">
                                  <font>
                                     <Font name="System Bold" size="15.0" />
                                  </font>
@@ -130,13 +130,13 @@
                            <children>
                               <ImageView fitHeight="27.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@DNS.png" />
+                                    <Image url="@pictures/DNS.png" />
                                  </image>
                                  <HBox.margin>
                                     <Insets left="10.0" top="5.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <Label styleClass="statusText" stylesheets="@serverStyle.css" text="Do Not Disturb" textFill="#f8f4f4">
+                              <Label styleClass="statusText" stylesheets="@styles/serverStyle.css" text="Do Not Disturb" textFill="#f8f4f4">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
@@ -156,13 +156,13 @@
                            <children>
                               <ImageView fitHeight="27.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@invisible.png" />
+                                    <Image url="@pictures/invisible.png" />
                                  </image>
                                  <HBox.margin>
                                     <Insets left="10.0" top="5.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <Label styleClass="statusText" stylesheets="@serverStyle.css" text="Invisible" textFill="#f8f4f4">
+                              <Label styleClass="statusText" stylesheets="@styles/serverStyle.css" text="Invisible" textFill="#f8f4f4">
                                  <font>
                                     <Font name="System Bold" size="15.0" />
                                  </font>
@@ -209,7 +209,7 @@
                               <Insets left="10.0" top="8.0" />
                            </HBox.margin>
                            <image>
-                              <Image url="@file.png" />
+                              <Image url="@pictures/file.png" />
                            </image>
                         </ImageView>
                         <TextField prefHeight="34.0" prefWidth="424.0" style="-fx-background-color: #40444b; -fx-text-fill: #ffffff;">
@@ -222,9 +222,9 @@
                         </TextField>
                      </children>
                   </HBox>
-                  <Pane fx:id="dialogPane" layoutX="97.0" layoutY="100.0" prefHeight="203.0" prefWidth="310.0" style="-fx-background-color: #2f3136; -fx-background-radius: 6px;" visible="false">
+                  <Pane fx:id="dialogPane" layoutX="97.0" layoutY="100.0" prefHeight="203.0" prefWidth="310.0" style="-fx-background-color: #2f3136; -fx-background-radius: 6px;">
                      <children>
-                        <Text fx:id="dialogText" fill="#f5f0f0" layoutX="64.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Channel Name">
+                        <Text fx:id="dialogText" fill="#f5f0f0" layoutX="64.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Channel Name" textAlignment="CENTER">
                            <font>
                               <Font name="System Bold" size="26.0" />
                            </font>
@@ -235,7 +235,7 @@
                               <Image url="@pictures/escPicture.png" />
                            </image>
                         </ImageView>
-                        <Button fx:id="dialogButton" layoutX="100.0" layoutY="154.0" mnemonicParsing="false" onMouseClicked="#dialogButtonClick" stylesheets="@styles/profileStyle.css" text="Create Channel" textFill="#f8f8f8">
+                        <Button fx:id="dialogButton" alignment="CENTER" layoutX="100.0" layoutY="154.0" mnemonicParsing="false" onMouseClicked="#dialogButtonClick" stylesheets="@styles/profileStyle.css" text="Create Channel" textFill="#f8f8f8">
                            <styleClass>
                               <String fx:value="buttons-color" />
                               <String fx:value="change" />
@@ -244,7 +244,7 @@
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Button>
-                        <Text fx:id="errorDialogText" fill="#d57a7c" layoutX="99.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Duplicated Name">
+                        <Text fx:id="errorDialogText" fill="#d57a7c" layoutX="99.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Duplicated Name" textAlignment="CENTER">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
@@ -253,12 +253,12 @@
                   </Pane>
                   <Pane fx:id="roleDialog" layoutX="127.0" layoutY="21.0" prefHeight="366.0" prefWidth="251.0" style="-fx-background-color: #2f3136; -fx-background-radius: 6px;" visible="false">
                      <children>
-                        <Text fx:id="roleDialogText1" fill="#f2f2f2" layoutX="87.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Role!">
+                        <Text fx:id="roleDialogText1" fill="#f2f2f2" layoutX="87.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Role!" textAlignment="CENTER">
                            <font>
                               <Font size="17.0" />
                            </font>
                         </Text>
-                        <Text fx:id="roleDialogText2" fill="#5865f2" layoutX="41.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select Permissions">
+                        <Text fx:id="roleDialogText2" fill="#5865f2" layoutX="41.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select Permissions" textAlignment="CENTER">
                            <font>
                               <Font size="21.0" />
                            </font>
@@ -341,7 +341,7 @@
                <children>
                   <ImageView fitHeight="42.0" fitWidth="40.0" layoutX="475.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@pin.png" />
+                        <Image url="@pictures/pin.png" />
                      </image>
                   </ImageView>
                </children>

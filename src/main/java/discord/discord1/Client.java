@@ -193,6 +193,7 @@ public class Client {
             }
             uiResponse=new UIResponse(UIResponseCode.OK);
             uiResponse.addData("permissions",permissionsArr);
+            return uiResponse;
         }
         else if(uiRequest.getCode()==UIRequestCode.CREATE_CHANNEL){
             String name= (String) uiRequest.getData("name");
@@ -370,6 +371,19 @@ public class Client {
             objectOutputStream.writeObject(request1);
             uiResponse=new UIResponse(UIResponseCode.OK);
             return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.GET_ADMIN_NAME){
+            Request request=new Request(RequestCode.GET_ADMIN_NAME);
+            objectOutputStream.writeObject(request);
+            Response response = (Response) objectInputStream.readObject();
+            String name= (String) response.getData("name");
+            uiResponse=new UIResponse(UIResponseCode.OK);
+            uiResponse.addData("name",name);
+            return uiResponse;
+        }
+        else if(uiRequest.getCode()==UIRequestCode.REMOVE_MEMBER){
+            String removedUsername= (String) uiRequest.getData("username");
+            removeMember(removedUsername);
         }
 
         return null;
@@ -598,7 +612,6 @@ public class Client {
      //     */
     public static String membersList(String username) throws IOException, ClassNotFoundException {
         Request request = new Request(RequestCode.SEE_MEMBERS_LIST);
-        request.addData("username", username);
         objectOutputStream.writeObject(request);
         Response response = (Response) objectInputStream.readObject();
         String members = (String) response.getData("members");
@@ -743,6 +756,31 @@ public class Client {
         Request request = new Request(RequestCode.REMOVE_SERVER);
         objectOutputStream.writeObject(request);
     }
+    public static void offlineActiveUser() {
+        Request request = new Request(RequestCode.OFFLINE_ACTIVE_USER);
+        try {
+            objectOutputStream.writeObject(request);
+        } catch (IOException e) {
+            //nothing :)
+        }
+    }
+    /**
+     //     * This method used to remove a member by admin
+     //     *
+     //     * *@param index index of DiscordServer
+     //     * *@return Nothing
+     //     * *@throws IOException
+     //     * *@throws ClassNotFoundException
+     //     */
+    public static void removeMember(String username) throws IOException, ClassNotFoundException {
+        Request request = new Request(RequestCode.REMOVE_MEMBER);
+        request.addData("username", username);
+        objectOutputStream.writeObject(request);
+    }
+
+
+
+
 }
 
 
@@ -1384,33 +1422,6 @@ public class Client {
 //
 //
 //
-//    /**
-//     * This method used to remove a member by admin
-//     *
-//     * *@param index index of DiscordServer
-//     * *@return Nothing
-//     * *@throws IOException
-//     * *@throws ClassNotFoundException
-//     */
-//    public void removeMember(int index) throws IOException, ClassNotFoundException {
-//        System.out.println("Enter username:");
-//        System.out.println("Enter 0 to back menu");
-//        String username = scan.nextLine();
-//        if (username.equals("0")) {
-//            return;
-//        }
-//        Request request = new Request(RequestCode.REMOVE_MEMBER);
-//        request.addData("index", index);
-//        request.addData("username", username);
-//        objectOutputStream.writeObject(request);
-//        Response response = (Response) objectInputStream.readObject();
-//        boolean find = (boolean) response.getData("find");
-//        if (find) {
-//            System.out.println(username + " removed successfully");
-//        } else {
-//            System.out.println("There is no " + username);
-//        }
-//    }
 //
 //    /**
 //     * This method used to remove a member by users except admin

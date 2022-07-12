@@ -289,7 +289,6 @@ public class ClientHandler implements Runnable {
             }
             //see users list in a server
             else if(command.getCode()==RequestCode.SEE_MEMBERS_LIST){
-                String username= (String) command.getData("username");
                 int userIndex=findUserIndex();
                 int index=0;
                 boolean flag=false;
@@ -672,8 +671,8 @@ public class ClientHandler implements Runnable {
                     }
                     else{
                         int channelIndex=-1;
-                        for (int i = 0; i < user.getServers().get(index).getChannels().size(); i++) {
-                            if(user.getServers().get(index).getChannels().get(i).getName().equalsIgnoreCase(channelName)){
+                        for (int i = 0; i < users.get(userIndex).getServers().get(index).getChannels().size(); i++) {
+                            if(users.get(userIndex).getServers().get(index).getChannels().get(i).getName().equalsIgnoreCase(channelName)){
                                 channelIndex=i;
                                 break;
                             }
@@ -854,7 +853,7 @@ public class ClientHandler implements Runnable {
                 }
                 else{
                     boolean beforeInRole=false;
-                    for (Role role:user.getServers().get(index).getServerRoles()){
+                    for (Role role:users.get(userIndex).getServers().get(index).getServerRoles()){
                         if(role.getName().equalsIgnoreCase(roleName)){
                             for (User user1:role.getUsers()){
                                 if(user1.getUsername().equalsIgnoreCase(username)){
@@ -869,8 +868,8 @@ public class ClientHandler implements Runnable {
                     }
                     else{
                         int roleIndex=-1;
-                        for (int i = 0; i < user.getServers().get(index).getServerRoles().size(); i++) {
-                            if(user.getServers().get(index).getServerRoles().get(i).getName().equalsIgnoreCase(roleName)){
+                        for (int i = 0; i < users.get(userIndex).getServers().get(index).getServerRoles().size(); i++) {
+                            if(users.get(userIndex).getServers().get(index).getServerRoles().get(i).getName().equalsIgnoreCase(roleName)){
                                 roleIndex=i;
                                 break;
                             }
@@ -878,20 +877,21 @@ public class ClientHandler implements Runnable {
                         int userIndex2=-1;
                         for (int i = 0; i < users.size(); i++) {
                             if(users.get(i).getUsername().equalsIgnoreCase(username)){
-                                userIndex=i;
+                                userIndex2=i;
                                 break;
                             }
                         }
-                        user.getServers().get(index).getServerRoles().get(roleIndex).getUsers().add(users.get(userIndex2));
+
+                        users.get(userIndex).getServers().get(index).getServerRoles().get(roleIndex).getUsers().add(users.get(userIndex2));
                         boolean haveServer=false;
                         for (DiscordServer d: users.get(userIndex2).getServers()){
-                            if(d.getName().equalsIgnoreCase(user.getServers().get(index).getName())){
+                            if(d.getName().equalsIgnoreCase(users.get(userIndex).getServers().get(index).getName())){
                                 haveServer=true;
                                 break;
                             }
                         }
                         if(!haveServer){
-                            users.get(userIndex).getServers().add(user.getServers().get(index));
+                            users.get(userIndex2).getServers().add(users.get(userIndex).getServers().get(index));
 //                            Notification notification=new Notification("welcome to "+ user.getServers().get(index).getName()+" server!", LocalDateTime.now());
 //                            users.get(userIndex).getNotifications().add(notification);
                         }
@@ -927,7 +927,7 @@ public class ClientHandler implements Runnable {
                             role.getRolePermissions().add(Permission.REMOVE_CHANNEL);
                             break;
                         case 3:
-                            role.getRolePermissions().add(Permission.REMOVE_MEMBER_FROM_SERVER);
+                            role.getRolePermissions().add(Permission.REMOVE_MEMBER);
                             break;
                         case 4:
                             role.getRolePermissions().add(Permission.BAN_A_MEMBER);
@@ -975,9 +975,9 @@ public class ClientHandler implements Runnable {
                 }
             }
             else if(command.getCode()==RequestCode.CHANGE_ROLE_PERMISSION){
-                String roleName= (String) command.getData("role");
-                ArrayList<Integer> permissionIndexes= (ArrayList<Integer>) command.getData("permissionsIndex");
-                ArrayList<Permission> permissionsArr= (ArrayList<Permission>) command.getData("permissionsArr");
+                String roleName= (String) command.getData("name");
+                ArrayList<Integer> permissionIndexes= (ArrayList<Integer>) command.getData("permissionIndexes");
+                ArrayList<Permission> permissionsArr= (ArrayList<Permission>) command.getData("permissionArr");
                 int userIndex=findUserIndex();
                 int index=0;
                 for (DiscordServer d:users.get(userIndex).getServers()){
@@ -986,6 +986,7 @@ public class ClientHandler implements Runnable {
                     }
                     index++;
                 }
+                System.out.println(index);
                 for (int i = 0; i <users.get(userIndex).getServers().get(index).getServerRoles().size(); i++) {
                     if(users.get(userIndex).getServers().get(index).getServerRoles().get(i).getName().equalsIgnoreCase(roleName)){
                         users.get(userIndex).getServers().get(index).getServerRoles().get(i).setPermissionIndexes(permissionIndexes);
@@ -1067,6 +1068,53 @@ public class ClientHandler implements Runnable {
                 users.get(userIndex).getServers().add(discordServer);
                 //user.getServers().add(discordServer);
                 discordServers.add(discordServer);
+            }
+            else if(command.getCode()==RequestCode.OFFLINE_ACTIVE_USER){
+                int userIndex=0;
+                for(User uu:users){
+                    if(uu.getUsername().equalsIgnoreCase(user.getUsername()) && user!=null){
+                        break;
+                    }
+                    userIndex++;
+                }
+                users.get(userIndex).setUserStatus(Status.OFFLINE);
+                user=null;
+                writeUsersFile();
+            }
+            else if(command.getCode()==RequestCode.GET_ADMIN_NAME){
+                int userIndex=findUserIndex();
+                String name=users.get(userIndex).getCurrentServer().getServerAdmin().getUsername();
+                Response response=new Response(ResponseCode.REQUEST_OK);
+                response.addData("name",name);
+                try {
+                    objectOutputStream.writeObject(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+
+
+            //remove a member form server
+            else if(command.getCode()==RequestCode.REMOVE_MEMBER){
+                String username= (String) command.getData("username");
+                int userIndex=findUserIndex();
+                int index=0;
+                for (DiscordServer d:users.get(userIndex).getServers()){
+                    if(users.get(userIndex).getCurrentServer().getName().equalsIgnoreCase(d.getName())){
+                        break;
+                    }
+                    index++;
+                }
+                for (int i = 0; i < user.getServers().get(index).getServerRoles().size(); i++) {
+                    for (int j = 0; j < user.getServers().get(index).getServerRoles().get(i).getUsers().size(); j++) {
+                        if(user.getServers().get(index).getServerRoles().get(i).getUsers().get(j).getUsername().equalsIgnoreCase(username)){
+                            user.getServers().get(index).getServerRoles().get(i).getUsers().get(j).getServers().remove(user.getServers().get(index));
+                            user.getServers().get(index).getServerRoles().get(i).getUsers().remove(j);
+                            break;
+                        }
+                    }
+                }
             }
 
 
@@ -1233,18 +1281,7 @@ public class ClientHandler implements Runnable {
 //            }
 //
 
-//            else if(command.getCode()==RequestCode.OFFLINE_ACTIVE_USER){
-//                int userIndex=0;
-//                for(User uu:users){
-//                    if(uu.getUsername().equalsIgnoreCase(user.getUsername()) && user!=null){
-//                        break;
-//                    }
-//                    userIndex++;
-//                }
-//                users.get(userIndex).setUserStatus(Status.OFFLINE);
-//                user=null;
-//                writeUsersFile();
-//            }
+//
 ////            else if(command.getCode()==RequestCode.LOG_IN_ONCE){
 ////                String username= (String) command.getData("username");
 ////                boolean logInOnce=logInOnce(username);
@@ -1288,30 +1325,7 @@ public class ClientHandler implements Runnable {
 //
 //
 //
-//            //remove a member form server
-//            else if(command.getCode()==RequestCode.REMOVE_MEMBER){
-//                String username= (String) command.getData("username");
-//                int index= (int) command.getData("index");
-//                boolean find=false;
-//                for (int i = 0; i < user.getServers().get(index).getServerRoles().size(); i++) {
-//                    for (int j = 0; j < user.getServers().get(index).getServerRoles().get(i).getUsers().size(); j++) {
-//                        if(user.getServers().get(index).getServerRoles().get(i).getUsers().get(j).getUsername().equalsIgnoreCase(username)){
-//                            find=true;
-//                            user.getServers().get(index).getServerRoles().get(i).getUsers().get(j).getServers().remove(user.getServers().get(index));
-//                            user.getServers().get(index).getServerRoles().get(i).getUsers().remove(j);
-//                            break;
-//                        }
-//                    }
 //
-//                }
-//                Response response=new Response(ResponseCode.SUCCESSFUL);
-//                response.addData("find",find);
-//                try {
-//                    objectOutputStream.writeObject(response);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
 //            else if(command.getCode()==RequestCode.REMOVE_MEMBER2){
 //                Response response=null;
 //                String username= (String) command.getData("username");
@@ -2105,6 +2119,10 @@ public class ClientHandler implements Runnable {
 //            }
 //        }
         }
+        int userIndex=findUserIndex();
+        users.get(userIndex).setUserStatus(Status.OFFLINE);
+        user=null;
+        writeUsersFile();
     }
         /**
          * This method used to check is entered username duplicated or not

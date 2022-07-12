@@ -20,7 +20,8 @@ Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         stg = stage;
-
+        ShutDownTask shutDownTask = new ShutDownTask();
+        Runtime.getRuntime().addShutdownHook(shutDownTask);
         Socket socket;
         try {
             socket=new Socket("localhost",11000);

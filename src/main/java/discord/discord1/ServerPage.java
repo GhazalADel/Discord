@@ -117,6 +117,13 @@ public class ServerPage implements Initializable {
     @FXML
     private CheckBox removeMemberCheckBox;
 
+    private String enteredRoleName;
+    private String chanelName;
+    private Object selectedUser;
+    private ArrayList<HBox> membersHboxArr=new ArrayList<>();
+    private ArrayList<MenuItem> membersMenuItem=new ArrayList<>();
+
+    private String adminName="";
 
 
 
@@ -173,7 +180,7 @@ public class ServerPage implements Initializable {
         username= (String) uiResponse2.getData("name");
         if(getClass().getResourceAsStream("pictures/"+username+".jpg")!=null || getClass().getResourceAsStream("pictures/"+username+".png")!=null ){
             if(getClass().getResourceAsStream("pictures/"+username+".jpg")!=null){
-                Image image=new Image(getClass().getResourceAsStream(username+".jpg"));
+                Image image=new Image(getClass().getResourceAsStream("pictures/"+username+".jpg"));
                 profileCircle.setFill(new ImagePattern(image));
             }
             else{
@@ -203,7 +210,6 @@ public class ServerPage implements Initializable {
         String members= (String) uiResponse1.getData("members");
         if(!members.equals("")) {
             String[] membersArr = members.split("@@@");
-            ArrayList<HBox> membersHboxArr = new ArrayList<>();
             for (int i = 0; i < membersArr.length; i++) {
                 String tmp = membersArr[i];
                 String[] tmpArr = tmp.split(" ");
@@ -268,10 +274,13 @@ public class ServerPage implements Initializable {
                 ap.getChildren().add(usernameText2);
                 h.getChildren().add(ap);
                 membersHboxArr.add(h);
+
             }
             for (int i = 0; i < membersHboxArr.size(); i++) {
                 usersVBox.getChildren().add(membersHboxArr.get(i));
             }
+
+
         }
         changeStatusVBox.setVisible(false);
         UIRequest uiRequest3=new UIRequest(UIRequestCode.SEE_CHANNELS);
@@ -441,16 +450,91 @@ public class ServerPage implements Initializable {
             settingMenuItems.add(menuItem1);
             if(permssions!=null){
                 for (int i = 0; i < permssions.size(); i++) {
-                    MenuItem menuItem=new MenuItem(permssions.get(i));
-                    menuItem.setOnAction((ActionEvent e)->{
-                        selectedPermission=e.getSource();
-                        findPermission();
-                    });
-                    contextMenu.getItems().add(menuItem);
-                    settingMenuItems.add(menuItem);
+                    if (!permssions.get(i).equalsIgnoreCase("remove member ")) {
+                        String perStr = permssions.get(i);
+                        perStr = perStr.substring(0, perStr.length() - 1);
+                        MenuItem menuItem = new MenuItem(perStr);
+                        menuItem.setOnAction((ActionEvent e) -> {
+                            selectedPermission = e.getSource();
+                            findPermission();
+                        });
+                        contextMenu.getItems().add(menuItem);
+                        settingMenuItems.add(menuItem);
+                    }
                 }
             }
             settingsLabel.setContextMenu(contextMenu);
+        }
+        UIRequest uiRequest10=new UIRequest(UIRequestCode.GET_ADMIN_NAME);
+        UIResponse uiResponse10;
+        try {
+            uiResponse10=Client.process(uiRequest10);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        adminName= (String) uiResponse10.getData("name");
+        if(isAdmin) {
+            for (int i = 0; i < membersHboxArr.size(); i++) {
+                HBox h = membersHboxArr.get(i);
+                AnchorPane a = (AnchorPane) h.getChildren().get(0);
+                Text t = (Text) a.getChildren().get(3);
+                String s = t.getText();
+                if (!s.equalsIgnoreCase(adminName)) {
+                    ContextMenu menu = new ContextMenu();
+                    MenuItem menuItem = new MenuItem("Remove member");
+                    menuItem.setOnAction(e -> {
+                        selectedUser = e.getSource();
+                        findUser();
+                    });
+                    menu.getItems().add(menuItem);
+                    final int index = i;
+                    membersHboxArr.get(i).setOnContextMenuRequested(e -> {
+                        menu.show(membersHboxArr.get(index).getScene().getWindow(), e.getScreenX(), e.getScreenY());
+                    });
+                    membersMenuItem.add(menuItem);
+                }
+                else{
+                    MenuItem menuItem = new MenuItem("Remove member");
+                    membersMenuItem.add(menuItem);
+                }
+            }
+        }
+        else{
+            boolean flag=false;
+            for (String ss:permssions){
+                if(ss.equalsIgnoreCase("remove member ")){
+                    flag=true;
+                    break;
+                }
+            }
+            if(flag){
+                for (int i = 0; i < membersHboxArr.size(); i++) {
+                    HBox h = membersHboxArr.get(i);
+                    AnchorPane a = (AnchorPane) h.getChildren().get(0);
+                    Text t = (Text) a.getChildren().get(3);
+                    String s = t.getText();
+                    if (!s.equalsIgnoreCase(adminName)) {
+                        ContextMenu menu = new ContextMenu();
+                        MenuItem menuItem = new MenuItem("Remove member");
+                        menuItem.setOnAction(e -> {
+                            selectedUser = e.getSource();
+                            findUser();
+                        });
+                        menu.getItems().add(menuItem);
+                        final int index = i;
+                        membersHboxArr.get(i).setOnContextMenuRequested(e -> {
+                            menu.show(membersHboxArr.get(index).getScene().getWindow(), e.getScreenX(), e.getScreenY());
+                        });
+                        membersMenuItem.add(menuItem);
+                    }
+                    else{
+                        MenuItem menuItem = new MenuItem("Remove member");
+                        membersMenuItem.add(menuItem);
+                    }
+                }
+            }
         }
         chatBox.setVisible(false);
     }
@@ -517,6 +601,7 @@ public class ServerPage implements Initializable {
                break;
             }
         }
+      //  System.out.println(channelIndex);
     }
     public void findPermission(){
         for (int i = 0; i < settingMenuItems.size(); i++) {
@@ -647,7 +732,7 @@ public class ServerPage implements Initializable {
     }
     public void limitMember(){
         dialogPane.setVisible(true);
-        dialogText.setText("Enter Channel's name");
+        dialogText.setText("Channel's name");
         dialogButton.setText("limit member");
         errorDialogText.setText("");
         dialogTextField.setText("");
@@ -774,59 +859,7 @@ public class ServerPage implements Initializable {
                 }
                 else{
                     dialogPane.setVisible(false);
-                    //////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    ////////////////////////////////////
-                    // ///////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    ////////////////////////////////////.////////////////////////////////////////
-                    /////////////////////////////////.///////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////
+                    updateMembers();
                 }
             }
         }
@@ -852,44 +885,49 @@ public class ServerPage implements Initializable {
             }
         }
         else if(dialogButton.getText().equalsIgnoreCase("limit member")){
-            String enteredChannelName=dialogTextField.getText();
-            if(enteredChannelName.equals("")){
+            chanelName=dialogTextField.getText();
+            if(chanelName.equals("")){
                 errorDialogText.setText("enter a name!");
             }
             else{
                 UIRequest uiRequest=new UIRequest(UIRequestCode.CHANNEL_EXIST);
-                uiRequest.addData("name",enteredChannelName);
+                uiRequest.addData("name",chanelName);
                 UIResponse uiResponse=Client.process(uiRequest);
                 if(uiResponse.getCode()==UIResponseCode.NOT_EXIST){
                     errorDialogText.setText("Invalid Channel Name");
                 }
                 else{
+                    dialogButton.setText("Limit");
                     dialogText.setText("enter username");
                     dialogTextField.setText("");
-                    String enteredUsername=dialogTextField.getText();
-                    UIRequest uiRequest2=new UIRequest(UIRequestCode.LIMIT_MEMBER);
-                    uiRequest2.addData("username",enteredUsername);
-                    uiRequest2.addData("channel",enteredChannelName);
-                    UIResponse uiResponse2=Client.process(uiRequest2);
-                    if(uiResponse2.getCode()==UIResponseCode.NOT_EXIST){
-                        errorDialogText.setText("Invalid Username");
-                    }
-                    else if(uiResponse2.getCode()==UIResponseCode.NOT_IN_SERVER){
-                        errorDialogText.setText("This user is not in server!");
-                    }
-                    else if(uiResponse2.getCode()==UIResponseCode.LIMIT_BEFORE){
-                        errorDialogText.setText("This user limitted before!");
-                    }
-                    else if(uiResponse2.getCode()==UIResponseCode.BAN_BEFORE){
-                        errorDialogText.setText("This user banned before!");
-                    }
-                    else{
-                        dialogPane.setVisible(false);
-                    }
-
+                    errorDialogText.setText("");
                 }
 
             }
+        }
+        else if(dialogButton.getText().equalsIgnoreCase("Limit")){
+            String enteredUsername=dialogTextField.getText();
+            UIRequest uiRequest2=new UIRequest(UIRequestCode.LIMIT_MEMBER);
+            uiRequest2.addData("username",enteredUsername);
+            uiRequest2.addData("channel",chanelName);
+            UIResponse uiResponse2=Client.process(uiRequest2);
+            if(uiResponse2.getCode()==UIResponseCode.NOT_EXIST){
+                errorDialogText.setText("Invalid Username");
+            }
+            else if(uiResponse2.getCode()==UIResponseCode.NOT_IN_SERVER){
+                errorDialogText.setText("This user is not in server!");
+            }
+            else if(uiResponse2.getCode()==UIResponseCode.LIMIT_BEFORE){
+                errorDialogText.setText("This user limitted before!");
+            }
+            else if(uiResponse2.getCode()==UIResponseCode.BAN_BEFORE){
+                errorDialogText.setText("This user banned before!");
+            }
+            else{
+                dialogPane.setVisible(false);
+            }
+
+
         }
         else if(dialogButton.getText().equalsIgnoreCase("ban member")){
             String enteredUsername=dialogTextField.getText();
@@ -915,7 +953,7 @@ public class ServerPage implements Initializable {
             }
         }
         else if(dialogButton.getText().equalsIgnoreCase("add role")){
-            String enteredRoleName=dialogTextField.getText();
+             enteredRoleName=dialogTextField.getText();
             if(enteredRoleName.equals("")){
                 errorDialogText.setText("enter a name!");
             }
@@ -925,40 +963,30 @@ public class ServerPage implements Initializable {
                 UIResponse uiResponse=Client.process(uiRequest);
                 boolean isExist= (boolean) uiResponse.getData("exist");
                 if(isExist){
-                    dialogText.setText("Enter username");
+                    dialogPane.setVisible(true);
+                    dialogText.setText("Enter Username");
                     dialogButton.setText("Assign Role");
                     errorDialogText.setText("");
                     dialogTextField.setText("");
-                    String enteredUsername=dialogTextField.getText();
-                    if(enteredUsername.equals("")){
-                        errorDialogText.setText("enter a name!");
-                    }
-                    else{
-                        UIRequest uiRequest1=new UIRequest(UIRequestCode.ASSIGN_EXIST_ROLE);
-                        uiRequest1.addData("role",enteredRoleName);
-                        uiRequest1.addData("name",enteredUsername);
-                        UIResponse uiResponse1=Client.process(uiRequest1);
-                        if(uiResponse1.getCode()==UIResponseCode.NOT_EXIST){
-                            errorDialogText.setText("Invalid Username");
-                        }
-                        else if(uiResponse1.getCode()==UIResponseCode.BEFORE_IN_ROLE){
-                            errorDialogText.setText(enteredUsername+" has this role!");
-                        }
-                        else{
-                            roleDialog.setVisible(false);
-                        }
-                    }
                 }
                 else{
                     dialogPane.setVisible(false);
                     roleDialog.setVisible(true);
                     roleDialogText1.setText(enteredRoleName+" is a new Role!");
                     roleDialogText2.setText("Select permissions");
+                    createChannelCheckBox.setSelected(false);
+                    removeChannelCheckBox.setSelected(false);
+                    limitMemberCheckBox.setSelected(false);
+                    banMemberCheckBox.setSelected(false);
+                    pinMessageCheckBox.setSelected(false);
+                    chatHistoryCheckBox.setSelected(false);
+                    changeNameCheckBox.setSelected(false);
+                    removeMemberCheckBox.setSelected(false);
                 }
             }
         }
         else if(dialogButton.getText().equalsIgnoreCase("change permissions")){
-            String enteredRoleName=dialogTextField.getText();
+            enteredRoleName=dialogTextField.getText();
             if(enteredRoleName.equals("")){
                 errorDialogText.setText("enter a name!");
             }
@@ -982,7 +1010,7 @@ public class ServerPage implements Initializable {
                         else if(p==Permission.REMOVE_CHANNEL){
                             removeChannelCheckBox.setSelected(true);
                         }
-                        else if(p==Permission.REMOVE_MEMBER_FROM_SERVER){
+                        else if(p==Permission.REMOVE_MEMBER){
                             removeMemberCheckBox.setSelected(true);
                         }
                         else if(p==Permission.BAN_A_MEMBER){
@@ -1005,10 +1033,32 @@ public class ServerPage implements Initializable {
                     roleDialog.setVisible(true);
                     roleDialogText1.setText(enteredRoleName);
                     roleDialogText2.setText("Select permissions");
-
                 }
 
             }
+        }
+        else if(dialogButton.getText().equalsIgnoreCase("Assign Role")){
+            String enteredUsername=dialogTextField.getText();
+            if(enteredUsername.equals("")){
+                errorDialogText.setText("enter a name!");
+            }
+            else{
+                UIRequest uiRequest1=new UIRequest(UIRequestCode.ASSIGN_EXIST_ROLE);
+                uiRequest1.addData("role",enteredRoleName);
+                uiRequest1.addData("name",enteredUsername);
+                UIResponse uiResponse1=Client.process(uiRequest1);
+                if(uiResponse1.getCode()==UIResponseCode.NOT_EXIST){
+                    errorDialogText.setText("Invalid Username");
+                }
+                else if(uiResponse1.getCode()==UIResponseCode.BEFORE_IN_ROLE){
+                    errorDialogText.setText(enteredUsername+" has this role!");
+                }
+                else{
+                    dialogPane.setVisible(false);
+                    updateMembers();
+                }
+            }
+
         }
     }
     @FXML
@@ -1033,7 +1083,7 @@ public class ServerPage implements Initializable {
         if(removeMemberCheckBox.isSelected()){
             tmpPermission.add(3);
             permissionIndexes.add(3);
-            permissionsArr.add(Permission.REMOVE_MEMBER_FROM_SERVER);
+            permissionsArr.add(Permission.REMOVE_MEMBER);
         }
         if(banMemberCheckBox.isSelected()){
             tmpPermission.add(4);
@@ -1088,26 +1138,148 @@ public class ServerPage implements Initializable {
         dialogButton.setText("Assign Role");
         errorDialogText.setText("");
         dialogTextField.setText("");
-        String enteredUsername=dialogTextField.getText();
-        if(enteredUsername.equals("")){
-            errorDialogText.setText("enter a username!");
+
+    }
+    public void updateMembers(){
+        usersVBox.getChildren().removeAll(usersVBox.getChildren());
+        UIRequest uiRequest1=new UIRequest(UIRequestCode.GET_SERVER_USERS);
+        UIResponse uiResponse1;
+        try {
+            uiResponse1=Client.process(uiRequest1);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
-        else{
-            UIRequest uiRequest=new UIRequest(UIRequestCode.ASSIGN_ROLE);
-            uiRequest.addData("role",roleName);
-            uiRequest.addData("name",username);
-            UIResponse uiResponse=Client.process(uiRequest);
-            if(uiResponse.getCode()==UIResponseCode.NOT_EXIST){
-                errorDialogText.setText("Invalid Username");
+        String members= (String) uiResponse1.getData("members");
+        if(!members.equals("")) {
+            String[] membersArr = members.split("@@@");
+            membersHboxArr.clear();
+            membersMenuItem.clear();
+            for (int i = 0; i < membersArr.length; i++) {
+                String tmp = membersArr[i];
+                String[] tmpArr = tmp.split(" ");
+                String username2 = tmpArr[0];
+                String status = tmpArr[1];
+                HBox h = new HBox();
+                h.setPrefHeight(40);
+                h.setPrefWidth(148);
+                h.setBackground(new Background(new BackgroundFill(Paint.valueOf("#2f3136"),
+                        CornerRadii.EMPTY,
+                        Insets.EMPTY)));
+                AnchorPane ap = new AnchorPane();
+                ap.setPrefHeight(40);
+                ap.setPrefWidth(148);
+                Circle pro = new Circle();
+                pro.setRadius(15);
+                pro.setCenterX(20);
+                pro.setCenterY(20);
+                if (getClass().getResourceAsStream("pictures/" + username2 + ".jpg") != null || getClass().getResourceAsStream("pictures/" + username2 + ".png") != null) {
+                    if (getClass().getResourceAsStream("pictures/" + username2 + ".jpg") != null) {
+                        Image image1 = new Image(getClass().getResourceAsStream("pictures/" + username2 + ".jpg"));
+                        pro.setFill(new ImagePattern(image1));
+                    } else {
+                        Image image1 = new Image(getClass().getResourceAsStream("pictures/" + username2 + ".png"));
+                        pro.setFill(new ImagePattern(image1));
+                    }
+                } else {
+                    Image image1 = new Image(getClass().getResourceAsStream("pictures/" + "diimg.jpg"));
+                    pro.setFill(new ImagePattern(image1));
+                }
+                Circle back = new Circle();
+                back.setRadius(8);
+                back.setFill(Color.valueOf("#2f3136"));
+                back.setCenterX(30);
+                back.setCenterY(28);
+                Circle statusCircle2 = new Circle();
+                statusCircle2.setRadius(5);
+                statusCircle2.setCenterX(30);
+                statusCircle2.setCenterY(28);
+                if (status.equalsIgnoreCase("ONLINE")) {
+                    statusCircle2.setFill(Paint.valueOf("#3ba55d"));
+                } else if (status.equalsIgnoreCase("DO_NOT_DISTURB")) {
+                    statusCircle2.setFill(Paint.valueOf("#e03f41"));
+                } else if (status.equalsIgnoreCase("IDLE")) {
+                    statusCircle2.setFill(Paint.valueOf("#eb9e19"));
+                } else if (status.equalsIgnoreCase("INVISIBLE")) {
+                    statusCircle2.setFill(Paint.valueOf("#747f8d"));
+                } else {
+                    statusCircle2.setVisible(false);
+                    back.setVisible(false);
+                }
+                Text usernameText2 = new Text();
+                Font font = Font.font("System", FontWeight.BOLD, 12);
+                usernameText2.setFont(font);
+                usernameText2.setX(40);
+                usernameText2.setY(23);
+                usernameText2.setText(username2);
+                usernameText2.setFill(Color.WHITE);
+                ap.getChildren().add(pro);
+                ap.getChildren().add(back);
+                ap.getChildren().add(statusCircle2);
+                ap.getChildren().add(usernameText2);
+                h.getChildren().add(ap);
+                membersHboxArr.add(h);
             }
-            else if(uiResponse.getCode()==UIResponseCode.BEFORE_IN_ROLE){
-                errorDialogText.setText(enteredUsername+" has this role!");
+            for (int i = 0; i < membersHboxArr.size(); i++) {
+                usersVBox.getChildren().add(membersHboxArr.get(i));
             }
-            else{
-                dialogPane.setVisible(false);
+
+            for (int i = 0; i < membersHboxArr.size(); i++) {
+                HBox h = membersHboxArr.get(i);
+                AnchorPane a = (AnchorPane) h.getChildren().get(0);
+                Text t = (Text) a.getChildren().get(3);
+                String s = t.getText();
+                if (!s.equalsIgnoreCase(adminName)) {
+                    MenuItem menuItem = new MenuItem("Remove member");
+                    menuItem.setOnAction(e -> {
+                        selectedUser = e.getSource();
+                        findUser();
+                    });
+
+                    ContextMenu menu = new ContextMenu(menuItem);
+                    final int index = i;
+                    membersHboxArr.get(i).setOnContextMenuRequested(e -> {
+                        menu.show(membersHboxArr.get(index).getScene().getWindow(), e.getScreenX(), e.getScreenY());
+                    });
+                    membersMenuItem.add(menuItem);
+                }
+                else{
+                    MenuItem menuItem = new MenuItem("Remove member");
+                    membersMenuItem.add(menuItem);
+                }
             }
         }
 
+    }
+    public void findUser()  {
+         int index=-1;
+         String removedUsername="";
+        for (int i = 0; i < membersMenuItem.size(); i++) {
+            if (selectedUser.equals(membersMenuItem.get(i))) {
+                HBox h=membersHboxArr.get(i);
+                AnchorPane a= (AnchorPane) h.getChildren().get(0);
+                Text t= (Text) a.getChildren().get(3);
+                removedUsername=t.getText();
+                index=i;
+                System.out.println(index);
+                System.out.println(removedUsername);
+                break;
+
+            }
+        }
+        UIRequest uiRequest=new UIRequest(UIRequestCode.REMOVE_MEMBER);
+        uiRequest.addData("username",removedUsername);
+        try {
+            Client.process(uiRequest);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        usersVBox.getChildren().remove(index);
+        membersHboxArr.remove(index);
+        membersMenuItem.remove(index);
     }
 }
 
