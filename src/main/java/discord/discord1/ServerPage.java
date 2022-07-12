@@ -356,11 +356,14 @@ public class ServerPage implements Initializable {
         isAdmin= (boolean) uiResponse5.getData("isAdmin");
         if(isAdmin){
             ContextMenu adminSettingsMenu=new ContextMenu();
+            adminSettingsMenu.setStyle("-fx-background-color: #18191c;"+
+                    "-fx-background-radius: 6px");
             MenuItem menuItem1=new MenuItem("change server name");
             menuItem1.setOnAction((ActionEvent e)->{
                 selectedPermission=e.getSource();
                 findPermission();
             });
+
             adminSettingsMenu.getItems().add(menuItem1);
             settingMenuItems.add(menuItem1);
 
@@ -441,6 +444,8 @@ public class ServerPage implements Initializable {
             }
           permssions= (ArrayList<String>) uiResponse6.getData("permissions");
           ContextMenu contextMenu=new ContextMenu();
+            contextMenu.setStyle("-fx-background-color: #18191c;"+
+                    "-fx-background-radius: 6px");
           MenuItem menuItem1=new MenuItem("add a member");
           menuItem1.setOnAction((ActionEvent e)->{
                 selectedPermission=e.getSource();
@@ -483,6 +488,8 @@ public class ServerPage implements Initializable {
                 String s = t.getText();
                 if (!s.equalsIgnoreCase(adminName)) {
                     ContextMenu menu = new ContextMenu();
+                    menu.setStyle("-fx-background-color: #18191c;"+
+                            "-fx-background-radius: 6px");
                     MenuItem menuItem = new MenuItem("Remove member");
                     menuItem.setOnAction(e -> {
                         selectedUser = e.getSource();
@@ -517,6 +524,8 @@ public class ServerPage implements Initializable {
                     String s = t.getText();
                     if (!s.equalsIgnoreCase(adminName)) {
                         ContextMenu menu = new ContextMenu();
+                        menu.setStyle("-fx-background-color: #18191c;"+
+                                "-fx-background-radius: 6px");
                         MenuItem menuItem = new MenuItem("Remove member");
                         menuItem.setOnAction(e -> {
                             selectedUser = e.getSource();
@@ -1238,6 +1247,8 @@ public class ServerPage implements Initializable {
                     });
 
                     ContextMenu menu = new ContextMenu(menuItem);
+                    menu.setStyle("-fx-background-color: #18191c;"+
+                            "-fx-background-radius: 6px");
                     final int index = i;
                     membersHboxArr.get(i).setOnContextMenuRequested(e -> {
                         menu.show(membersHboxArr.get(index).getScene().getWindow(), e.getScreenX(), e.getScreenY());

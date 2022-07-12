@@ -173,6 +173,7 @@ public class MainPage implements Initializable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         stage.setScene(new Scene(root));
     }
 }
